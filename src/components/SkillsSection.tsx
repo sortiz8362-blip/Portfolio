@@ -129,32 +129,33 @@ export default function SkillsSection() {
 
       // En MÓVILES y TABLETS, las tarjetas y la foto flotan juntas
       mm.add("(max-width: 1023px)", () => {
-        // Balanceo para las tarjetas (más suave y circular)
+        // Balanceo para las tarjetas (coordinado y circular)
         cardsRef.current.forEach((card) => {
           if (!card) return;
           gsap.to(card, {
-            rotateX: "random(-1.8, 1.8)",
-            duration: "random(4, 6)",
+            rotateX: 2.5,
+            duration: 2,
             repeat: -1,
             yoyo: true,
             ease: "sine.inOut",
-            transformPerspective: 1000
+            transformPerspective: 2000
           });
           gsap.to(card, {
-            rotateY: "random(-1.8, 1.8)",
-            duration: "random(3, 5)",
+            rotateY: 2.5,
+            duration: 2,
             repeat: -1,
             yoyo: true,
             ease: "sine.inOut",
-            transformPerspective: 1000
+            transformPerspective: 2000,
+            delay: -1
           });
         });
 
-        // Balanceo especial para la foto de perfil (más lento y menor escala)
+        // Balanceo especial para la foto de perfil (más suave)
         gsap.to(".profile-photo-img", {
-          rotateZ: "random(-1.5, 1.5)",
+          rotateZ: 2.5,
           scale: 1.02,
-          duration: 4,
+          duration: 3,
           repeat: -1,
           yoyo: true,
           ease: "sine.inOut"

@@ -56,20 +56,21 @@ export default function TestimonialSection() {
         cardsRef.current.forEach((card) => {
           if (!card) return;
           gsap.to(card, {
-            rotateX: "random(-1.2, 1.2)",
-            duration: "random(5, 7)",
+            rotateX: 2.5,
+            duration: 2,
             repeat: -1,
             yoyo: true,
             ease: "sine.inOut",
-            transformPerspective: 1000
+            transformPerspective: 2000
           });
           gsap.to(card, {
-            rotateY: "random(-1.2, 1.2)",
-            duration: "random(4, 6)",
+            rotateY: 2.5,
+            duration: 2,
             repeat: -1,
             yoyo: true,
             ease: "sine.inOut",
-            transformPerspective: 1000
+            transformPerspective: 2000,
+            delay: -1
           });
         });
       });
