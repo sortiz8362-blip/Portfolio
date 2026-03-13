@@ -63,8 +63,7 @@ export default function AdminSettings() {
     try {
       let finalImageUrl = profileImageUrl;
       if (imageFile) {
-        const uploadedFile = await storage.createFile(APPWRITE_BUCKET_ID, ID.unique(), imageFile);
-        finalImageUrl = storage.getFileView(APPWRITE_BUCKET_ID, uploadedFile.$id).href;
+        finalImageUrl = storage.getFileView(APPWRITE_BUCKET_ID, uploadedFile.$id);
       }
 
       const data = { heroTitle, heroSubtitle, aboutText, contactEmail, profileImageUrl: finalImageUrl };
