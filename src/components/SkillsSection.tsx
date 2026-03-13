@@ -127,30 +127,22 @@ export default function SkillsSection() {
       // --- Animación Inteligente Adaptativa (Móvil vs PC) ---
       const mm = gsap.matchMedia();
 
-      // En MÓVILES y TABLETS, las tarjetas y la foto flotan juntas
+      // En MÓVILES y TABLETS, las tarjetas y la foto tienen un tilt estático
       mm.add("(max-width: 1023px)", () => {
-        // Balanceo para las tarjetas (coordinado y suave)
+        // Tilt estático para las tarjetas
         cardsRef.current.forEach((card) => {
           if (!card) return;
-          gsap.to(card, {
-            rotateX: 1.5,
-            rotateY: 1.5,
-            duration: 4,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-            transformPerspective: 3000
+          gsap.set(card, {
+            rotateX: 2,
+            rotateY: 2,
+            transformPerspective: 2000
           });
         });
 
-        // Balanceo especial para la foto de perfil (más suave)
-        gsap.to(".profile-photo-img", {
-          rotateZ: 1.5,
+        // Tilt estático suave para la foto de perfil
+        gsap.set(".profile-photo-img", {
+          rotateZ: 2,
           scale: 1.02,
-          duration: 3,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut"
         });
       });
       // ------------------------------------------------------

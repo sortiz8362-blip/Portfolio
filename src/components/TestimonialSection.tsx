@@ -51,18 +51,14 @@ export default function TestimonialSection() {
       // --- Animación Inteligente Adaptativa (Móvil vs PC) ---
       const mm = gsap.matchMedia();
 
-      // En MÓVILES las tarjetas de testimonios flotan suavemente
+      // En MÓVILES las tarjetas de testimonios tienen un tilt estático
       mm.add("(max-width: 1023px)", () => {
         cardsRef.current.forEach((card) => {
           if (!card) return;
-          gsap.to(card, {
-            rotateX: 1.2,
-            rotateY: 1.2,
-            duration: 5,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-            transformPerspective: 3000
+          gsap.set(card, {
+            rotateX: 2,
+            rotateY: 2,
+            transformPerspective: 2000
           });
         });
       });

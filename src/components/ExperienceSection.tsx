@@ -88,20 +88,16 @@ export default function ExperienceSection() {
       // --- Animación Inteligente Adaptativa (Móvil vs PC) ---
       const mm = gsap.matchMedia();
 
-      // En MÓVILES las tarjetas se balancean solas
+      // En MÓVILES las tarjetas se quedan con un tilt estático
       mm.add("(max-width: 1023px)", () => {
         itemsRef.current.forEach((item) => {
           if (!item) return;
           const card = item.querySelector(".group"); // Buscamos la tarjeta real dentro del contenedor
           if (card) {
-            gsap.to(card, {
-              rotateX: 1.5,
-              rotateY: 1.5,
-              duration: 4,
-              repeat: -1,
-              yoyo: true,
-              ease: "sine.inOut",
-              transformPerspective: 3000
+            gsap.set(card, {
+              rotateX: 2,
+              rotateY: 2,
+              transformPerspective: 2000
             });
           }
         });

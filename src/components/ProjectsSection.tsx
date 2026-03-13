@@ -92,19 +92,15 @@ export default function ProjectsSection() {
       // --- Animación Inteligente Adaptativa (Móvil vs PC) ---
       const mm = gsap.matchMedia();
 
-      // En MÓVILES y TABLETS (pantallas pequeñas), las tarjetas flotan solas
+      // En MÓVILES y TABLETS (pantallas pequeñas), las tarjetas se quedan con un tilt estático sutil
       mm.add("(max-width: 1023px)", () => {
         cardsRef.current.forEach((card) => {
           if (!card) return;
-          // Un solo tween coordinado es más estable y evita conflictos/estiramientos
-          gsap.to(card, {
-            rotateX: 1.5,
-            rotateY: 1.5,
-            duration: 3,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-            transformPerspective: 3000, // Perspectiva ultra-alta para evitar estiramientos
+          // Tilt estático para mostrar el efecto 3D sin animaciones que causen distorsión
+          gsap.set(card, {
+            rotateX: 2,
+            rotateY: 2,
+            transformPerspective: 2000,
           });
         });
       });
