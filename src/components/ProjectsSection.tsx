@@ -80,7 +80,7 @@ export default function ProjectsSection() {
           y: 0,
           opacity: 1,
           duration: 0.8,
-          stagger: 0.2, // Retraso entre cada tarjeta
+          stagger: 0.2,
           ease: "power3.out",
           scrollTrigger: {
             trigger: sectionRef.current,
@@ -88,6 +88,26 @@ export default function ProjectsSection() {
           },
         }
       );
+
+      // --- Animación Inteligente Adaptativa (Móvil vs PC) ---
+      const mm = gsap.matchMedia();
+
+      // En MÓVILES y TABLETS (pantallas pequeñas), las tarjetas flotan solas
+      mm.add("(max-width: 1023px)", () => {
+        cardsRef.current.forEach((card) => {
+          if (!card) return;
+          gsap.to(card, {
+            rotateX: "random(-5, 5)",
+            rotateY: "random(-5, 5)",
+            duration: "random(2, 4)",
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+            transformPerspective: 1000
+          });
+        });
+      });
+      // ------------------------------------------------------
     }, sectionRef);
 
     return () => ctx.revert(); // Limpieza vital en React

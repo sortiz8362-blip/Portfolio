@@ -123,6 +123,37 @@ export default function SkillsSection() {
         duration: 0.8,
         ease: "back.out(1.7)"
       }, "-=0.5");
+
+      // --- Animación Inteligente Adaptativa (Móvil vs PC) ---
+      const mm = gsap.matchMedia();
+
+      // En MÓVILES y TABLETS, las tarjetas y la foto flotan juntas
+      mm.add("(max-width: 1023px)", () => {
+        // Balanceo para las tarjetas
+        cardsRef.current.forEach((card) => {
+          if (!card) return;
+          gsap.to(card, {
+            rotateX: "random(-6, 6)",
+            rotateY: "random(-6, 6)",
+            duration: "random(2.5, 4.5)",
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+            transformPerspective: 1000
+          });
+        });
+
+        // Balanceo especial para la foto de perfil
+        gsap.to(".profile-photo-img", {
+          rotateZ: "random(-3, 3)",
+          scale: 1.05,
+          duration: 3,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut"
+        });
+      });
+      // ------------------------------------------------------
     }, sectionRef);
     return () => ctx.revert();
   }, [loading, groupedSkills]);

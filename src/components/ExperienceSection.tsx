@@ -84,6 +84,29 @@ export default function ExperienceSection() {
           }
         );
       });
+
+      // --- Animación Inteligente Adaptativa (Móvil vs PC) ---
+      const mm = gsap.matchMedia();
+
+      // En MÓVILES las tarjetas se balancean solas
+      mm.add("(max-width: 1023px)", () => {
+        itemsRef.current.forEach((item) => {
+          if (!item) return;
+          const card = item.querySelector(".group"); // Buscamos la tarjeta real dentro del contenedor
+          if (card) {
+            gsap.to(card, {
+              rotateX: "random(-3, 3)",
+              rotateY: "random(-3, 3)",
+              duration: "random(2, 4)",
+              repeat: -1,
+              yoyo: true,
+              ease: "sine.inOut",
+              transformPerspective: 1000
+            });
+          }
+        });
+      });
+      // ------------------------------------------------------
     }, sectionRef);
 
     return () => ctx.revert();

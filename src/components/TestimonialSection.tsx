@@ -47,6 +47,26 @@ export default function TestimonialSection() {
     if (loading || testimonials.length === 0) return;
     const ctx = gsap.context(() => {
       gsap.fromTo(cardsRef.current, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: "power3.out", scrollTrigger: { trigger: sectionRef.current, start: "top 75%" } });
+
+      // --- Animación Inteligente Adaptativa (Móvil vs PC) ---
+      const mm = gsap.matchMedia();
+
+      // En MÓVILES las tarjetas de testimonios flotan suavemente
+      mm.add("(max-width: 1023px)", () => {
+        cardsRef.current.forEach((card) => {
+          if (!card) return;
+          gsap.to(card, {
+            rotateX: "random(-4, 4)",
+            rotateY: "random(-4, 4)",
+            duration: "random(3, 5)",
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+            transformPerspective: 1000
+          });
+        });
+      });
+      // ------------------------------------------------------
     }, sectionRef);
     return () => ctx.revert();
   }, [loading, testimonials]);
