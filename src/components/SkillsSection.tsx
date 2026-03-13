@@ -11,11 +11,12 @@ import { Layout, Database, Terminal, User, Star, Loader2 } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { databases, APPWRITE_DB_ID } from "../../appwrite";
+import { Skill, Settings } from "@/types/appwrite";
 const APPWRITE_COLLECTION_SKILLS_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_SKILLS_ID || "";
 const APPWRITE_COLLECTION_SETTINGS_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_SETTINGS_ID || "";
 
-if (typeof window !== "undefined" && (gsap as any).registerPlugin) {
-  (gsap as any).registerPlugin(ScrollTrigger);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
 }
 
 const getCategoryIcon = (category: string) => {
@@ -52,17 +53,17 @@ export default function SkillsSection() {
         ]);
 
         // Procesar Configuración
-        if ((settingsRes as any).documents.length > 0) {
-          const settingsData = (settingsRes as any).documents[0];
+        if (settingsRes.documents.length > 0) {
+          const settingsData = settingsRes.documents[0] as unknown as Settings;
           setAboutText(settingsData.aboutText);
           setProfileImageUrl(settingsData.profileImageUrl || ""); // Obtenemos la foto
         }
 
         // Procesar Habilidades
-        const visibleSkills = (skillsRes as any).documents.filter((s: any) => s.isVisible);
+        const visibleSkills = (skillsRes.documents as unknown as Skill[]).filter((s) => s.isVisible);
         const categoriesMap = new Map<string, string[]>();
 
-        visibleSkills.forEach((skill: any) => {
+        visibleSkills.forEach((skill) => {
           if (!categoriesMap.has(skill.category)) categoriesMap.set(skill.category, []);
           categoriesMap.get(skill.category)!.push(skill.name);
         });
@@ -119,7 +120,6 @@ export default function SkillsSection() {
             )}
           </div>
           <div className="flex justify-center md:justify-end">
-            {/* AQUÍ ESTÁ EL MARCO CIRCULAR MAGNÍFICO */}
             <div className="relative h-64 w-64 overflow-hidden rounded-full border border-white/10 bg-neutral-900/50 p-2 shadow-[0_0_40px_rgba(16,185,129,0.15)] backdrop-blur-sm group">
               <div className="relative flex h-full w-full items-center justify-center rounded-full bg-neutral-800/80 border border-white/5 overflow-hidden">
                 {profileImageUrl ? (
@@ -131,9 +131,7 @@ export default function SkillsSection() {
                 ) : (
                   <User className="h-24 w-24 text-neutral-500" />
                 )}
-                
-                {/* Overlay sutil para darle más look de cristal */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-50"></div>
+                <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent opacity-50"></div>
               </div>
             </div>
           </div>

@@ -7,25 +7,14 @@ import { Loader2, MessageSquareQuote, Send, X } from "lucide-react";
 // INSTRUCCIONES: Quita comentarios y MOCKS.
 // ============================================================================
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+// import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { databases, APPWRITE_DB_ID } from "../../appwrite";
 import { ID } from "appwrite";
+import { Testimonial } from "@/types/appwrite";
 const APPWRITE_COLLECTION_TESTIMONIALS_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_TESTIMONIALS_ID || "";
-
-if (typeof window !== "undefined" && (gsap as any).registerPlugin) {
-  (gsap as any).registerPlugin(ScrollTrigger);
-}
 
 // SUGERENCIAS PARA EL CARGO
 const RELATION_SUGGESTIONS = ["Cliente", "Colaborador", "Compañero de Trabajo", "Jefe / Supervisor", "CEO", "CTO", "Product Manager", "Diseñador", "Mentor"];
-
-interface Testimonial {
-  $id: string;
-  name: string;
-  role: string;
-  message: string;
-  isApproved: boolean;
-}
 
 export default function TestimonialSection() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
@@ -45,8 +34,8 @@ export default function TestimonialSection() {
     const fetchTestimonials = async () => {
       try {
         const response = await databases.listDocuments(APPWRITE_DB_ID, APPWRITE_COLLECTION_TESTIMONIALS_ID);
-        const approved = response.documents.filter((doc: any) => doc.isApproved === true);
-        setTestimonials(approved as unknown as Testimonial[]);
+        const approved = (response.documents as unknown as Testimonial[]).filter((doc) => doc.isApproved === true);
+        setTestimonials(approved);
       } catch (error) { console.error(error); } 
       finally { setLoading(false); }
     };
@@ -109,7 +98,7 @@ export default function TestimonialSection() {
             {testimonials.map((t) => (
               <div key={t.$id} ref={addToCardsRef} className="flex flex-col justify-between rounded-3xl border border-white/10 bg-neutral-900/40 p-8 backdrop-blur-md transition-colors hover:border-white/20">
                 <MessageSquareQuote className="h-8 w-8 text-neutral-700 mb-6" />
-                <p className="text-neutral-300 italic mb-8 flex-1 leading-relaxed">"{t.message}"</p>
+                <p className="text-neutral-300 italic mb-8 flex-1 leading-relaxed">&quot;{t.message}&quot;</p>
                 <div className="border-t border-white/10 pt-6">
                   <h4 className="font-bold text-white">{t.name}</h4>
                   <p className="text-sm text-emerald-500">{t.role}</p>

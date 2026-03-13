@@ -11,8 +11,8 @@ import { Github, Linkedin, Twitter, Mail, ArrowUpRight } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-if (typeof window !== "undefined" && (gsap as any).registerPlugin) {
-  (gsap as any).registerPlugin(ScrollTrigger);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
 }
 
 const socialLinks = [

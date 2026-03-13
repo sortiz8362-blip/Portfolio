@@ -11,20 +11,8 @@ import { Loader2, Briefcase, Calendar } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { databases, APPWRITE_DB_ID } from "../../appwrite";
+import { Experience } from "@/types/appwrite";
 const APPWRITE_COLLECTION_EXPERIENCE_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_EXPERIENCE_ID || "";
-
-if (typeof window !== "undefined" && (gsap as any).registerPlugin) {
-  (gsap as any).registerPlugin(ScrollTrigger);
-}
-
-interface Experience {
-  $id: string;
-  role: string;
-  company: string;
-  duration: string;
-  description: string;
-  isVisible: boolean;
-}
 
 export default function ExperienceSection() {
   const [experiences, setExperiences] = useState<Experience[]>([]);
@@ -39,8 +27,8 @@ export default function ExperienceSection() {
       try {
         const response = await databases.listDocuments(APPWRITE_DB_ID, APPWRITE_COLLECTION_EXPERIENCE_ID);
         // Filtramos solo los visibles
-        const visible = response.documents.filter((doc: any) => doc.isVisible === true);
-        setExperiences(visible as unknown as Experience[]);
+        const visible = (response.documents as unknown as Experience[]).filter((doc) => doc.isVisible === true);
+        setExperiences(visible);
       } catch (error) {
         console.error("Error cargando experiencia:", error);
       } finally {

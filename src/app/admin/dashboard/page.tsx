@@ -16,10 +16,11 @@ import AdminSkills from "@/components/AdminSkills";
 import AdminSettings from "@/components/AdminSettings";
 import { useRouter } from "next/navigation";
 import { account } from "../../../../appwrite";
+import { Models } from "appwrite";
 
 export default function Dashboard() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<Models.User<Models.Preferences> | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
   const [isLoggingOut, setIsLoggingOut] = useState(false);

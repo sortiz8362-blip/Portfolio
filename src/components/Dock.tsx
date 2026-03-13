@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, MotionValue } from "framer-motion";
 import { Home, Briefcase, Code2, Mail, User } from "lucide-react";
 
 // 1. Definimos los elementos del menú
@@ -15,7 +15,7 @@ const dockItems = [
 
 export default function Dock() {
   // Rastreamos la posición X del ratón en toda la pantalla
-  let mouseX = useMotionValue(Infinity);
+  const mouseX = useMotionValue(Infinity);
 
   return (
     <motion.div
@@ -39,25 +39,25 @@ function DockIcon({
   label,
   children,
 }: {
-  mouseX: any;
+  mouseX: MotionValue<number>;
   href: string;
   label: string;
   children: React.ReactNode;
 }) {
-  let ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   // Calculamos la distancia desde el ratón hasta el centro de este ícono
-  let distance = useTransform(mouseX, (val: number) => {
-    let bounds = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 };
+  const distance = useTransform(mouseX, (val: number) => {
+    const bounds = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 };
     return val - bounds.x - bounds.width / 2;
   });
 
   // Transformamos esa distancia en tamaño (width). 
   // Rango: de -150px a 150px de distancia, el tamaño varía de 40px a 80px (centro) a 40px.
-  let widthSync = useTransform(distance, [-150, 0, 150], [40, 80, 40]);
+  const widthSync = useTransform(distance, [-150, 0, 150], [40, 80, 40]);
   
   // Añadimos físicas de resorte (spring) para que el movimiento sea líquido y orgánico
-  let width = useSpring(widthSync, { mass: 0.1, stiffness: 150, damping: 12 });
+  const width = useSpring(widthSync, { mass: 0.1, stiffness: 150, damping: 12 });
 
   return (
     <div className="relative group flex items-end justify-center">

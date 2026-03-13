@@ -11,18 +11,7 @@ import { ExternalLink, Loader2 } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { databases, APPWRITE_DB_ID, APPWRITE_COLLECTION_PROJECTS_ID } from "../../appwrite";
-
-// Registramos el plugin de scroll de GSAP
-gsap.registerPlugin(ScrollTrigger);
-
-interface Project {
-  $id: string;
-  title: string;
-  description: string;
-  link: string;
-  imageUrl: string;
-  isVisible: boolean;
-}
+import { Project } from "@/types/appwrite";
 
 export default function ProjectsSection() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -42,8 +31,8 @@ export default function ProjectsSection() {
           APPWRITE_COLLECTION_PROJECTS_ID
         );
         // Filtramos para mostrar solo los que tienen isVisible en true
-        const visibleProjects = response.documents.filter((doc: any) => doc.isVisible === true);
-        setProjects(visibleProjects as unknown as Project[]);
+        const visibleProjects = (response.documents as unknown as Project[]).filter((doc) => doc.isVisible === true);
+        setProjects(visibleProjects);
       } catch (error) {
         console.error("Error al cargar proyectos públicos:", error);
       } finally {

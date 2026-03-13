@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Loader2, Trash2, CheckCircle, XCircle, Pencil, User, X } from "lucide-react";
+import { Loader2, Trash2, CheckCircle, XCircle, Pencil, User } from "lucide-react";
 
 // ============================================================================
 // INSTRUCCIONES PARA TU ENTORNO LOCAL:
@@ -9,16 +9,8 @@ import { Loader2, Trash2, CheckCircle, XCircle, Pencil, User, X } from "lucide-r
 // 2. Elimina la sección de "MOCKS".
 // ============================================================================
 import { databases, APPWRITE_DB_ID } from "../../appwrite";
-import { ID } from "appwrite";
+import { Testimonial } from "@/types/appwrite";
 const APPWRITE_COLLECTION_TESTIMONIALS_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_TESTIMONIALS_ID || "";
-
-interface Testimonial {
-  $id: string;
-  name: string;
-  role: string;
-  message: string;
-  isApproved: boolean;
-}
 
 export default function AdminTestimonials() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
@@ -125,7 +117,7 @@ export default function AdminTestimonials() {
                     </div>
                   ) : (
                     <div className="group relative">
-                      <p className="text-sm text-neutral-300 italic bg-black/20 p-3 rounded-lg border border-white/5">"{t.message}"</p>
+                      <p className="text-sm text-neutral-300 italic bg-black/20 p-3 rounded-lg border border-white/5">&quot;{t.message}&quot;</p>
                       <button onClick={() => startEditing(t)} className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-neutral-800 text-neutral-400 p-1.5 rounded hover:text-white" title="Corregir ortografía">
                         <Pencil className="h-3 w-3" />
                       </button>
@@ -160,7 +152,7 @@ export default function AdminTestimonials() {
                <div>
                  <h4 className="font-bold text-white text-sm">{t.name}</h4>
                  <p className="text-xs text-emerald-500 mb-3">{t.role}</p>
-                 <p className="text-sm text-neutral-400 italic mb-4 line-clamp-4">"{t.message}"</p>
+                 <p className="text-sm text-neutral-400 italic mb-4 line-clamp-4">&quot;{t.message}&quot;</p>
                </div>
                
                <button onClick={() => toggleApproval(t.$id, t.isApproved)} className="mt-auto pt-4 text-xs flex items-center gap-2 text-neutral-500 hover:text-amber-500 transition border-t border-white/5 w-fit">

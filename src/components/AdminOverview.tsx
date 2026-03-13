@@ -9,6 +9,7 @@ import { Loader2, FolderKanban, MessageSquare, Briefcase, TrendingUp, Users, Act
 // 2. Elimina la sección de "MOCKS".
 // ============================================================================
 import { databases, APPWRITE_DB_ID, APPWRITE_COLLECTION_PROJECTS_ID } from "../../appwrite";
+import { Project, Testimonial } from "@/types/appwrite";
 const APPWRITE_COLLECTION_TESTIMONIALS_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_TESTIMONIALS_ID || "";
 const APPWRITE_COLLECTION_EXPERIENCE_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_EXPERIENCE_ID || "";
 
@@ -32,20 +33,20 @@ export default function AdminOverview() {
           databases.listDocuments(APPWRITE_DB_ID, APPWRITE_COLLECTION_EXPERIENCE_ID),
         ]);
 
-        const projects = (projectsRes as any).documents;
-        const testimonials = (testimonialsRes as any).documents;
-        const experience = (experienceRes as any).total;
+        const projects = projectsRes.documents as unknown as Project[];
+        const testimonials = testimonialsRes.documents as unknown as Testimonial[];
+        const experience = experienceRes.total;
 
         setStats({
           projects: {
             total: projects.length,
-            public: projects.filter((p: any) => p.isVisible).length,
-            draft: projects.filter((p: any) => !p.isVisible).length,
+            public: projects.filter((p) => p.isVisible).length,
+            draft: projects.filter((p) => !p.isVisible).length,
           },
           testimonials: {
             total: testimonials.length,
-            approved: testimonials.filter((t: any) => t.isApproved).length,
-            pending: testimonials.filter((t: any) => !t.isApproved).length,
+            approved: testimonials.filter((t) => t.isApproved).length,
+            pending: testimonials.filter((t) => !t.isApproved).length,
           },
           experience: {
             total: experience,

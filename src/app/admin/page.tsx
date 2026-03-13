@@ -34,7 +34,7 @@ export default function AdminLogin() {
     try {
       await account.createEmailPasswordSession(email, password);
       router.push("/admin/dashboard");
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
       setError("Credenciales incorrectas o error de conexión.");
       setLoading(false);

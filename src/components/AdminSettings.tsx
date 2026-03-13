@@ -8,6 +8,7 @@ import { Loader2, Settings2, Save, UploadCloud, Image as ImageIcon, CheckCircle2
 // ============================================================================
 import { databases, storage, APPWRITE_DB_ID } from "../../appwrite";
 import { ID } from "appwrite";
+import { Settings } from "@/types/appwrite";
 const APPWRITE_COLLECTION_SETTINGS_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_SETTINGS_ID || "";
 const APPWRITE_BUCKET_ID = process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID || "";
 
@@ -33,7 +34,7 @@ export default function AdminSettings() {
       try {
         const res = await databases.listDocuments(APPWRITE_DB_ID, APPWRITE_COLLECTION_SETTINGS_ID);
         if (res.documents.length > 0) {
-          const data = res.documents[0] as any;
+          const data = res.documents[0] as unknown as Settings;
           setSettingsId(data.$id);
           setHeroTitle(data.heroTitle);
           setHeroSubtitle(data.heroSubtitle);

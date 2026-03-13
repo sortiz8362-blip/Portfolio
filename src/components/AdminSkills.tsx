@@ -14,6 +14,8 @@ const CATEGORIES = ["Frontend", "Backend", "Herramientas", "Soft Skills"];
 // AQUÍ LA LISTA PARA AUT0COMPLETAR
 const SKILLS_SUGGESTIONS = ["React", "Next.js", "Vue.js", "Angular", "TypeScript", "JavaScript", "HTML5", "CSS3", "Tailwind CSS", "Node.js", "Express", "Python", "Django", "Java", "Spring Boot", "MongoDB", "PostgreSQL", "Firebase", "Appwrite", "Git", "GitHub", "Docker", "AWS", "Figma", "Vercel"];
 
+
+
 interface Skill {
   $id: string;
   name: string;

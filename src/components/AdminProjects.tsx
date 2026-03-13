@@ -9,16 +9,8 @@ import { Loader2, Plus, Trash2, ExternalLink, Pencil, X, Eye, EyeOff, UploadClou
 // ============================================================================
 import { databases, storage, APPWRITE_DB_ID, APPWRITE_COLLECTION_PROJECTS_ID } from "../../appwrite";
 import { ID } from "appwrite";
+import { Project } from "@/types/appwrite";
 const APPWRITE_BUCKET_ID = process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID || "";
-
-interface Project {
-  $id: string;
-  title: string;
-  description: string;
-  link: string;
-  imageUrl: string;
-  isVisible: boolean;
-}
 
 export default function AdminProjects() {
   const [projects, setProjects] = useState<Project[]>([]);

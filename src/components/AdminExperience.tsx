@@ -8,21 +8,13 @@ import { Loader2, Plus, Trash2, Pencil, Briefcase, Eye, EyeOff, Building2, Calen
 // ============================================================================
 import { databases, APPWRITE_DB_ID } from "../../appwrite";
 import { ID } from "appwrite";
+import { Experience } from "@/types/appwrite";
 const APPWRITE_COLLECTION_EXPERIENCE_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_EXPERIENCE_ID || "";
 
 // AQUÍ ESTÁN LAS SUGERENCIAS PREDEFINIDAS
 const ROLES_SUGGESTIONS = ["Frontend Developer", "Backend Developer", "Full Stack Developer", "UI/UX Designer", "Project Manager", "DevOps Engineer", "Tech Lead", "Freelance", "Desarrollador Web"];
 const COMPANY_SUGGESTIONS = ["Freelance", "Trabajo Autónomo", "Agencia Independiente", "Startup", "Google", "Microsoft", "Meta", "Amazon", "Apple"];
 const DURATION_SUGGESTIONS = ["2023 - Presente", "2022 - Presente", "2021 - Presente", "2023 - 2024", "Enero 2023 - Diciembre 2023", "Menos de un año"];
-
-interface Experience {
-  $id: string;
-  role: string;
-  company: string;
-  duration: string;
-  description: string;
-  isVisible: boolean;
-}
 
 export default function AdminExperience() {
   const [experiences, setExperiences] = useState<Experience[]>([]);

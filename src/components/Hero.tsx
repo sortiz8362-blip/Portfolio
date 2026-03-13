@@ -8,6 +8,7 @@ import { ArrowDown, Loader2 } from "lucide-react";
 // ============================================================================
 import gsap from "gsap";
 import { databases, APPWRITE_DB_ID } from "../../appwrite";
+import { Settings } from "@/types/appwrite";
 const APPWRITE_COLLECTION_SETTINGS_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_SETTINGS_ID || "";
 
 export default function Hero() {
@@ -24,7 +25,7 @@ export default function Hero() {
       try {
         const response = await databases.listDocuments(APPWRITE_DB_ID, APPWRITE_COLLECTION_SETTINGS_ID);
         if (response.documents.length > 0) {
-          const data = response.documents[0] as any;
+          const data = response.documents[0] as unknown as Settings;
           if (data.heroTitle) setHeroTitle(data.heroTitle);
           if (data.heroSubtitle) setHeroSubtitle(data.heroSubtitle);
         }
