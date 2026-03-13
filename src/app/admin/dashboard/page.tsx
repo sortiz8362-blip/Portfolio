@@ -3,7 +3,15 @@
 import { useEffect, useState } from "react";
 import { LogOut, LayoutDashboard, FolderKanban, Wrench, Settings, MessageSquare, Briefcase, BarChart, Loader2, Menu, X } from "lucide-react";
 
-// ... imports ...
+import AdminOverview from "@/components/AdminOverview";
+import AdminProjects from "@/components/AdminProjects";
+import AdminTestimonials from "@/components/AdminTestimonials";
+import AdminExperience from "@/components/AdminExperience";
+import AdminSkills from "@/components/AdminSkills";
+import AdminSettings from "@/components/AdminSettings";
+import { useRouter } from "next/navigation";
+import { account } from "../../../../appwrite";
+import { Models } from "appwrite";
 
 export default function Dashboard() {
   const router = useRouter();
