@@ -96,10 +96,18 @@ export default function ProjectsSection() {
       mm.add("(max-width: 1023px)", () => {
         cardsRef.current.forEach((card) => {
           if (!card) return;
+          // Efecto circular suave: rotateX y rotateY con tiempos ligeramente distintos
           gsap.to(card, {
-            rotateX: "random(-5, 5)",
-            rotateY: "random(-5, 5)",
-            duration: "random(2, 4)",
+            rotateX: "random(-1.5, 1.5)",
+            duration: "random(3, 5)",
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+            transformPerspective: 1000
+          });
+          gsap.to(card, {
+            rotateY: "random(-1.5, 1.5)",
+            duration: "random(4, 6)",
             repeat: -1,
             yoyo: true,
             ease: "sine.inOut",

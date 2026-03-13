@@ -95,9 +95,16 @@ export default function ExperienceSection() {
           const card = item.querySelector(".group"); // Buscamos la tarjeta real dentro del contenedor
           if (card) {
             gsap.to(card, {
-              rotateX: "random(-3, 3)",
-              rotateY: "random(-3, 3)",
-              duration: "random(2, 4)",
+              rotateX: "random(-1.5, 1.5)",
+              duration: "random(4, 6)",
+              repeat: -1,
+              yoyo: true,
+              ease: "sine.inOut",
+              transformPerspective: 1000
+            });
+            gsap.to(card, {
+              rotateY: "random(-1.5, 1.5)",
+              duration: "random(3, 5)",
               repeat: -1,
               yoyo: true,
               ease: "sine.inOut",
