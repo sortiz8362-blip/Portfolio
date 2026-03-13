@@ -1,22 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { LogOut, LayoutDashboard, FolderKanban, Wrench, Settings, MessageSquare, Briefcase, BarChart, Loader2 } from "lucide-react";
+import { LogOut, LayoutDashboard, FolderKanban, Wrench, Settings, MessageSquare, Briefcase, BarChart, Loader2, Menu, X } from "lucide-react";
 
-// ============================================================================
-// INSTRUCCIONES PARA TU ENTORNO LOCAL:
-// 1. Quita los comentarios (//) de las siguientes líneas de importación.
-// 2. Elimina la sección de "MOCKS" que está justo debajo.
-// ============================================================================
-import AdminOverview from "@/components/AdminOverview";
-import AdminProjects from "@/components/AdminProjects";
-import AdminTestimonials from "@/components/AdminTestimonials";
-import AdminExperience from "@/components/AdminExperience";
-import AdminSkills from "@/components/AdminSkills";
-import AdminSettings from "@/components/AdminSettings";
-import { useRouter } from "next/navigation";
-import { account } from "../../../../appwrite";
-import { Models } from "appwrite";
+// ... imports ...
 
 export default function Dashboard() {
   const router = useRouter();
@@ -24,6 +11,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -60,30 +48,49 @@ export default function Dashboard() {
 
   return (
     <div className="flex min-h-screen bg-neutral-950 text-white">
+      {/* Overlay para móvil */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar (Menú Lateral) */}
-      <aside className="w-64 flex-shrink-0 border-r border-white/10 bg-neutral-900/30 p-6 flex flex-col">
-        <div className="mb-8">
-          <h1 className="text-xl font-bold tracking-tight text-emerald-500">
-            Admin Panel
-          </h1>
-          <p className="mt-1 text-xs text-neutral-400 truncate">{user?.email}</p>
+      <aside className={`
+        fixed inset-y-0 left-0 z-50 w-72 transform border-r border-white/10 bg-neutral-900 p-6 flex flex-col transition-transform duration-300 ease-in-out md:relative md:flex md:w-64 md:translate-x-0 md:bg-neutral-900/30
+        ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+      `}>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-bold tracking-tight text-emerald-500">
+              Admin Panel
+            </h1>
+            <p className="mt-1 text-xs text-neutral-400 truncate max-w-[180px]">{user?.email}</p>
+          </div>
+          <button 
+            className="rounded-lg p-2 text-neutral-400 hover:bg-white/5 md:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          >
+            <X className="h-6 w-6" />
+          </button>
         </div>
 
-        <nav className="flex-1 space-y-1">
+        <nav className="flex-1 space-y-1 overflow-y-auto pr-2 custom-scrollbar">
           <p className="px-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2 mt-4">Principal</p>
-          <SidebarButton icon={<LayoutDashboard className="h-4 w-4" />} label="Vista General" isActive={activeTab === "overview"} onClick={() => setActiveTab("overview")} />
-          <SidebarButton icon={<BarChart className="h-4 w-4" />} label="Analíticas" isActive={activeTab === "analytics"} onClick={() => setActiveTab("analytics")} />
+          <SidebarButton icon={<LayoutDashboard className="h-4 w-4" />} label="Vista General" isActive={activeTab === "overview"} onClick={() => { setActiveTab("overview"); setIsSidebarOpen(false); }} />
+          <SidebarButton icon={<BarChart className="h-4 w-4" />} label="Analíticas" isActive={activeTab === "analytics"} onClick={() => { setActiveTab("analytics"); setIsSidebarOpen(false); }} />
           
           <p className="px-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2 mt-6">Contenido</p>
-          <SidebarButton icon={<FolderKanban className="h-4 w-4" />} label="Proyectos" isActive={activeTab === "projects"} onClick={() => setActiveTab("projects")} />
-          <SidebarButton icon={<Briefcase className="h-4 w-4" />} label="Experiencia" isActive={activeTab === "experience"} onClick={() => setActiveTab("experience")} />
-          <SidebarButton icon={<Wrench className="h-4 w-4" />} label="Habilidades" isActive={activeTab === "skills"} onClick={() => setActiveTab("skills")} />
+          <SidebarButton icon={<FolderKanban className="h-4 w-4" />} label="Proyectos" isActive={activeTab === "projects"} onClick={() => { setActiveTab("projects"); setIsSidebarOpen(false); }} />
+          <SidebarButton icon={<Briefcase className="h-4 w-4" />} label="Experiencia" isActive={activeTab === "experience"} onClick={() => { setActiveTab("experience"); setIsSidebarOpen(false); }} />
+          <SidebarButton icon={<Wrench className="h-4 w-4" />} label="Habilidades" isActive={activeTab === "skills"} onClick={() => { setActiveTab("skills"); setIsSidebarOpen(false); }} />
           
           <p className="px-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2 mt-6">Interacción</p>
-          <SidebarButton icon={<MessageSquare className="h-4 w-4" />} label="Testimonios" isActive={activeTab === "testimonials"} onClick={() => setActiveTab("testimonials")} />
+          <SidebarButton icon={<MessageSquare className="h-4 w-4" />} label="Testimonios" isActive={activeTab === "testimonials"} onClick={() => { setActiveTab("testimonials"); setIsSidebarOpen(false); }} />
           
           <p className="px-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2 mt-6">Sistema</p>
-          <SidebarButton icon={<Settings className="h-4 w-4" />} label="Configuración" isActive={activeTab === "settings"} onClick={() => setActiveTab("settings")} />
+          <SidebarButton icon={<Settings className="h-4 w-4" />} label="Configuración" isActive={activeTab === "settings"} onClick={() => { setActiveTab("settings"); setIsSidebarOpen(false); }} />
         </nav>
 
         <div className="mt-8 pt-6 border-t border-white/10">
@@ -95,24 +102,37 @@ export default function Dashboard() {
       </aside>
 
       {/* Contenido Principal */}
-      <main className="flex-1 p-10 overflow-y-auto">
-        <header className="mb-8">
-          <h2 className="text-3xl font-bold capitalize">
-            {activeTab === "overview" || activeTab === "analytics" ? "Centro de Mando" : activeTab}
-          </h2>
-          <p className="mt-2 text-neutral-400">
-            Gestiona la sección de <span className="text-emerald-500 font-medium">{activeTab}</span> de tu plataforma.
-          </p>
-        </header>
+      <main className="flex-1 overflow-x-hidden">
+        {/* Mobile Header */}
+        <div className="flex items-center justify-between border-b border-white/5 bg-neutral-950/80 px-6 py-4 backdrop-blur-md md:hidden">
+          <h1 className="text-lg font-bold text-emerald-500">Admin Panel</h1>
+          <button 
+            onClick={() => setIsSidebarOpen(true)}
+            className="rounded-lg bg-neutral-900 p-2 text-neutral-400 border border-white/10 hover:text-white"
+          >
+            <Menu className="h-6 w-6" />
+          </button>
+        </div>
 
-        <div className="mt-6">
-          {/* Enrutamiento de componentes */}
-          {(activeTab === "overview" || activeTab === "analytics") && <AdminOverview />}
-          {activeTab === "projects" && <AdminProjects />}
-          {activeTab === "testimonials" && <AdminTestimonials />}
-          {activeTab === "experience" && <AdminExperience />}
-          {activeTab === "skills" && <AdminSkills />}
-          {activeTab === "settings" && <AdminSettings />}
+        <div className="p-6 md:p-10">
+          <header className="mb-8">
+            <h2 className="text-3xl font-bold capitalize">
+              {activeTab === "overview" || activeTab === "analytics" ? "Centro de Mando" : activeTab}
+            </h2>
+            <p className="mt-2 text-neutral-400">
+              Gestiona la sección de <span className="text-emerald-500 font-medium">{activeTab}</span> de tu plataforma.
+            </p>
+          </header>
+
+          <div className="mt-6">
+            {/* Enrutamiento de componentes */}
+            {(activeTab === "overview" || activeTab === "analytics") && <AdminOverview />}
+            {activeTab === "projects" && <AdminProjects />}
+            {activeTab === "testimonials" && <AdminTestimonials />}
+            {activeTab === "experience" && <AdminExperience />}
+            {activeTab === "skills" && <AdminSkills />}
+            {activeTab === "settings" && <AdminSettings />}
+          </div>
         </div>
       </main>
     </div>
