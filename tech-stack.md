@@ -33,6 +33,6 @@ Este enfoque es clave para manejar desde el administrador los siguientes módulo
 - [x] Esquema lógico (JSON) de la base de datos de Appwrite definido (`appwrite-schema.json`).
 - [x] Ejecución de inicialización de framework (`npx create-next-app`).
 - [x] Estructura base de carpetas creada.
-- [ ] Instalación de dependencias complejas de animación y 3D.
-- [ ] Configuración del Layout (`layout.tsx`) para la envoltura global del scroll suave (Lenis).
-- [ ] Integración inicial del Dock de macOS.
+- [x] Instalación de dependencias complejas de animación y 3D.
+- [x] Configuración del Layout (`layout.tsx`) para la envoltura global del scroll suave (Lenis).
+- [x] Integración inicial del Dock de macOS.
