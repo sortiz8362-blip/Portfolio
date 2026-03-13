@@ -12,6 +12,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { databases, APPWRITE_DB_ID, APPWRITE_COLLECTION_PROJECTS_ID } from "../../appwrite";
 import { Project } from "@/types/appwrite";
+import { SplitText } from "@/utils/SplitText";
 
 export default function ProjectsSection() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -48,17 +49,25 @@ export default function ProjectsSection() {
     if (loading || projects.length === 0) return;
 
     const ctx = gsap.context(() => {
-      // Animar el título de la sección
+      // Animar el título de la sección con efecto de "pintado"
       gsap.fromTo(
-        titleRef.current,
-        { y: 50, opacity: 0 },
+        titleRef.current?.querySelectorAll(".split-char") || [],
+        { 
+          opacity: 0, 
+          color: "#ffffff" 
+        },
         {
-          y: 0,
           opacity: 1,
-          duration: 1,
+          color: (index, target) => {
+            // El color emite un destello esmeralda antes de volver a blanco o gris
+            return target.innerText === "Destacados" ? "#10b981" : "#ffffff";
+          },
+          stagger: 0.03,
+          duration: 0.8,
+          ease: "power2.inOut",
           scrollTrigger: {
             trigger: titleRef.current,
-            start: "top 80%", // Empieza cuando el top del título toca el 80% de la pantalla
+            start: "top 80%",
           },
         }
       );
@@ -98,7 +107,8 @@ export default function ProjectsSection() {
           ref={titleRef}
           className="mb-16 text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-6xl"
         >
-          Trabajos <span className="text-neutral-500">Destacados</span>
+          <SplitText text="Trabajos " />
+          <SplitText text="Destacados" charClassName="text-emerald-500" />
         </h2>
 
         {loading ? (
@@ -109,48 +119,83 @@ export default function ProjectsSection() {
           <p className="text-neutral-400 text-lg">Próximamente nuevos proyectos.</p>
         ) : (
           <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
-            {projects.map((project) => (
-              <div 
-                key={project.$id} 
-                ref={addToCardsRef}
-                className="group relative flex flex-col overflow-hidden rounded-3xl bg-neutral-900/50 border border-white/5 backdrop-blur-sm transition-all hover:border-white/20"
-              >
-                {/* Contenedor de la Imagen */}
-                <div className="relative aspect-video w-full overflow-hidden bg-neutral-950">
-                  <img
-                    src={project.imageUrl}
-                    alt={project.title}
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100"
-                  />
-                  {/* Overlay gradiente */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-900/90 via-transparent to-transparent" />
-                </div>
+            {projects.map((project) => {
+              const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+                const card = e.currentTarget;
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = ((y - centerY) / centerY) * -10; // Max tilt 10 deg
+                const rotateY = ((x - centerX) / centerX) * 10;
+                
+                gsap.to(card, {
+                  rotateX,
+                  rotateY,
+                  transformPerspective: 1000,
+                  duration: 0.5,
+                  ease: "power2.out"
+                });
+              };
 
-                {/* Contenido (Textos y Botones) */}
-                <div className="flex flex-col flex-1 p-8">
-                  <h3 className="text-2xl font-bold text-white mb-3">
-                    {project.title}
-                  </h3>
-                  <p className="text-neutral-400 mb-8 flex-1">
-                    {project.description}
-                  </p>
-                  
-                  {/* Botones de Acción */}
-                  <div className="flex items-center gap-4 mt-auto">
-                    {project.link && (
-                      <a
-                        href={project.link}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-transform hover:scale-105"
-                      >
-                        Visitar sitio <ExternalLink className="h-4 w-4" />
-                      </a>
-                    )}
+              const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+                gsap.to(e.currentTarget, {
+                  rotateX: 0,
+                  rotateY: 0,
+                  duration: 0.5,
+                  ease: "power2.out"
+                });
+              };
+
+              return (
+                <div 
+                  key={project.$id} 
+                  ref={addToCardsRef}
+                  onMouseMove={handleMouseMove}
+                  onMouseLeave={handleMouseLeave}
+                  className="group relative flex flex-col overflow-hidden rounded-3xl bg-neutral-900/50 border border-white/5 backdrop-blur-sm transition-all hover:border-white/20 shadow-2xl"
+                  style={{ transformStyle: "preserve-3d" }}
+                >
+                  {/* Contenedor de la Imagen */}
+                  <div className="relative aspect-video w-full overflow-hidden bg-neutral-950" style={{ transform: "translateZ(20px)" }}>
+                    <img
+                      src={project.imageUrl}
+                      alt={project.title}
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100"
+                    />
+                    {/* Overlay gradiente */}
+                    <div className="absolute inset-0 bg-linear-to-t from-neutral-900/90 via-transparent to-transparent" />
+                  </div>
+
+                  {/* Contenido (Textos y Botones) */}
+                  <div className="flex flex-col flex-1 p-8" style={{ transform: "translateZ(40px)" }}>
+                    <h3 className="text-2xl font-bold text-white mb-3">
+                      {project.title}
+                    </h3>
+                    <p className="text-neutral-400 mb-8 flex-1">
+                      {project.description}
+                    </p>
+                    
+                    {/* Botones de Acción */}
+                    <div className="flex items-center gap-4 mt-auto">
+                      {project.link && (
+                        <a
+                          href={project.link}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-transform hover:scale-105"
+                        >
+                          Visitar sitio <ExternalLink className="h-4 w-4" />
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

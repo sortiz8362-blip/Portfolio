@@ -11,6 +11,7 @@ import gsap from "gsap";
 import { databases, APPWRITE_DB_ID } from "../../appwrite";
 import { ID } from "appwrite";
 import { Testimonial } from "@/types/appwrite";
+import { SplitText } from "@/utils/SplitText";
 const APPWRITE_COLLECTION_TESTIMONIALS_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_TESTIMONIALS_ID || "";
 
 // SUGERENCIAS PARA EL CARGO
@@ -74,8 +75,9 @@ export default function TestimonialSection() {
         
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
           <div>
-            <h2 className="text-4xl font-bold tracking-tight text-white md:text-5xl mb-4">
-              Lo que dicen de <span className="text-emerald-500">mí</span>
+            <h2 className="text-4xl font-bold tracking-tight text-white md:text-5xl mb-4 perspective-[1000px]">
+              <SplitText text="Lo que dicen de " />
+              <SplitText text="mí" charClassName="text-emerald-500" />
             </h2>
             <p className="text-neutral-400 text-lg max-w-xl">
               Experiencias reales de personas y empresas con las que he colaborado.
@@ -96,10 +98,29 @@ export default function TestimonialSection() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {testimonials.map((t) => (
-              <div key={t.$id} ref={addToCardsRef} className="flex flex-col justify-between rounded-3xl border border-white/10 bg-neutral-900/40 p-8 backdrop-blur-md transition-colors hover:border-white/20">
-                <MessageSquareQuote className="h-8 w-8 text-neutral-700 mb-6" />
-                <p className="text-neutral-300 italic mb-8 flex-1 leading-relaxed">&quot;{t.message}&quot;</p>
-                <div className="border-t border-white/10 pt-6">
+              <div 
+                key={t.$id} 
+                ref={addToCardsRef} 
+                onMouseMove={(e) => {
+                  const card = e.currentTarget;
+                  const rect = card.getBoundingClientRect();
+                  const x = e.clientX - rect.left;
+                  const y = e.clientY - rect.top;
+                  const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -10;
+                  const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 10;
+                  gsap.to(card, { rotateX, rotateY, transformPerspective: 1000, duration: 0.5, ease: "power2.out" });
+                }}
+                onMouseLeave={(e) => {
+                  gsap.to(e.currentTarget, { rotateX: 0, rotateY: 0, duration: 0.5, ease: "power2.out" });
+                }}
+                className="flex flex-col justify-between rounded-3xl border border-white/10 bg-neutral-900/40 p-8 backdrop-blur-md transition-colors hover:border-white/20 shadow-xl"
+                style={{ transformStyle: "preserve-3d" }}
+              >
+                <div style={{ transform: "translateZ(40px)" }}>
+                  <MessageSquareQuote className="h-8 w-8 text-neutral-700 mb-6" />
+                </div>
+                <p className="text-neutral-300 italic mb-8 flex-1 leading-relaxed" style={{ transform: "translateZ(20px)" }}>&quot;{t.message}&quot;</p>
+                <div className="border-t border-white/10 pt-6" style={{ transform: "translateZ(30px)" }}>
                   <h4 className="font-bold text-white">{t.name}</h4>
                   <p className="text-sm text-emerald-500">{t.role}</p>
                 </div>

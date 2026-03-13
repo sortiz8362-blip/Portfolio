@@ -9,6 +9,7 @@ import { ArrowDown, Loader2 } from "lucide-react";
 import gsap from "gsap";
 import { databases, APPWRITE_DB_ID } from "../../appwrite";
 import { Settings } from "@/types/appwrite";
+import { SplitText } from "@/utils/SplitText";
 const APPWRITE_COLLECTION_SETTINGS_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_SETTINGS_ID || "";
 
 export default function Hero() {
@@ -43,11 +44,32 @@ export default function Hero() {
     if (loading) return;
 
     const ctx = gsap.context(() => {
-      // Animamos todos los elementos con la clase .hero-element en cascada
+      // Animación de "ensamblaje" y rotación 3D para el título principal
       gsap.fromTo(
-        ".hero-element",
-        { y: 50, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: "power3.out", delay: 0.2 }
+        ".split-char",
+        { 
+          y: 100, 
+          opacity: 0, 
+          rotateX: -90, 
+          scale: 0.8 
+        },
+        { 
+          y: 0, 
+          opacity: 1, 
+          rotateX: 0, 
+          scale: 1, 
+          duration: 1.2, 
+          stagger: 0.05, 
+          ease: "expo.out",
+          delay: 0.5 
+        }
+      );
+
+      // Animamos el resto de elementos en cascada sutil
+      gsap.fromTo(
+        ".hero-element:not(h1)",
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: "power3.out", delay: 1.2 }
       );
     }, containerRef);
 
@@ -79,9 +101,8 @@ export default function Hero() {
           </div>
 
           {/* Título Principal Dinámico */}
-          <h1 className="hero-element mb-6 text-6xl font-black tracking-tighter text-white sm:text-7xl md:text-8xl lg:text-[7rem] leading-[1.1]">
-            {/* Si el texto es "Creative Developer", queremos que se vea bien, así que lo mostramos tal cual. Tailwind se encarga de acomodarlo. */}
-            {heroTitle}
+          <h1 className="hero-element mb-6 text-6xl font-black tracking-tighter text-white sm:text-7xl md:text-8xl lg:text-[7rem] leading-[1.1] perspective-[1000px]">
+            <SplitText text={heroTitle} />
           </h1>
 
           {/* Subtítulo Dinámico */}

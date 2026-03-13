@@ -10,6 +10,7 @@ import { Github, Linkedin, Twitter, Mail, ArrowUpRight } from "lucide-react";
 // ============================================================================
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SplitText } from "@/utils/SplitText";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -55,8 +56,10 @@ export default function FooterSection() {
           <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-emerald-400">
             ¿Qué sigue?
           </p>
-          <h2 className="mb-8 text-5xl font-black tracking-tighter text-white sm:text-7xl">
-            Trabajemos <br className="md:hidden" /> Juntos.
+          <h2 className="mb-8 text-5xl font-black tracking-tighter text-white sm:text-7xl perspective-[1000px]">
+            <SplitText text="Trabajemos " />
+            <br className="md:hidden" />
+            <SplitText text="Juntos." />
           </h2>
           <p className="max-w-xl text-lg text-neutral-400 mb-10">
             Siempre estoy abierto a discutir nuevos proyectos, ideas creativas o 
