@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     // Enviamos el correo a LA MISMA CUENTA con la que se registró en Resend para que no falle
     const data = await resend.emails.send({
       from: "Portfolio Contact <onboarding@resend.dev>",
-      to: [email], // Idealmente esto debería ser tu correo para recibir notificaciones, pero para probar Resend te obliga a enviar a la cuenta verificada. Por ahora lo enviaremos al email configurado pero lo ideal sería una variable de entorno. Modificaremos esto para enviar a un MAIL fijo o al email provisto si es desarrollo.
+      to: ["cavich2006@gmail.com"], // Idealmente esto debería ser tu correo para recibir notificaciones, pero para probar Resend te obliga a enviar a la cuenta verificada. Por ahora lo enviaremos al email configurado pero lo ideal sería una variable de entorno. Modificaremos esto para enviar a un MAIL fijo o al email provisto si es desarrollo.
       subject: `Nuevo mensaje de ${name} desde tu Portafolio`,
       html: `
         <h2>Tienes un nuevo mensaje de tu Portafolio</h2>
