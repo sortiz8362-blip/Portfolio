@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { LogOut, LayoutDashboard, FolderKanban, Wrench, Settings, MessageSquare, Briefcase, BarChart, Loader2, Menu, X } from "lucide-react";
+import { LogOut, LayoutDashboard, FolderKanban, Wrench, Settings, MessageSquare, Briefcase, BarChart, Loader2, Menu, X, Mail } from "lucide-react";
 
 import AdminOverview from "@/components/AdminOverview";
 import AdminProjects from "@/components/AdminProjects";
@@ -9,6 +9,7 @@ import AdminTestimonials from "@/components/AdminTestimonials";
 import AdminExperience from "@/components/AdminExperience";
 import AdminSkills from "@/components/AdminSkills";
 import AdminSettings from "@/components/AdminSettings";
+import AdminMessages from "@/components/AdminMessages";
 import { useRouter } from "next/navigation";
 import { account } from "../../../../appwrite";
 import { Models } from "appwrite";
@@ -95,6 +96,7 @@ export default function Dashboard() {
           <SidebarButton icon={<Wrench className="h-4 w-4" />} label="Habilidades" isActive={activeTab === "skills"} onClick={() => { setActiveTab("skills"); setIsSidebarOpen(false); }} />
           
           <p className="px-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2 mt-6">Interacción</p>
+          <SidebarButton icon={<Mail className="h-4 w-4" />} label="Mensajes" isActive={activeTab === "messages"} onClick={() => { setActiveTab("messages"); setIsSidebarOpen(false); }} />
           <SidebarButton icon={<MessageSquare className="h-4 w-4" />} label="Testimonios" isActive={activeTab === "testimonials"} onClick={() => { setActiveTab("testimonials"); setIsSidebarOpen(false); }} />
           
           <p className="px-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2 mt-6">Sistema</p>
@@ -136,6 +138,7 @@ export default function Dashboard() {
             {/* Enrutamiento de componentes */}
             {(activeTab === "overview" || activeTab === "analytics") && <AdminOverview />}
             {activeTab === "projects" && <AdminProjects />}
+            {activeTab === "messages" && <AdminMessages />}
             {activeTab === "testimonials" && <AdminTestimonials />}
             {activeTab === "experience" && <AdminExperience />}
             {activeTab === "skills" && <AdminSkills />}
