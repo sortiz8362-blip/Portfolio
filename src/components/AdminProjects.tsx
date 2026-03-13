@@ -89,6 +89,7 @@ export default function AdminProjects() {
 
       // Si seleccionó un archivo nuevo, lo subimos
       if (imageFile) {
+        const uploadedFile = await storage.createFile(APPWRITE_BUCKET_ID, ID.unique(), imageFile);
         finalImageUrl = storage.getFileView(APPWRITE_BUCKET_ID, uploadedFile.$id);
       }
 
