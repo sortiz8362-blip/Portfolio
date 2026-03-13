@@ -56,21 +56,13 @@ export default function TestimonialSection() {
         cardsRef.current.forEach((card) => {
           if (!card) return;
           gsap.to(card, {
-            rotateX: 2.5,
-            duration: 2,
+            rotateX: 1.2,
+            rotateY: 1.2,
+            duration: 5,
             repeat: -1,
             yoyo: true,
             ease: "sine.inOut",
-            transformPerspective: 2000
-          });
-          gsap.to(card, {
-            rotateY: 2.5,
-            duration: 2,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-            transformPerspective: 2000,
-            delay: -1
+            transformPerspective: 3000
           });
         });
       });
@@ -130,6 +122,7 @@ export default function TestimonialSection() {
                 key={t.$id} 
                 ref={addToCardsRef} 
                 onMouseMove={(e) => {
+                  if (window.innerWidth < 1024) return;
                   const card = e.currentTarget;
                   const rect = card.getBoundingClientRect();
                   const x = e.clientX - rect.left;
@@ -139,6 +132,7 @@ export default function TestimonialSection() {
                   gsap.to(card, { rotateX, rotateY, transformPerspective: 1000, duration: 0.5, ease: "power2.out" });
                 }}
                 onMouseLeave={(e) => {
+                  if (window.innerWidth < 1024) return;
                   gsap.to(e.currentTarget, { rotateX: 0, rotateY: 0, duration: 0.5, ease: "power2.out" });
                 }}
                 className="flex flex-col justify-between rounded-3xl border border-white/10 bg-neutral-900/40 p-8 backdrop-blur-md transition-colors hover:border-white/20 shadow-xl"

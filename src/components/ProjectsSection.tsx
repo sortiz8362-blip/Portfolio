@@ -96,23 +96,15 @@ export default function ProjectsSection() {
       mm.add("(max-width: 1023px)", () => {
         cardsRef.current.forEach((card) => {
           if (!card) return;
-          // Efecto circular coordinado para evitar estiramientos
+          // Un solo tween coordinado es más estable y evita conflictos/estiramientos
           gsap.to(card, {
-            rotateX: 2.5,
-            duration: 2,
+            rotateX: 1.5,
+            rotateY: 1.5,
+            duration: 3,
             repeat: -1,
             yoyo: true,
             ease: "sine.inOut",
-            transformPerspective: 2000
-          });
-          gsap.to(card, {
-            rotateY: 2.5,
-            duration: 2,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-            transformPerspective: 2000,
-            delay: -1 // Desfase para crear el círculo
+            transformPerspective: 3000, // Perspectiva ultra-alta para evitar estiramientos
           });
         });
       });
@@ -150,6 +142,8 @@ export default function ProjectsSection() {
           <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
             {projects.map((project) => {
               const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+                if (window.innerWidth < 1024) return; // Bloquear en móviles para evitar conflictos
+                
                 const card = e.currentTarget;
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left;
@@ -158,7 +152,7 @@ export default function ProjectsSection() {
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
                 
-                const rotateX = ((y - centerY) / centerY) * -10; // Max tilt 10 deg
+                const rotateX = ((y - centerY) / centerY) * -10;
                 const rotateY = ((x - centerX) / centerX) * 10;
                 
                 gsap.to(card, {
@@ -171,6 +165,8 @@ export default function ProjectsSection() {
               };
 
               const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+                if (window.innerWidth < 1024) return;
+                
                 gsap.to(e.currentTarget, {
                   rotateX: 0,
                   rotateY: 0,

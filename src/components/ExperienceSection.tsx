@@ -95,21 +95,13 @@ export default function ExperienceSection() {
           const card = item.querySelector(".group"); // Buscamos la tarjeta real dentro del contenedor
           if (card) {
             gsap.to(card, {
-              rotateX: 2.5,
-              duration: 2,
+              rotateX: 1.5,
+              rotateY: 1.5,
+              duration: 4,
               repeat: -1,
               yoyo: true,
               ease: "sine.inOut",
-              transformPerspective: 2000
-            });
-            gsap.to(card, {
-              rotateY: 2.5,
-              duration: 2,
-              repeat: -1,
-              yoyo: true,
-              ease: "sine.inOut",
-              transformPerspective: 2000,
-              delay: -1
+              transformPerspective: 3000
             });
           }
         });
@@ -181,6 +173,7 @@ export default function ExperienceSection() {
                   {/* Tarjeta de Contenido */}
                   <div 
                     onMouseMove={(e) => {
+                      if (window.innerWidth < 1024) return;
                       const card = e.currentTarget;
                       const rect = card.getBoundingClientRect();
                       const x = e.clientX - rect.left;
@@ -190,6 +183,7 @@ export default function ExperienceSection() {
                       gsap.to(card, { rotateX, rotateY, transformPerspective: 1000, duration: 0.5, ease: "power2.out" });
                     }}
                     onMouseLeave={(e) => {
+                      if (window.innerWidth < 1024) return;
                       gsap.to(e.currentTarget, { rotateX: 0, rotateY: 0, duration: 0.5, ease: "power2.out" });
                     }}
                     className="group rounded-2xl border border-white/10 bg-neutral-900/40 p-6 md:p-8 backdrop-blur-md transition-all hover:border-emerald-500/30 hover:bg-neutral-900/60 shadow-xl"

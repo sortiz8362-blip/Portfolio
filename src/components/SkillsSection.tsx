@@ -129,31 +129,23 @@ export default function SkillsSection() {
 
       // En MÓVILES y TABLETS, las tarjetas y la foto flotan juntas
       mm.add("(max-width: 1023px)", () => {
-        // Balanceo para las tarjetas (coordinado y circular)
+        // Balanceo para las tarjetas (coordinado y suave)
         cardsRef.current.forEach((card) => {
           if (!card) return;
           gsap.to(card, {
-            rotateX: 2.5,
-            duration: 2,
+            rotateX: 1.5,
+            rotateY: 1.5,
+            duration: 4,
             repeat: -1,
             yoyo: true,
             ease: "sine.inOut",
-            transformPerspective: 2000
-          });
-          gsap.to(card, {
-            rotateY: 2.5,
-            duration: 2,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-            transformPerspective: 2000,
-            delay: -1
+            transformPerspective: 3000
           });
         });
 
         // Balanceo especial para la foto de perfil (más suave)
         gsap.to(".profile-photo-img", {
-          rotateZ: 2.5,
+          rotateZ: 1.5,
           scale: 1.02,
           duration: 3,
           repeat: -1,
@@ -195,6 +187,7 @@ export default function SkillsSection() {
           <div className="flex justify-center md:justify-end">
             <div 
               onMouseMove={(e) => {
+                if (window.innerWidth < 1024) return;
                 const card = e.currentTarget;
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left;
@@ -204,6 +197,7 @@ export default function SkillsSection() {
                 gsap.to(card, { rotateX, rotateY, transformPerspective: 1000, duration: 0.5, ease: "power2.out" });
               }}
               onMouseLeave={(e) => {
+                if (window.innerWidth < 1024) return;
                 gsap.to(e.currentTarget, { rotateX: 0, rotateY: 0, duration: 0.5, ease: "power2.out" });
               }}
               className="relative h-64 w-64 rounded-full shadow-[0_0_40px_rgba(16,185,129,0.15)] group"
@@ -249,6 +243,8 @@ export default function SkillsSection() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {groupedSkills.map((category, index) => {
               const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+                if (window.innerWidth < 1024) return;
+                
                 const card = e.currentTarget;
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left;
@@ -257,7 +253,7 @@ export default function SkillsSection() {
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
                 
-                const rotateX = ((y - centerY) / centerY) * -15; // Max tilt 15 deg
+                const rotateX = ((y - centerY) / centerY) * -15;
                 const rotateY = ((x - centerX) / centerX) * 15;
                 
                 gsap.to(card, {
@@ -270,6 +266,8 @@ export default function SkillsSection() {
               };
 
               const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+                if (window.innerWidth < 1024) return;
+                
                 gsap.to(e.currentTarget, {
                   rotateX: 0,
                   rotateY: 0,
