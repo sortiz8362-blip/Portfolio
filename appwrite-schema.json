@@ -1,0 +1,54 @@
+{
+  "database_name": "portfolio_db",
+  "collections": [
+    {
+      "name": "GlobalSettings",
+      "description": "Configuraciones globales del portafolio, hero section y metadatos SEO.",
+      "attributes": [
+        {"name": "hero_title", "type": "string", "required": true, "size": 255},
+        {"name": "hero_subtitle", "type": "string", "required": false, "size": 500},
+        {"name": "about_text", "type": "string", "required": false, "size": 5000},
+        {"name": "contact_email", "type": "string", "required": true, "size": 100},
+        {"name": "github_url", "type": "url", "required": false, "size": 255},
+        {"name": "linkedin_url", "type": "url", "required": false, "size": 255},
+        {"name": "twitter_url", "type": "url", "required": false, "size": 255}
+      ]
+    },
+    {
+      "name": "SectionsVisibility",
+      "description": "Control booleano para ocultar/mostrar secciones de la interfaz pública dinámicamente.",
+      "attributes": [
+        {"name": "section_id", "type": "string", "required": true, "size": 50},
+        {"name": "name", "type": "string", "required": true, "size": 50},
+        {"name": "is_visible", "type": "boolean", "required": true, "default": true},
+        {"name": "order", "type": "integer", "required": true, "default": 0}
+      ]
+    },
+    {
+      "name": "Projects",
+      "description": "CRUD completo de los proyectos mostrados en el portafolio.",
+      "attributes": [
+        {"name": "title", "type": "string", "required": true, "size": 100},
+        {"name": "slug", "type": "string", "required": true, "size": 100},
+        {"name": "description", "type": "string", "required": true, "size": 5000},
+        {"name": "image_id", "type": "string", "required": false, "size": 100},
+        {"name": "repo_url", "type": "url", "required": false, "size": 255},
+        {"name": "live_url", "type": "url", "required": false, "size": 255},
+        {"name": "technologies", "type": "string[]", "required": false, "size": 255},
+        {"name": "is_visible", "type": "boolean", "required": true, "default": true},
+        {"name": "order", "type": "integer", "required": true, "default": 0}
+      ]
+    },
+    {
+      "name": "Skills",
+      "description": "Listado de habilidades y tecnologías dominadas.",
+      "attributes": [
+        {"name": "name", "type": "string", "required": true, "size": 50},
+        {"name": "category", "type": "string", "required": true, "size": 50},
+        {"name": "icon_name", "type": "string", "required": true, "size": 50},
+        {"name": "is_visible", "type": "boolean", "required": true, "default": true},
+        {"name": "order", "type": "integer", "required": true, "default": 0}
+      ]
+    }
+  ]
+}
