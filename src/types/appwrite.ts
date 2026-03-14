@@ -32,6 +32,7 @@ export interface Skill {
   name: string;
   category: string;
   isVisible: boolean;
+  percentage?: number;
   $createdAt?: string;
 }
 

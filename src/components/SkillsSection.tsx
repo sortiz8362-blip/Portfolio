@@ -28,7 +28,7 @@ const getCategoryIcon = (category: string) => {
 interface GroupedSkill {
   title: string;
   icon: React.ReactNode;
-  skills: string[];
+  skills: { name: string; percentage: number }[];
 }
 
 export default function SkillsSection() {
@@ -55,11 +55,11 @@ export default function SkillsSection() {
         }
 
         const visibleSkills = (skillsRes.documents as unknown as Skill[]).filter((s) => s.isVisible);
-        const categoriesMap = new Map<string, string[]>();
+        const categoriesMap = new Map<string, { name: string; percentage: number }[]>();
 
         visibleSkills.forEach((skill) => {
           if (!categoriesMap.has(skill.category)) categoriesMap.set(skill.category, []);
-          categoriesMap.get(skill.category)!.push(skill.name);
+          categoriesMap.get(skill.category)!.push({ name: skill.name, percentage: skill.percentage || 0 });
         });
 
         const grouped = Array.from(categoriesMap.entries()).map(([cat, skillsArr]) => ({
@@ -203,10 +203,10 @@ export default function SkillsSection() {
                   <div className="h-px flex-1 bg-linear-to-r from-white/10 to-transparent ml-4"></div>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {category.skills.map((skill, skillIndex) => {
                     return (
-                      <SkillCard key={skillIndex} name={skill} />
+                      <SkillCard key={skillIndex} name={skill.name} percentage={skill.percentage} />
                     );
                   })}
                 </div>
@@ -219,9 +219,49 @@ export default function SkillsSection() {
   );
 }
 
-function SkillCard({ name }: { name: string }) {
+function SkillCard({ name, percentage }: { name: string; percentage: number }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
+  const progressInnerRef = useRef<HTMLDivElement>(null);
+  const counterRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    if (!cardRef.current || !progressInnerRef.current) return;
+
+    const ctx = gsap.context(() => {
+      const counter = { value: 0 };
+      
+      gsap.fromTo(progressInnerRef.current, 
+        { width: "0%" },
+        { 
+          width: `${percentage}%`, 
+          duration: 1.5, 
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: cardRef.current,
+            start: "top 90%",
+          }
+        }
+      );
+
+      gsap.to(counter, {
+        value: percentage,
+        duration: 1.5,
+        ease: "power2.out",
+        onUpdate: () => {
+          if (counterRef.current) {
+            counterRef.current.innerText = Math.round(counter.value).toString();
+          }
+        },
+        scrollTrigger: {
+          trigger: cardRef.current,
+          start: "top 90%",
+        }
+      });
+    }, cardRef);
+
+    return () => ctx.revert();
+  }, [percentage]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (window.innerWidth < 1024) return;
@@ -236,15 +276,15 @@ function SkillCard({ name }: { name: string }) {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
     
-    const rotateX = ((y - centerY) / centerY) * -20;
-    const rotateY = ((x - centerX) / centerX) * 20;
+    const rotateX = ((y - centerY) / centerY) * -15;
+    const rotateY = ((x - centerX) / centerX) * 15;
 
     // Efecto Tilt
     gsap.to(card, {
       rotateX,
       rotateY,
-      scale: 1.05,
-      z: 10,
+      scale: 1.02,
+      z: 5,
       transformPerspective: 1000,
       duration: 0.4,
       ease: "power2.out"
@@ -288,24 +328,39 @@ function SkillCard({ name }: { name: string }) {
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="group relative flex flex-col items-center justify-center gap-2 rounded-xl border border-white/10 bg-neutral-900/40 p-3.5 backdrop-blur-md transition-all duration-300 hover:border-emerald-500/40 hover:bg-neutral-800/60 overflow-hidden cursor-default"
+      className="group relative flex flex-col items-start gap-4 rounded-2xl border border-white/10 bg-neutral-900/40 p-5 backdrop-blur-md transition-all duration-300 hover:border-emerald-500/40 hover:bg-neutral-800/60 overflow-hidden cursor-default"
       style={{ transformStyle: "preserve-3d" }}
       suppressHydrationWarning
     >
       {/* Brillo dinámico */}
       <div 
         ref={glowRef}
-        className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/20 blur-2xl opacity-0 w-24 h-24"
+        className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/10 blur-3xl opacity-0 w-32 h-32"
         style={{ zIndex: 0 }}
       ></div>
 
-      <div className="relative z-10 flex flex-col items-center gap-1.5" style={{ transform: "translateZ(30px)" }}>
-        <div className="rounded-lg bg-black/40 p-2 transition-all duration-500 group-hover:scale-110 group-hover:bg-emerald-500/10 text-neutral-400 group-hover:text-emerald-400 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.2)]">
-          <SkillIcon name={name} className="h-7 w-7" />
+      <div className="relative z-10 w-full flex flex-col gap-4" style={{ transform: "translateZ(30px)" }}>
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-3">
+            <div className="rounded-xl bg-black/40 p-2.5 transition-all duration-500 group-hover:bg-emerald-500/10 text-neutral-400 group-hover:text-emerald-400">
+              <SkillIcon name={name} className="h-6 w-6" />
+            </div>
+            <span className="text-sm font-bold text-white transition-colors duration-300">
+              {name}
+            </span>
+          </div>
+          <div className="text-xs font-bold text-emerald-400/80">
+            <span ref={counterRef}>0</span>%
+          </div>
         </div>
-        <span className="text-[11px] font-medium text-neutral-400 transition-colors duration-300 group-hover:text-white text-center leading-tight">
-          {name}
-        </span>
+
+        {/* Barra de Progreso */}
+        <div className="relative w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+            <div 
+                ref={progressInnerRef}
+                className="absolute top-0 left-0 h-full bg-linear-to-r from-emerald-500 to-emerald-400 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.3)]"
+            ></div>
+        </div>
       </div>
     </div>
   );

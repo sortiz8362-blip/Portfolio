@@ -21,6 +21,7 @@ interface Skill {
   name: string;
   category: string;
   isVisible: boolean;
+  percentage?: number;
 }
 
 export default function AdminSkills() {
@@ -32,6 +33,7 @@ export default function AdminSkills() {
   const [name, setName] = useState("");
   const [category, setCategory] = useState(CATEGORIES[0]);
   const [isVisible, setIsVisible] = useState(true);
+  const [percentage, setPercentage] = useState<number>(0);
 
   useEffect(() => { fetchSkills(); }, []);
 
@@ -47,8 +49,9 @@ export default function AdminSkills() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      if (editingId) await databases.updateDocument(APPWRITE_DB_ID, APPWRITE_COLLECTION_SKILLS_ID, editingId, { name, category, isVisible });
-      else await databases.createDocument(APPWRITE_DB_ID, APPWRITE_COLLECTION_SKILLS_ID, ID.unique(), { name, category, isVisible });
+      const data = { name, category, isVisible, percentage: Number(percentage) };
+      if (editingId) await databases.updateDocument(APPWRITE_DB_ID, APPWRITE_COLLECTION_SKILLS_ID, editingId, data);
+      else await databases.createDocument(APPWRITE_DB_ID, APPWRITE_COLLECTION_SKILLS_ID, ID.unique(), data);
       handleCancel();
       await fetchSkills();
     } catch (error) { console.error(error); } 
@@ -56,11 +59,21 @@ export default function AdminSkills() {
   };
 
   const handleEdit = (s: Skill) => {
-    setEditingId(s.$id); setName(s.name); setCategory(s.category); setIsVisible(s.isVisible);
+    setEditingId(s.$id); 
+    setName(s.name); 
+    setCategory(s.category); 
+    setIsVisible(s.isVisible);
+    setPercentage(s.percentage || 0);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleCancel = () => { setEditingId(null); setName(""); setCategory(CATEGORIES[0]); setIsVisible(true); };
+  const handleCancel = () => { 
+    setEditingId(null); 
+    setName(""); 
+    setCategory(CATEGORIES[0]); 
+    setIsVisible(true); 
+    setPercentage(0);
+  };
 
   const handleDelete = async (id: string) => {
     if (!confirm("¿Borrar habilidad?")) return;
@@ -89,29 +102,44 @@ export default function AdminSkills() {
           {editingId && <button onClick={handleCancel} className="text-sm text-neutral-400 hover:text-white bg-white/5 px-3 py-1 rounded-full">Cancelar</button>}
         </h3>
         
-        <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-4 items-end">
-          <div className="flex-1 w-full">
-            <label className="block text-sm text-neutral-400 mb-1">Nombre (Ej: React)</label>
-            <input required type="text" list="skills-suggestions-list" value={name} onChange={e => setName(e.target.value)} className="w-full rounded-lg bg-black/50 border border-white/10 p-3 text-white focus:border-emerald-500 focus:outline-none" />
-            <datalist id="skills-suggestions-list">
-              {SKILLS_SUGGESTIONS.map(s => <option key={s} value={s} />)}
-            </datalist>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+          <div className="flex flex-col md:flex-row gap-4 items-end">
+            <div className="flex-2 w-full">
+              <label className="block text-sm text-neutral-400 mb-1">Nombre (Ej: React)</label>
+              <input required type="text" list="skills-suggestions-list" value={name} onChange={e => setName(e.target.value)} className="w-full rounded-lg bg-black/50 border border-white/10 p-3 text-white focus:border-emerald-500 focus:outline-none" />
+              <datalist id="skills-suggestions-list">
+                {SKILLS_SUGGESTIONS.map(s => <option key={s} value={s} />)}
+              </datalist>
+            </div>
+            <div className="flex-1 w-full">
+              <label className="block text-sm text-neutral-400 mb-1">Categoría</label>
+              <select value={category} onChange={e => setCategory(e.target.value)} className="w-full rounded-lg bg-black/50 border border-white/10 p-3 text-white focus:border-emerald-500 focus:outline-none appearance-none cursor-pointer">
+                {CATEGORIES.map(c => <option key={c} value={c} className="bg-neutral-900">{c}</option>)}
+              </select>
+            </div>
+            
+            <div className="w-full md:w-32">
+              <label className="block text-sm text-neutral-400 mb-1">Nivel %</label>
+              <input 
+                required 
+                type="number" 
+                min="0" 
+                max="100" 
+                value={percentage} 
+                onChange={e => setPercentage(parseInt(e.target.value) || 0)} 
+                className="w-full rounded-lg bg-black/50 border border-white/10 p-3 text-white focus:border-emerald-500 focus:outline-none" 
+              />
+            </div>
+
+            <div className="flex items-center gap-2 p-3 bg-black/30 rounded-lg border border-white/5 h-[50px]">
+              <input type="checkbox" id="visibleSkill" checked={isVisible} onChange={(e) => setIsVisible(e.target.checked)} className="w-4 h-4 accent-emerald-500 cursor-pointer" />
+              <label htmlFor="visibleSkill" className="text-sm cursor-pointer whitespace-nowrap">{isVisible ? "Visible" : "Oculto"}</label>
+            </div>
+            
+            <button disabled={isSubmitting} type="submit" className="bg-emerald-500 hover:bg-emerald-600 text-black font-bold h-[50px] px-6 rounded-lg transition-colors w-full md:w-auto flex items-center justify-center min-w-[120px]">
+              {isSubmitting ? <Loader2 className="h-5 w-5 animate-spin" /> : editingId ? "Actualizar" : "Añadir"}
+            </button>
           </div>
-          <div className="flex-1 w-full">
-            <label className="block text-sm text-neutral-400 mb-1">Categoría</label>
-            <select value={category} onChange={e => setCategory(e.target.value)} className="w-full rounded-lg bg-black/50 border border-white/10 p-3 text-white focus:border-emerald-500 focus:outline-none appearance-none cursor-pointer">
-              {CATEGORIES.map(c => <option key={c} value={c} className="bg-neutral-900">{c}</option>)}
-            </select>
-          </div>
-          
-          <div className="flex items-center gap-2 p-3 bg-black/30 rounded-lg border border-white/5 h-[50px]">
-            <input type="checkbox" id="visibleSkill" checked={isVisible} onChange={(e) => setIsVisible(e.target.checked)} className="w-4 h-4 accent-emerald-500 cursor-pointer" />
-            <label htmlFor="visibleSkill" className="text-sm cursor-pointer whitespace-nowrap">{isVisible ? "Visible" : "Oculto"}</label>
-          </div>
-          
-          <button disabled={isSubmitting} type="submit" className="bg-emerald-500 hover:bg-emerald-600 text-black font-bold h-[50px] px-6 rounded-lg transition-colors w-full md:w-auto flex items-center justify-center">
-            {isSubmitting ? <Loader2 className="h-5 w-5 animate-spin" /> : editingId ? "Actualizar" : "Añadir"}
-          </button>
         </form>
       </div>
 
@@ -122,7 +150,10 @@ export default function AdminSkills() {
               <div className="p-2 bg-black/50 rounded-lg border border-white/5">{getCategoryIcon(skill.category)}</div>
               <div>
                 <h4 className="font-bold text-white leading-tight">{skill.name}</h4>
-                <p className="text-xs text-neutral-500">{skill.category} {!skill.isVisible && "• Oculto"}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-xs text-neutral-500">{skill.category} {!skill.isVisible && "• Oculto"}</p>
+                  <span className="text-[10px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded-full border border-emerald-500/20">{skill.percentage || 0}%</span>
+                </div>
               </div>
             </div>
             <div className="flex gap-1">
