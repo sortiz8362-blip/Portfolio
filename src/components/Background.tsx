@@ -16,7 +16,7 @@ export default function Background() {
 
     let animationFrameId: number;
     let particles: Particle[] = [];
-    const particleCount = 60;
+    const particleCount = 120; // Más abundantes
 
     class Particle {
       x: number;
@@ -124,31 +124,31 @@ export default function Background() {
   }, []);
 
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden bg-black pointer-events-none">
+    <div className="fixed inset-0 -z-10 overflow-hidden bg-black pointer-events-none" suppressHydrationWarning>
       {/* Capa de Partículas */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 h-full w-full opacity-60 pointer-events-auto"
+        className="absolute inset-0 h-full w-full opacity-70 pointer-events-auto"
       />
 
       {/* Capa de Cuadrícula 3D */}
       <div className="absolute inset-0 perspective-[1000px] pointer-events-none">
         <div 
-          className="absolute bottom-0 left-1/2 h-[150%] w-[200%] -translate-x-1/2 translate-y-1/2 rotate-x-[65deg] opacity-20"
+          className="absolute bottom-[-10%] left-1/2 h-[120%] w-[200%] -translate-x-1/2 rotate-x-[60deg] opacity-30"
           style={{
-            transformOrigin: "center center",
+            transformOrigin: "center bottom",
           }}
         >
           <div 
             className="grid-lines h-full w-full"
             style={{
               backgroundImage: `
-                linear-gradient(to right, rgba(16, 185, 129, 0.2) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(16, 185, 129, 0.2) 1px, transparent 1px)
+                linear-gradient(to right, rgba(16, 185, 129, 0.3) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(16, 185, 129, 0.3) 1px, transparent 1px)
               `,
-              backgroundSize: "60px 60px",
-              maskImage: "linear-gradient(to bottom, transparent, black 40%, black 60%, transparent)",
-              WebkitMaskImage: "linear-gradient(to bottom, transparent, black 40%, black 60%, transparent)",
+              backgroundSize: "80px 80px",
+              maskImage: "linear-gradient(to top, transparent, black 20%, black 80%, transparent)",
+              WebkitMaskImage: "linear-gradient(to top, transparent, black 20%, black 80%, transparent)",
             }}
           />
         </div>
