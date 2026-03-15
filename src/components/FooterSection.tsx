@@ -27,43 +27,45 @@ const socialLinks = [
 export default function FooterSection() {
   const footerRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const descRef = useRef<HTMLParagraphElement>(null);
+  const titleAccentRef = useRef<HTMLSpanElement>(null);
+  const descAccentRef = useRef<HTMLSpanElement>(null);
   const copyrightRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Título principal con stagger de caracteres.
-      if (titleRef.current) {
-        const split = new SplitText(titleRef.current, { type: "lines,chars" });
-        gsap.set(titleRef.current, { perspective: 1000 });
+      // Solo se anima la palabra final destacada.
+      if (titleAccentRef.current) {
+        const split = new SplitText(titleAccentRef.current, { type: "chars" });
+        gsap.set(titleAccentRef.current, { perspective: 1000 });
         gsap.from(split.chars, {
-          yPercent: 120,
-          rotateX: -28,
-          z: 60,
+          y: () => gsap.utils.random(-140, -80),
+          x: () => gsap.utils.random(-36, 36),
+          rotateZ: () => gsap.utils.random(-50, 50),
+          rotateX: () => gsap.utils.random(-120, 120),
           opacity: 0,
-          filter: "blur(8px)",
-          duration: 1.1,
-          stagger: { each: 0.014, from: "start" },
-          ease: "power4.out",
+          filter: "blur(9px)",
+          duration: 1,
+          stagger: { each: 0.02, from: "end" },
+          ease: "expo.out",
           scrollTrigger: {
-            trigger: titleRef.current,
+            trigger: titleAccentRef.current,
             start: "top 85%",
           }
         });
       }
 
-      if (descRef.current) {
-        const splitDesc = new SplitText(descRef.current, { type: "lines" });
-        gsap.from(splitDesc.lines, {
-          yPercent: 110,
+      if (descAccentRef.current) {
+        const splitDesc = new SplitText(descAccentRef.current, { type: "words" });
+        gsap.from(splitDesc.words, {
+          y: 28,
+          x: 22,
           opacity: 0,
-          duration: 0.9,
-          stagger: 0.08,
-          ease: "power3.out",
+          duration: 0.75,
+          stagger: 0.05,
+          ease: "power2.out",
           scrollTrigger: {
-            trigger: descRef.current,
-            start: "top 90%",
+            trigger: descAccentRef.current,
+            start: "top 92%",
           },
         });
       }
@@ -113,16 +115,15 @@ export default function FooterSection() {
             ¿Qué sigue?
           </p>
           <h2 
-            ref={titleRef}
             className="mb-8 text-5xl font-black tracking-tighter text-white sm:text-7xl perspective-[1000px]"
           >
             Trabajemos 
             <br className="md:hidden" />
-            Juntos.
+            <span ref={titleAccentRef}>Juntos.</span>
           </h2>
-          <p ref={descRef} className="max-w-xl text-lg text-neutral-400 mb-10">
+          <p className="max-w-xl text-lg text-neutral-400 mb-10">
             Siempre estoy abierto a discutir nuevos proyectos, ideas creativas o 
-            visión para construir el próximo gran producto digital.
+            visión para construir el <span ref={descAccentRef}>próximo gran producto digital.</span>
           </p>
           
           <a 

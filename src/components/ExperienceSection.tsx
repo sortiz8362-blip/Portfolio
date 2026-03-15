@@ -26,8 +26,8 @@ export default function ExperienceSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
   const pathRef = useRef<SVGPathElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const sectionDescRef = useRef<HTMLParagraphElement>(null);
+  const titleAccentRef = useRef<HTMLSpanElement>(null);
+  const descAccentRef = useRef<HTMLSpanElement>(null);
   const roleTitleRefs = useRef<(HTMLHeadingElement | null)[]>([]);
   const expDescRefs = useRef<(HTMLParagraphElement | null)[]>([]);
   const emptyStateRef = useRef<HTMLParagraphElement>(null);
@@ -52,37 +52,39 @@ export default function ExperienceSection() {
     if (loading) return;
 
     const ctx = gsap.context(() => {
-      // Título principal con entrada por caracteres.
-      if (titleRef.current) {
-        const split = new SplitText(titleRef.current, { type: "lines,chars" });
-        gsap.set(titleRef.current, { perspective: 1000 });
+      // Solo animamos la parte destacada del título.
+      if (titleAccentRef.current) {
+        const split = new SplitText(titleAccentRef.current, { type: "chars" });
+        gsap.set(titleAccentRef.current, { perspective: 1000 });
         gsap.from(split.chars, {
-          yPercent: 120,
-          rotateX: -28,
-          z: 60,
+          y: () => gsap.utils.random(-180, -90),
+          x: () => gsap.utils.random(-40, 40),
+          rotateX: () => gsap.utils.random(-160, 160),
+          rotateY: () => gsap.utils.random(-120, 120),
           opacity: 0,
-          filter: "blur(8px)",
-          duration: 1.1,
-          stagger: { each: 0.014, from: "start" },
-          ease: "power4.out",
+          filter: "blur(10px)",
+          duration: 1,
+          stagger: { each: 0.02, from: "random" },
+          ease: "expo.out",
           scrollTrigger: {
-            trigger: titleRef.current,
+            trigger: titleAccentRef.current,
             start: "top 85%",
           }
         });
       }
 
-      if (sectionDescRef.current) {
-        const sectionDescSplit = new SplitText(sectionDescRef.current, { type: "lines" });
-        gsap.from(sectionDescSplit.lines, {
-          yPercent: 120,
+      if (descAccentRef.current) {
+        const sectionDescSplit = new SplitText(descAccentRef.current, { type: "words" });
+        gsap.from(sectionDescSplit.words, {
+          y: 36,
+          x: -28,
           opacity: 0,
-          duration: 0.9,
-          stagger: 0.08,
-          ease: "power3.out",
+          duration: 0.8,
+          stagger: 0.06,
+          ease: "power2.out",
           scrollTrigger: {
-            trigger: sectionDescRef.current,
-            start: "top 90%",
+            trigger: descAccentRef.current,
+            start: "top 92%",
           },
         });
       }
@@ -231,16 +233,12 @@ export default function ExperienceSection() {
       <div className="mx-auto max-w-4xl">
         <div className="mb-16 text-center md:text-left">
           <h2 
-            ref={titleRef}
             className="text-4xl font-bold tracking-tight text-white md:text-5xl mb-4 perspective-[1000px]"
           >
-            Mi <span className="text-emerald-500">Trayectoria</span>
+            Mi <span ref={titleAccentRef} className="text-emerald-500">Trayectoria</span>
           </h2>
-          <p 
-            ref={sectionDescRef}
-            className="text-neutral-400 text-lg perspective-[1000px]"
-          >
-            Un resumen de mi evolución profesional y los lugares donde he dejado mi huella.
+          <p className="text-neutral-400 text-lg perspective-[1000px]">
+            Un resumen de mi evolución profesional y los lugares donde he dejado <span ref={descAccentRef}>mi huella.</span>
           </p>
         </div>
 
