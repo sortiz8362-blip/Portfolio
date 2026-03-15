@@ -25,9 +25,28 @@ const socialLinks = [
 export default function FooterSection() {
   const footerRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // --- EXPLOSIÓN TIPOGRÁFICA (Título Footer) ---
+      if (titleRef.current) {
+        const split = new SplitText(titleRef.current, { type: "chars" });
+        gsap.from(split.chars, {
+          y: 50,
+          opacity: 0,
+          scale: 0.5,
+          rotateX: -90,
+          duration: 1,
+          stagger: 0.05,
+          ease: "back.out(2)",
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: "top 85%",
+          }
+        });
+      }
+
       gsap.fromTo(
         contentRef.current,
         { y: 100, opacity: 0 },
@@ -38,7 +57,7 @@ export default function FooterSection() {
           ease: "power4.out",
           scrollTrigger: {
             trigger: footerRef.current,
-            start: "top 90%", // Anima justo cuando empieza a asomarse el footer
+            start: "top 90%",
           },
         }
       );
@@ -56,10 +75,13 @@ export default function FooterSection() {
           <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-emerald-400">
             ¿Qué sigue?
           </p>
-          <h2 className="mb-8 text-5xl font-black tracking-tighter text-white sm:text-7xl perspective-[1000px]">
-            <SplitText text="Trabajemos " />
+          <h2 
+            ref={titleRef}
+            className="mb-8 text-5xl font-black tracking-tighter text-white sm:text-7xl perspective-[1000px]"
+          >
+            Trabajemos 
             <br className="md:hidden" />
-            <SplitText text="Juntos." />
+            Juntos.
           </h2>
           <p className="max-w-xl text-lg text-neutral-400 mb-10">
             Siempre estoy abierto a discutir nuevos proyectos, ideas creativas o 
