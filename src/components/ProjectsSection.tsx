@@ -12,7 +12,11 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { databases, APPWRITE_DB_ID, APPWRITE_COLLECTION_PROJECTS_ID } from "../../appwrite";
 import { Project } from "@/types/appwrite";
-import { SplitText } from "@/utils/SplitText";
+import { SplitText } from "gsap/SplitText";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+}
 
 export default function ProjectsSection() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -49,28 +53,26 @@ export default function ProjectsSection() {
     if (loading || projects.length === 0) return;
 
     const ctx = gsap.context(() => {
-      // Animar el título de la sección con efecto de "pintado"
-      gsap.fromTo(
-        titleRef.current?.querySelectorAll(".split-char") || [],
-        { 
-          opacity: 0, 
-          color: "#ffffff" 
-        },
-        {
-          opacity: 1,
-          color: (index, target) => {
-            // El color emite un destello esmeralda antes de volver a blanco o gris
-            return target.innerText === "Destacados" ? "#10b981" : "#ffffff";
-          },
-          stagger: 0.03,
-          duration: 0.8,
-          ease: "power2.inOut",
+      // --- EXPLOSIÓN TIPOGRÁFICA (Título Proyectos) ---
+      if (titleRef.current) {
+        const split = new SplitText(titleRef.current, { type: "chars" });
+        gsap.from(split.chars, {
+          x: "random(-300, 300)",
+          y: "random(-300, 300)",
+          z: "random(-400, 400)",
+          rotation: "random(-180, 180)",
+          scale: 0,
+          opacity: 0,
+          filter: "blur(15px)",
+          duration: 1.5,
+          stagger: { amount: 0.6, from: "random" },
+          ease: "expo.out",
           scrollTrigger: {
             trigger: titleRef.current,
-            start: "top 80%",
-          },
-        }
-      );
+            start: "top 85%",
+          }
+        });
+      }
 
       // Animar las tarjetas de proyectos una por una (stagger)
       gsap.fromTo(
@@ -122,10 +124,9 @@ export default function ProjectsSection() {
       <div className="mx-auto max-w-6xl">
         <h2 
           ref={titleRef}
-          className="mb-16 text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-6xl"
+          className="mb-16 text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-6xl perspective-[1000px]"
         >
-          <SplitText text="Trabajos " />
-          <SplitText text="Destacados" charClassName="text-emerald-500" />
+          Trabajos <span className="text-emerald-500">Destacados</span>
         </h2>
 
         {loading ? (

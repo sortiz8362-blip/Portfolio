@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Send, Loader2, Mail, User, MessageSquare } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SplitText } from "gsap/SplitText";
 import { ID } from "appwrite";
 import { databases, APPWRITE_DB_ID } from "../../appwrite";
 
@@ -21,12 +22,30 @@ export default function ContactSection() {
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    gsap.registerPlugin(ScrollTrigger, SplitText);
     if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
+      const titleH2 = sectionRef.current?.querySelector("h2");
+      if (titleH2) {
+        const split = new SplitText(titleH2, { type: "chars" });
+        gsap.from(split.chars, {
+          y: "random(-100, 100)",
+          scale: 3,
+          opacity: 0,
+          filter: "blur(20px)",
+          duration: 1.2,
+          stagger: { amount: 0.4, from: "random" },
+          ease: "power4.out",
+          scrollTrigger: {
+              trigger: titleH2,
+              start: "top 85%",
+          }
+        });
+      }
+
       gsap.fromTo(
-        ".contact-element",
+        ".contact-element:not(h2)",
         { y: 50, opacity: 0 },
         {
           y: 0,
@@ -97,7 +116,7 @@ export default function ContactSection() {
     <section ref={sectionRef} id="contact" className="relative z-10 w-full px-6 py-24 md:py-32">
       <div className="mx-auto max-w-4xl">
         <div className="text-center mb-16 contact-element">
-          <h2 className="text-4xl font-bold tracking-tight text-white md:text-5xl mb-4">
+          <h2 className="text-4xl font-bold tracking-tight text-white md:text-5xl mb-4 perspective-[1000px]">
             <span className="text-emerald-500">¿Hablamos?</span>
           </h2>
           <p className="text-neutral-400 text-lg">

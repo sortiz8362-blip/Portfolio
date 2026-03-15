@@ -7,15 +7,21 @@ import { ArrowDown, Loader2 } from "lucide-react";
 // INSTRUCCIONES: Quita comentarios y MOCKS en local.
 // ============================================================================
 import gsap from "gsap";
+import { SplitText } from "gsap/SplitText";
 import { databases, APPWRITE_DB_ID } from "../../appwrite";
 import { Settings } from "@/types/appwrite";
-import { SplitText } from "@/utils/SplitText";
+// import { SplitText as CustomSplitText } from "@/utils/SplitText"; // Retiramos el custom para usar el oficial
 const APPWRITE_COLLECTION_SETTINGS_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_SETTINGS_ID || "";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(SplitText);
+}
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
   
-  // Estados para los textos (con valores por defecto por si acaso)
   const [heroTitle, setHeroTitle] = useState("Creative Developer");
   const [heroSubtitle, setHeroSubtitle] = useState("Construyendo experiencias digitales de alto rendimiento que fusionan diseño excepcional con ingeniería robusta.");
   const [loading, setLoading] = useState(true);
@@ -44,37 +50,51 @@ export default function Hero() {
     if (loading) return;
 
     const ctx = gsap.context(() => {
-      // Animación de "ensamblaje" y rotación 3D para el título principal
-      gsap.fromTo(
-        ".split-char",
-        { 
-          y: 100, 
-          opacity: 0, 
-          rotateX: -90, 
-          scale: 0.8 
-        },
-        { 
-          y: 0, 
-          opacity: 1, 
-          rotateX: 0, 
-          scale: 1, 
-          duration: 1.2, 
-          stagger: 0.05, 
+      // --- EXPLOSIÓN TIPOGRÁFICA (Título) ---
+      if (titleRef.current) {
+        const splitTitle = new SplitText(titleRef.current, { type: "chars, words" });
+        gsap.from(splitTitle.chars, {
+          x: "random(-400, 400)",
+          y: "random(-400, 400)",
+          z: "random(-500, 500)",
+          rotationX: "random(-360, 360)",
+          rotationY: "random(-360, 360)",
+          rotationZ: "random(-360, 360)",
+          scale: "random(0, 2)",
+          opacity: 0,
+          filter: "blur(20px)",
+          duration: 2,
+          stagger: { amount: 1, from: "random" },
           ease: "expo.out",
-          delay: 0.5 
-        }
-      );
+          delay: 0.2
+        });
+      }
 
-      // Animamos el resto de elementos en cascada sutil
+      // --- REVELADO FLUIDO (Subtítulo) ---
+      if (subtitleRef.current) {
+        const splitSubtitle = new SplitText(subtitleRef.current, { type: "chars" });
+        gsap.from(splitSubtitle.chars, {
+          rotateY: 360,
+          opacity: 0,
+          scale: 0.8,
+          y: 20,
+          duration: 0.8,
+          stagger: 0.012,
+          ease: "power2.out",
+          delay: 1.5
+        });
+      }
+
+      // Animamos el resto de elementos (Badge y Botones)
       gsap.fromTo(
-        ".hero-element:not(h1)",
+        ".hero-element:not(h1):not(p)",
         { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: "power3.out", delay: 1.2 }
+        { y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: "power3.out", delay: 2.2 }
       );
     }, containerRef);
 
     return () => ctx.revert();
-  }, [loading]); // Se ejecuta cuando 'loading' pasa a false
+  }, [loading]);
 
   // Formatear el título para que, si tiene más de 2 palabras, se divida bonito
   // o simplemente lo dejamos que fluya naturalmente con el ancho.
@@ -101,12 +121,18 @@ export default function Hero() {
           </div>
 
           {/* Título Principal Dinámico */}
-          <h1 className="hero-element mb-6 text-6xl font-black tracking-tighter text-white sm:text-7xl md:text-8xl lg:text-[7rem] leading-[1.1] perspective-[1000px]">
-            <SplitText text={heroTitle} />
+          <h1 
+            ref={titleRef}
+            className="hero-element mb-6 text-6xl font-black tracking-tighter text-white sm:text-7xl md:text-8xl lg:text-[7rem] leading-[1.1] perspective-[1000px] py-10"
+          >
+            {heroTitle}
           </h1>
 
           {/* Subtítulo Dinámico */}
-          <p className="hero-element mb-12 max-w-2xl text-lg text-neutral-400 md:text-xl leading-relaxed">
+          <p 
+            ref={subtitleRef}
+            className="hero-element mb-12 max-w-2xl text-lg text-neutral-400 md:text-xl leading-relaxed perspective-[1000px]"
+          >
             {heroSubtitle}
           </p>
 

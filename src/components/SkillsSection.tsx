@@ -4,16 +4,17 @@ import { useEffect, useRef, useState } from "react";
 import { Layout, Database, Terminal, User, Star, Loader2 } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SplitText } from "gsap/SplitText";
 import { databases, APPWRITE_DB_ID } from "../../appwrite";
 import { Skill, Settings } from "@/types/appwrite";
-import { SplitText } from "@/utils/SplitText";
+// import { SplitText as CustomSplitText } from "@/utils/SplitText"; // Retiramos el custom para usar el oficial
 import SkillIcon from "./SkillIcon";
 
 const APPWRITE_COLLECTION_SKILLS_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_SKILLS_ID || "";
 const APPWRITE_COLLECTION_SETTINGS_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_SETTINGS_ID || "";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger, SplitText);
 }
 
 const getCategoryIcon = (category: string) => {
@@ -39,6 +40,7 @@ export default function SkillsSection() {
 
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+  const aboutParaRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -82,20 +84,48 @@ export default function SkillsSection() {
   useEffect(() => {
     if (loading) return;
     const ctx = gsap.context(() => {
-      // Animación de los títulos
-      gsap.fromTo(
-        headerRef.current?.querySelectorAll(".split-char") || [],
-        { y: 30, opacity: 0, rotateX: 45 },
-        { 
-          y: 0, 
-          opacity: 1, 
-          rotateX: 0, 
-          duration: 0.8, 
-          stagger: 0.02, 
-          ease: "power3.out",
-          scrollTrigger: { trigger: headerRef.current, start: "top 85%" } 
+      // --- EXPLOSIÓN TIPOGRÁFICA (Título: Sobre Mí) ---
+      if (headerRef.current) {
+        const titleH2 = headerRef.current.querySelector("h2");
+        if (titleH2) {
+          const split = new SplitText(titleH2, { type: "chars" });
+          gsap.from(split.chars, {
+            x: "random(-200, 200)",
+            y: "random(-200, 200)",
+            z: "random(-300, 300)",
+            rotationX: "random(-180, 180)",
+            rotationY: "random(-180, 180)",
+            rotationZ: "random(-180, 180)",
+            scale: 0,
+            opacity: 0,
+            filter: "blur(10px)",
+            duration: 1.5,
+            stagger: { amount: 0.5, from: "random" },
+            ease: "expo.out",
+            scrollTrigger: {
+              trigger: titleH2,
+              start: "top 85%",
+            }
+          });
         }
-      );
+      }
+
+      // --- REVELADO FLUIDO (Párrafo Sobre Mí) ---
+      if (aboutParaRef.current) {
+        const split = new SplitText(aboutParaRef.current, { type: "chars" });
+        gsap.from(split.chars, {
+          rotateY: 360,
+          opacity: 0,
+          scale: 0.8,
+          duration: 0.6,
+          stagger: 0.008,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: aboutParaRef.current,
+            start: "top 85%",
+          }
+        });
+      }
 
       // Animación de las categorías
       gsap.fromTo(
@@ -135,8 +165,7 @@ export default function SkillsSection() {
         <div ref={headerRef} className="mb-24 grid grid-cols-1 gap-12 md:grid-cols-2 lg:gap-20 items-center">
           <div className="order-2 md:order-1">
             <h2 className="mb-8 text-4xl font-bold tracking-tight text-white md:text-5xl perspective-[1000px]">
-              <SplitText text="Sobre " />
-              <SplitText text="Mí" charClassName="text-emerald-500" />
+              Sobre <span className="text-emerald-500">Mí</span>
             </h2>
             {loading ? (
               <div className="animate-pulse space-y-4">
@@ -145,7 +174,10 @@ export default function SkillsSection() {
                 <div className="h-4 bg-white/10 rounded w-4/6"></div>
               </div>
             ) : (
-              <p className="text-lg text-neutral-400 leading-relaxed whitespace-pre-line">
+              <p 
+                ref={aboutParaRef}
+                className="text-lg text-neutral-400 leading-relaxed whitespace-pre-line perspective-[1000px]"
+              >
                 {aboutText}
               </p>
             )}

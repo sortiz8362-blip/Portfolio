@@ -11,7 +11,11 @@ import gsap from "gsap";
 import { databases, APPWRITE_DB_ID } from "../../appwrite";
 import { ID } from "appwrite";
 import { Testimonial } from "@/types/appwrite";
-import { SplitText } from "@/utils/SplitText";
+import { SplitText } from "gsap/SplitText";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+}
 const APPWRITE_COLLECTION_TESTIMONIALS_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_TESTIMONIALS_ID || "";
 
 // SUGERENCIAS PARA EL CARGO
@@ -29,6 +33,7 @@ export default function TestimonialSection() {
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const sectionRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
@@ -46,6 +51,24 @@ export default function TestimonialSection() {
   useEffect(() => {
     if (loading || testimonials.length === 0) return;
     const ctx = gsap.context(() => {
+      // --- EXPLOSIÓN TIPOGRÁFICA (Título Testimonios) ---
+      if (titleRef.current) {
+        const split = new SplitText(titleRef.current, { type: "chars" });
+        gsap.from(split.chars, {
+          x: "random(-400, 400)",
+          y: "random(-200, 200)",
+          scale: 0,
+          opacity: 0,
+          filter: "blur(15px)",
+          duration: 1.5,
+          stagger: { amount: 0.6, from: "random" },
+          ease: "expo.out",
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: "top 85%",
+          }
+        });
+      }
       gsap.fromTo(cardsRef.current, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: "power3.out", scrollTrigger: { trigger: sectionRef.current, start: "top 75%" } });
 
       // --- Animación Inteligente Adaptativa (Móvil vs PC) ---
@@ -91,10 +114,12 @@ export default function TestimonialSection() {
         
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
           <div>
-            <h2 className="text-4xl font-bold tracking-tight text-white md:text-5xl mb-4 perspective-[1000px]">
-              <SplitText text="Lo que dicen de " />
-              <SplitText text="mí" charClassName="text-emerald-500" />
-            </h2>
+            <h2 
+          ref={titleRef}
+          className="mb-16 text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-6xl perspective-[1000px]"
+        >
+          Lo que dicen <span className="text-emerald-500">sobre mi trabajo</span>
+        </h2>
             <p className="text-neutral-400 text-lg max-w-xl">
               Experiencias reales de personas y empresas con las que he colaborado.
             </p>

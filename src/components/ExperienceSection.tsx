@@ -12,7 +12,11 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { databases, APPWRITE_DB_ID } from "../../appwrite";
 import { Experience } from "@/types/appwrite";
-import { SplitText } from "@/utils/SplitText";
+import { SplitText } from "gsap/SplitText";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+}
 const APPWRITE_COLLECTION_EXPERIENCE_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_EXPERIENCE_ID || "";
 
 export default function ExperienceSection() {
@@ -22,6 +26,7 @@ export default function ExperienceSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
   const pathRef = useRef<SVGPathElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     const fetchExperience = async () => {
@@ -43,6 +48,26 @@ export default function ExperienceSection() {
     if (loading || experiences.length === 0) return;
 
     const ctx = gsap.context(() => {
+      // --- EXPLOSIÓN TIPOGRÁFICA (Título Experiencia) ---
+      if (titleRef.current) {
+        const split = new SplitText(titleRef.current, { type: "chars" });
+        gsap.from(split.chars, {
+          x: "random(-200, 200)",
+          y: "random(-200, 200)",
+          z: "random(-300, 300)",
+          rotation: "random(-180, 180)",
+          scale: 0.5,
+          opacity: 0,
+          filter: "blur(15px)",
+          duration: 1.5,
+          stagger: { amount: 0.6, from: "center" },
+          ease: "expo.out",
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: "top 85%",
+          }
+        });
+      }
       // Animar el dibujo del trazo SVG
       const path = pathRef.current;
       if (path) {
@@ -64,7 +89,7 @@ export default function ExperienceSection() {
       }
 
       // Animar cada elemento de la línea de tiempo apareciendo desde los lados
-      itemsRef.current.forEach((item, i) => {
+      itemsRef.current.forEach((item) => {
         if (!item) return;
         
         // Alternamos la dirección de entrada si queremos (ej. izq/der en desktop)
@@ -118,9 +143,11 @@ export default function ExperienceSection() {
     <section ref={sectionRef} id="experience" className="relative z-10 w-full px-6 py-24 md:py-32">
       <div className="mx-auto max-w-4xl">
         <div className="mb-16 text-center md:text-left">
-          <h2 className="text-4xl font-bold tracking-tight text-white md:text-5xl mb-4 perspective-[1000px]">
-            <SplitText text="Mi " />
-            <SplitText text="Trayectoria" charClassName="text-emerald-500" />
+          <h2 
+            ref={titleRef}
+            className="text-4xl font-bold tracking-tight text-white md:text-5xl mb-4 perspective-[1000px]"
+          >
+            Mi <span className="text-emerald-500">Trayectoria</span>
           </h2>
           <p className="text-neutral-400 text-lg">
             Un resumen de mi evolución profesional y los lugares donde he dejado mi huella.
@@ -160,7 +187,7 @@ export default function ExperienceSection() {
             </svg>
 
             <div className="space-y-12 pb-12">
-              {experiences.map((exp, index) => (
+              {experiences.map((exp) => (
                 <div key={exp.$id} ref={addToItemsRef} className="relative pl-12 md:pl-24">
                   
                   {/* El "Punto" en la línea de tiempo */}
