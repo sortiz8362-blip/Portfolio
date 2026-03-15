@@ -124,6 +124,21 @@ export default function SkillsSection() {
         }
       );
 
+      if (aboutParaRef.current) {
+        const splitAbout = new SplitText(aboutParaRef.current, { type: "lines" });
+        gsap.from(splitAbout.lines, {
+          yPercent: 115,
+          opacity: 0,
+          duration: 0.9,
+          stagger: 0.08,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: aboutParaRef.current,
+            start: "top 90%",
+          },
+        });
+      }
+
       // Animación de la foto de perfil (se mantiene igual)
       const tl = gsap.timeline({
         scrollTrigger: { trigger: headerRef.current, start: "top 70%" }

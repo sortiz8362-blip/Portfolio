@@ -25,6 +25,7 @@ export default function ProjectsSection() {
   // Referencias para las animaciones
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const sectionDescRef = useRef<HTMLParagraphElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const projDescRefs = useRef<(HTMLParagraphElement | null)[]>([]);
 
@@ -54,24 +55,38 @@ export default function ProjectsSection() {
     if (loading || projects.length === 0) return;
 
     const ctx = gsap.context(() => {
-      // --- EXPLOSIÓN TIPOGRÁFICA (Título Proyectos) ---
+      // Título principal con entrada por caracteres.
       if (titleRef.current) {
-        const split = new SplitText(titleRef.current, { type: "chars" });
+        const split = new SplitText(titleRef.current, { type: "lines,chars" });
+        gsap.set(titleRef.current, { perspective: 1000 });
         gsap.from(split.chars, {
-          x: "random(-300, 300)",
-          y: "random(-300, 300)",
-          z: "random(-400, 400)",
-          rotation: "random(-180, 180)",
-          scale: 0,
+          yPercent: 120,
+          rotateX: -30,
+          z: 60,
           opacity: 0,
-          filter: "blur(15px)",
-          duration: 1.5,
-          stagger: { amount: 0.6, from: "random" },
-          ease: "expo.out",
+          filter: "blur(8px)",
+          duration: 1.1,
+          stagger: { each: 0.012, from: "start" },
+          ease: "power4.out",
           scrollTrigger: {
             trigger: titleRef.current,
             start: "top 85%",
           }
+        });
+      }
+
+      if (sectionDescRef.current) {
+        const descSplit = new SplitText(sectionDescRef.current, { type: "lines" });
+        gsap.from(descSplit.lines, {
+          yPercent: 120,
+          opacity: 0,
+          duration: 0.9,
+          stagger: 0.08,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionDescRef.current,
+            start: "top 90%",
+          },
         });
       }
 
@@ -95,16 +110,31 @@ export default function ProjectsSection() {
       // --- Animación Inteligente Adaptativa (Móvil vs PC) ---
       const mm = gsap.matchMedia();
 
-      // En MÓVILES y TABLETS (pantallas pequeñas), las tarjetas se quedan con un tilt estático sutil
+      // En móvil dejamos un tilt estático para evitar ciclos infinitos de animación.
       mm.add("(max-width: 1023px)", () => {
         cardsRef.current.forEach((card) => {
           if (!card) return;
-          // Tilt estático para mostrar el efecto 3D sin animaciones que causen distorsión
           gsap.set(card, {
             rotateX: 2,
             rotateY: 2,
-            transformPerspective: 2000,
+            transformPerspective: 1200,
           });
+        });
+      });
+
+      projDescRefs.current.forEach((desc) => {
+        if (!desc) return;
+        const split = new SplitText(desc, { type: "lines" });
+        gsap.from(split.lines, {
+          yPercent: 120,
+          opacity: 0,
+          duration: 0.8,
+          stagger: 0.06,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: desc,
+            start: "top 92%",
+          },
         });
       });
       // ------------------------------------------------------
@@ -135,6 +165,12 @@ export default function ProjectsSection() {
         >
           Trabajos <span className="text-emerald-500">Destacados</span>
         </h2>
+        <p
+          ref={sectionDescRef}
+          className="mb-12 max-w-3xl text-lg text-neutral-400"
+        >
+          Proyectos reales enfocados en rendimiento, diseño y experiencia de usuario.
+        </p>
 
         {loading ? (
           <div className="flex h-64 items-center justify-center">

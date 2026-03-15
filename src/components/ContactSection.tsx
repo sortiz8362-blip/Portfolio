@@ -20,27 +20,45 @@ export default function ContactSection() {
 
   const sectionRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const descRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger, SplitText);
     if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
-      const titleH2 = sectionRef.current?.querySelector("h2");
-      if (titleH2) {
-        const split = new SplitText(titleH2, { type: "chars" });
+      if (titleRef.current) {
+        const split = new SplitText(titleRef.current, { type: "lines,chars" });
+        gsap.set(titleRef.current, { perspective: 1000 });
         gsap.from(split.chars, {
-          y: "random(-100, 100)",
-          scale: 3,
+          yPercent: 120,
+          rotateX: -30,
+          z: 70,
           opacity: 0,
-          filter: "blur(20px)",
-          duration: 1.2,
-          stagger: { amount: 0.4, from: "random" },
+          filter: "blur(8px)",
+          duration: 1.1,
+          stagger: { each: 0.014, from: "start" },
           ease: "power4.out",
           scrollTrigger: {
-              trigger: titleH2,
-              start: "top 85%",
+            trigger: titleRef.current,
+            start: "top 85%",
           }
+        });
+      }
+
+      if (descRef.current) {
+        const descSplit = new SplitText(descRef.current, { type: "lines" });
+        gsap.from(descSplit.lines, {
+          yPercent: 110,
+          opacity: 0,
+          duration: 0.9,
+          stagger: 0.08,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: descRef.current,
+            start: "top 90%",
+          },
         });
       }
 
@@ -118,10 +136,10 @@ export default function ContactSection() {
     <section ref={sectionRef} id="contact" className="relative z-10 w-full px-6 py-24 md:py-32">
       <div className="mx-auto max-w-4xl">
         <div className="text-center mb-16 contact-element">
-          <h2 className="text-4xl font-bold tracking-tight text-white md:text-5xl mb-4 perspective-[1000px]">
+          <h2 ref={titleRef} className="text-4xl font-bold tracking-tight text-white md:text-5xl mb-4 perspective-[1000px]">
             <span className="text-emerald-500">¿Hablamos?</span>
           </h2>
-          <p className="text-neutral-400 text-lg perspective-[1000px] desc-split">
+          <p ref={descRef} className="text-neutral-400 text-lg perspective-[1000px] desc-split">
             Si tienes un proyecto en mente, o simplemente quieres saludar, envíame un mensaje.
           </p>
         </div>

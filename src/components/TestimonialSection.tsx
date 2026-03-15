@@ -53,22 +53,38 @@ export default function TestimonialSection() {
   useEffect(() => {
     if (loading || testimonials.length === 0) return;
     const ctx = gsap.context(() => {
-      // --- EXPLOSIÓN TIPOGRÁFICA (Título Testimonios) ---
+      // Título principal con stagger por caracteres.
       if (titleRef.current) {
-        const split = new SplitText(titleRef.current, { type: "chars" });
+        const split = new SplitText(titleRef.current, { type: "lines,chars" });
+        gsap.set(titleRef.current, { perspective: 1000 });
         gsap.from(split.chars, {
-          x: "random(-400, 400)",
-          y: "random(-200, 200)",
-          scale: 0,
+          yPercent: 120,
+          rotateX: -30,
+          z: 70,
           opacity: 0,
-          filter: "blur(15px)",
-          duration: 1.5,
-          stagger: { amount: 0.6, from: "random" },
-          ease: "expo.out",
+          filter: "blur(8px)",
+          duration: 1.1,
+          stagger: { each: 0.014, from: "start" },
+          ease: "power4.out",
           scrollTrigger: {
             trigger: titleRef.current,
             start: "top 85%",
           }
+        });
+      }
+
+      if (sectionDescRef.current) {
+        const splitDesc = new SplitText(sectionDescRef.current, { type: "lines" });
+        gsap.from(splitDesc.lines, {
+          yPercent: 110,
+          opacity: 0,
+          duration: 0.9,
+          stagger: 0.08,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionDescRef.current,
+            start: "top 90%",
+          },
         });
       }
 
@@ -87,6 +103,22 @@ export default function TestimonialSection() {
             rotateY: 2,
             transformPerspective: 2000
           });
+        });
+      });
+
+      msgRefs.current.forEach((msg) => {
+        if (!msg) return;
+        const split = new SplitText(msg, { type: "lines" });
+        gsap.from(split.lines, {
+          yPercent: 120,
+          opacity: 0,
+          duration: 0.75,
+          stagger: 0.05,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: msg,
+            start: "top 92%",
+          },
         });
       });
       // ------------------------------------------------------

@@ -50,23 +50,33 @@ export default function Hero() {
     if (loading) return;
 
     const ctx = gsap.context(() => {
-      // --- EXPLOSIÓN TIPOGRÁFICA (Título) ---
+      // Título principal: entrada por caracteres con stagger refinado.
       if (titleRef.current) {
-        const splitTitle = new SplitText(titleRef.current, { type: "chars, words" });
+        const splitTitle = new SplitText(titleRef.current, { type: "lines,chars" });
+        gsap.set(titleRef.current, { perspective: 1000 });
         gsap.from(splitTitle.chars, {
-          x: "random(-400, 400)",
-          y: "random(-400, 400)",
-          z: "random(-500, 500)",
-          rotationX: "random(-360, 360)",
-          rotationY: "random(-360, 360)",
-          rotationZ: "random(-360, 360)",
-          scale: "random(0, 2)",
+          yPercent: 120,
+          rotateX: -35,
+          z: 80,
           opacity: 0,
-          filter: "blur(20px)",
-          duration: 2,
-          stagger: { amount: 1, from: "random" },
-          ease: "expo.out",
-          delay: 0.2
+          filter: "blur(10px)",
+          duration: 1.2,
+          stagger: { each: 0.015, from: "start" },
+          ease: "power4.out",
+          delay: 0.1,
+        });
+      }
+
+      if (subtitleRef.current) {
+        const splitSubtitle = new SplitText(subtitleRef.current, { type: "lines" });
+        gsap.from(splitSubtitle.lines, {
+          yPercent: 120,
+          opacity: 0,
+          filter: "blur(6px)",
+          duration: 1,
+          stagger: 0.08,
+          ease: "power3.out",
+          delay: 0.35,
         });
       }
 
@@ -74,7 +84,7 @@ export default function Hero() {
       gsap.fromTo(
         ".hero-element:not(h1):not(p)",
         { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: "power3.out", delay: 1.2 }
+        { y: 0, opacity: 1, duration: 0.9, stagger: 0.15, ease: "power3.out", delay: 0.6 }
       );
     }, containerRef);
 

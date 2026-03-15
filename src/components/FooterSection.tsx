@@ -28,24 +28,42 @@ export default function FooterSection() {
   const footerRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const descRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // --- EXPLOSIÓN TIPOGRÁFICA (Título Footer) ---
+      // Título principal con stagger de caracteres.
       if (titleRef.current) {
-        const split = new SplitText(titleRef.current, { type: "chars" });
+        const split = new SplitText(titleRef.current, { type: "lines,chars" });
+        gsap.set(titleRef.current, { perspective: 1000 });
         gsap.from(split.chars, {
-          y: 50,
+          yPercent: 120,
+          rotateX: -28,
+          z: 60,
           opacity: 0,
-          scale: 0.5,
-          rotateX: -90,
-          duration: 1,
-          stagger: 0.05,
-          ease: "back.out(2)",
+          filter: "blur(8px)",
+          duration: 1.1,
+          stagger: { each: 0.014, from: "start" },
+          ease: "power4.out",
           scrollTrigger: {
             trigger: titleRef.current,
             start: "top 85%",
           }
+        });
+      }
+
+      if (descRef.current) {
+        const splitDesc = new SplitText(descRef.current, { type: "lines" });
+        gsap.from(splitDesc.lines, {
+          yPercent: 110,
+          opacity: 0,
+          duration: 0.9,
+          stagger: 0.08,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: descRef.current,
+            start: "top 90%",
+          },
         });
       }
 
@@ -85,7 +103,7 @@ export default function FooterSection() {
             <br className="md:hidden" />
             Juntos.
           </h2>
-          <p className="max-w-xl text-lg text-neutral-400 mb-10">
+          <p ref={descRef} className="max-w-xl text-lg text-neutral-400 mb-10">
             Siempre estoy abierto a discutir nuevos proyectos, ideas creativas o 
             visión para construir el próximo gran producto digital.
           </p>

@@ -50,26 +50,41 @@ export default function ExperienceSection() {
     if (loading || experiences.length === 0) return;
 
     const ctx = gsap.context(() => {
-      // --- EXPLOSIÓN TIPOGRÁFICA (Título Experiencia) ---
+      // Título principal con entrada por caracteres.
       if (titleRef.current) {
-        const split = new SplitText(titleRef.current, { type: "chars" });
+        const split = new SplitText(titleRef.current, { type: "lines,chars" });
+        gsap.set(titleRef.current, { perspective: 1000 });
         gsap.from(split.chars, {
-          x: "random(-200, 200)",
-          y: "random(-200, 200)",
-          z: "random(-300, 300)",
-          rotation: "random(-180, 180)",
-          scale: 0.5,
+          yPercent: 120,
+          rotateX: -28,
+          z: 60,
           opacity: 0,
-          filter: "blur(15px)",
-          duration: 1.5,
-          stagger: { amount: 0.6, from: "center" },
-          ease: "expo.out",
+          filter: "blur(8px)",
+          duration: 1.1,
+          stagger: { each: 0.014, from: "start" },
+          ease: "power4.out",
           scrollTrigger: {
             trigger: titleRef.current,
             start: "top 85%",
           }
         });
       }
+
+      if (sectionDescRef.current) {
+        const sectionDescSplit = new SplitText(sectionDescRef.current, { type: "lines" });
+        gsap.from(sectionDescSplit.lines, {
+          yPercent: 120,
+          opacity: 0,
+          duration: 0.9,
+          stagger: 0.08,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionDescRef.current,
+            start: "top 90%",
+          },
+        });
+      }
+
       // --- REVELADO FLUIDO (Descripciones Experiencias) ---
       // Animar el dibujo del trazo SVG
       const path = pathRef.current;
@@ -128,6 +143,22 @@ export default function ExperienceSection() {
               transformPerspective: 2000
             });
           }
+        });
+      });
+
+      expDescRefs.current.forEach((desc) => {
+        if (!desc) return;
+        const split = new SplitText(desc, { type: "lines" });
+        gsap.from(split.lines, {
+          yPercent: 110,
+          opacity: 0,
+          duration: 0.8,
+          stagger: 0.06,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: desc,
+            start: "top 92%",
+          },
         });
       });
       // ------------------------------------------------------
