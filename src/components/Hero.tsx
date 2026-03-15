@@ -51,13 +51,11 @@ export default function Hero() {
 
     const charHandlers: Array<{
       el: HTMLElement;
-      onEnter: () => void;
-      onDown: () => void;
+      onDown: (e: MouseEvent) => void;
     }> = [];
-    let burstRafId: number | null = null;
-    let queuedBurstIndex = -1;
-    let lastBurstAt = 0;
-    const minBurstGapMs = 95;
+    let onMouseMove: ((e: MouseEvent) => void) | null = null;
+    let onMouseUp: ((e: MouseEvent) => void) | null = null;
+    let onWindowBlur: (() => void) | null = null;
 
     const ctx = gsap.context(() => {
       // Título principal: efecto jello elástico inspirado en la referencia.
@@ -65,71 +63,77 @@ export default function Hero() {
         const splitTitle = new SplitText(titleRef.current, { type: "chars", charsClass: "hero-char" });
         const chars = splitTitle.chars as HTMLElement[];
 
-        const jelloBurst = (index: number, intensity = 1) => {
-          chars.forEach((char, i) => {
-            const distance = Math.abs(i - index);
-            const influence = Math.max(0, 1 - distance / 6) * intensity;
-            if (influence <= 0) return;
+        const computedStyle = getComputedStyle(titleRef.current);
+        const weightInit = parseFloat(computedStyle.fontWeight) || 800;
+        const weightTarget = Math.max(450, weightInit - 280);
+        const weightDiff = weightInit - weightTarget;
+        const stretchInit = 120;
+        const stretchTarget = 82;
+        const stretchDiff = stretchInit - stretchTarget;
+        const maxYScale = 2.4;
+        const elasticDropOff = 0.8;
 
-            gsap.to(char, {
-              keyframes: [
-                {
-                  y: -30 * influence,
-                  scaleY: 1 + 0.7 * influence,
-                  scaleX: 1 - 0.35 * influence,
-                  rotateZ: (i % 2 === 0 ? -1 : 1) * 10 * influence,
-                  duration: 0.14,
-                  ease: "power2.out",
-                },
-                {
-                  y: 10 * influence,
-                  scaleY: 1 - 0.3 * influence,
-                  scaleX: 1 + 0.18 * influence,
-                  rotateZ: (i % 2 === 0 ? 1 : -1) * 7 * influence,
-                  duration: 0.16,
-                  ease: "power2.inOut",
-                },
-                {
-                  y: 0,
-                  scaleY: 1,
-                  scaleX: 1,
-                  rotateZ: 0,
-                  duration: 0.7,
-                  ease: "elastic.out(1, 0.38)",
-                },
-              ],
-              overwrite: "auto",
-            });
+        let isMouseDown = false;
+        let mouseInitialY = 0;
+        let mouseFinalY = 0;
+        let dragYScale = 0;
+        let selectedIndex = 0;
+        const numChars = chars.length;
+        const charHeight = titleRef.current.offsetHeight || 140;
+
+        const calcDispersion = (index: number) => {
+          const dispersion = 1 - Math.abs(index - selectedIndex) / (numChars * elasticDropOff);
+          return Math.max(0, dispersion) * dragYScale;
+        };
+
+        const setFontDragDimensions = () => {
+          gsap.to(chars, {
+            y: (index) => -50 * calcDispersion(index),
+            fontWeight: (index) => weightInit - calcDispersion(index) * weightDiff,
+            fontStretch: (index) => `${stretchInit - calcDispersion(index) * stretchDiff}%`,
+            scaleY: (index) => {
+              const value = 1 + calcDispersion(index);
+              return value < 0.5 ? 0.5 : value;
+            },
+            scaleX: (index) => 1 - calcDispersion(index) * 0.22,
+            rotateZ: (index) => (index % 2 === 0 ? -1 : 1) * calcDispersion(index) * 8,
+            duration: 0.28,
+            ease: "power3.out",
+            overwrite: "auto",
           });
         };
 
-        const triggerBurst = (index: number, intensity: number, force = false) => {
-          const now = performance.now();
-          const canRunNow = force || now - lastBurstAt >= minBurstGapMs;
-
-          if (canRunNow) {
-            lastBurstAt = now;
-            jelloBurst(index, intensity);
-            return;
-          }
-
-          queuedBurstIndex = index;
-          if (burstRafId !== null) return;
-
-          burstRafId = requestAnimationFrame(() => {
-            burstRafId = null;
-            if (queuedBurstIndex < 0) return;
-            const queuedIndex = queuedBurstIndex;
-            queuedBurstIndex = -1;
-            lastBurstAt = performance.now();
-            jelloBurst(queuedIndex, Math.min(intensity, 0.7));
+        const snapBackText = () => {
+          gsap.to(chars, {
+            y: 0,
+            fontWeight: weightInit,
+            fontStretch: `${stretchInit}%`,
+            scaleY: 1,
+            scaleX: 1,
+            rotateZ: 0,
+            ease: "elastic.out(1, 0.35)",
+            duration: 1,
+            stagger: {
+              each: 0.02,
+              from: selectedIndex,
+            },
+            overwrite: "auto",
           });
+        };
+
+        const calcDrag = () => {
+          const maxYDragDist = charHeight * (maxYScale - 1);
+          const distY = mouseInitialY - mouseFinalY;
+          dragYScale = distY / maxYDragDist;
+          if (dragYScale > maxYScale - 1) dragYScale = maxYScale - 1;
+          if (dragYScale < -0.5) dragYScale = -0.5;
         };
 
         gsap.set(titleRef.current, { perspective: 1000 });
         gsap.set(chars, {
           transformOrigin: "50% 100%",
-          willChange: "transform, filter",
+          fontStretch: `${stretchInit}%`,
+          willChange: "font-weight, font-stretch, transform, filter",
         });
 
         gsap.from(chars, {
@@ -140,25 +144,49 @@ export default function Hero() {
           rotateZ: () => gsap.utils.random(-80, 80),
           scaleY: 2.2,
           scaleX: 0.72,
-          fontWeight: 420,
+          fontWeight: weightTarget,
+          fontStretch: `${stretchTarget}%`,
           opacity: 0,
           filter: "blur(12px)",
           duration: 1.55,
           stagger: { each: 0.05, from: "random" },
           ease: "elastic.out(0.24, 0.12)",
           delay: 0.15,
-          onComplete: () => {
-            const centerIndex = Math.floor(chars.length / 2);
-            jelloBurst(centerIndex, 0.95);
-          },
         });
 
+        onMouseMove = (e: MouseEvent) => {
+          if (!isMouseDown) return;
+          mouseFinalY = e.clientY;
+          calcDrag();
+          setFontDragDimensions();
+        };
+
+        onMouseUp = () => {
+          if (!isMouseDown) return;
+          isMouseDown = false;
+          snapBackText();
+        };
+
+        onWindowBlur = () => {
+          if (!isMouseDown) return;
+          isMouseDown = false;
+          snapBackText();
+        };
+
+        window.addEventListener("mousemove", onMouseMove);
+        window.addEventListener("mouseup", onMouseUp);
+        window.addEventListener("blur", onWindowBlur);
+
         chars.forEach((char, index) => {
-          const onEnter = () => triggerBurst(index, 0.8);
-          const onDown = () => triggerBurst(index, 1.15, true);
-          char.addEventListener("mouseenter", onEnter);
+          const onDown = (e: MouseEvent) => {
+            e.preventDefault();
+            selectedIndex = index;
+            mouseInitialY = e.clientY;
+            mouseFinalY = e.clientY;
+            isMouseDown = true;
+          };
           char.addEventListener("mousedown", onDown);
-          charHandlers.push({ el: char, onEnter, onDown });
+          charHandlers.push({ el: char, onDown });
         });
       }
 
@@ -184,11 +212,16 @@ export default function Hero() {
     }, containerRef);
 
     return () => {
-      if (burstRafId !== null) {
-        cancelAnimationFrame(burstRafId);
+      if (onMouseMove) {
+        window.removeEventListener("mousemove", onMouseMove);
       }
-      charHandlers.forEach(({ el, onEnter, onDown }) => {
-        el.removeEventListener("mouseenter", onEnter);
+      if (onMouseUp) {
+        window.removeEventListener("mouseup", onMouseUp);
+      }
+      if (onWindowBlur) {
+        window.removeEventListener("blur", onWindowBlur);
+      }
+      charHandlers.forEach(({ el, onDown }) => {
         el.removeEventListener("mousedown", onDown);
       });
       ctx.revert();
