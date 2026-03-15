@@ -49,26 +49,89 @@ export default function Hero() {
   useEffect(() => {
     if (loading) return;
 
+    const charHandlers: Array<{
+      el: HTMLElement;
+      onEnter: () => void;
+      onDown: () => void;
+    }> = [];
+
     const ctx = gsap.context(() => {
-      // Título principal: entrada por caracteres con stagger refinado.
+      // Título principal: efecto jello elástico inspirado en la referencia.
       if (titleRef.current) {
-        const splitTitle = new SplitText(titleRef.current, { type: "lines,chars" });
+        const splitTitle = new SplitText(titleRef.current, { type: "chars", charsClass: "hero-char" });
+        const chars = splitTitle.chars as HTMLElement[];
+
+        const jelloBurst = (index: number, intensity = 1) => {
+          chars.forEach((char, i) => {
+            const distance = Math.abs(i - index);
+            const influence = Math.max(0, 1 - distance / 6) * intensity;
+            if (influence <= 0) return;
+
+            gsap.to(char, {
+              keyframes: [
+                {
+                  y: -30 * influence,
+                  scaleY: 1 + 0.7 * influence,
+                  scaleX: 1 - 0.35 * influence,
+                  rotateZ: (i % 2 === 0 ? -1 : 1) * 10 * influence,
+                  duration: 0.14,
+                  ease: "power2.out",
+                },
+                {
+                  y: 10 * influence,
+                  scaleY: 1 - 0.3 * influence,
+                  scaleX: 1 + 0.18 * influence,
+                  rotateZ: (i % 2 === 0 ? 1 : -1) * 7 * influence,
+                  duration: 0.16,
+                  ease: "power2.inOut",
+                },
+                {
+                  y: 0,
+                  scaleY: 1,
+                  scaleX: 1,
+                  rotateZ: 0,
+                  duration: 0.7,
+                  ease: "elastic.out(1, 0.38)",
+                },
+              ],
+              overwrite: "auto",
+            });
+          });
+        };
+
         gsap.set(titleRef.current, { perspective: 1000 });
-        gsap.from(splitTitle.chars, {
-          y: () => gsap.utils.random(-360, -220),
-          x: () => gsap.utils.random(-140, 140),
-          rotateX: () => gsap.utils.random(-320, 320),
-          rotateY: () => gsap.utils.random(-220, 220),
-          rotateZ: () => gsap.utils.random(-140, 140),
-          z: () => gsap.utils.random(80, 180),
-          scale: () => gsap.utils.random(0.7, 1.25),
-          transformOrigin: "50% 50% -80",
+        gsap.set(chars, {
+          transformOrigin: "50% 100%",
+          willChange: "transform, filter",
+        });
+
+        gsap.from(chars, {
+          y: () => -window.innerHeight - gsap.utils.random(180, 420),
+          x: () => gsap.utils.random(-80, 80),
+          rotateX: () => gsap.utils.random(-240, 240),
+          rotateY: () => gsap.utils.random(-170, 170),
+          rotateZ: () => gsap.utils.random(-80, 80),
+          scaleY: 2.2,
+          scaleX: 0.72,
+          fontWeight: 420,
           opacity: 0,
           filter: "blur(12px)",
-          duration: 1.35,
-          stagger: { each: 0.02, from: "random" },
-          ease: "expo.out",
-          delay: 0.1,
+          duration: 1.55,
+          stagger: { each: 0.05, from: "random" },
+          ease: "elastic.out(0.24, 0.12)",
+          delay: 0.15,
+          onComplete: () => {
+            const centerIndex = Math.floor(chars.length / 2);
+            jelloBurst(centerIndex, 0.95);
+          },
+        });
+
+        chars.forEach((char, index) => {
+          const onEnter = () => jelloBurst(index, 0.8);
+          const onDown = () => jelloBurst(index, 1.15);
+          char.addEventListener("mouseenter", onEnter);
+          char.addEventListener("mousedown", onDown);
+          charHandlers.push({ el: char, onEnter, onDown });
         });
       }
 
@@ -93,7 +156,13 @@ export default function Hero() {
       );
     }, containerRef);
 
-    return () => ctx.revert();
+    return () => {
+      charHandlers.forEach(({ el, onEnter, onDown }) => {
+        el.removeEventListener("mouseenter", onEnter);
+        el.removeEventListener("mousedown", onDown);
+      });
+      ctx.revert();
+    };
   }, [loading]);
 
   // Formatear el título para que, si tiene más de 2 palabras, se divida bonito
