@@ -54,6 +54,10 @@ export default function Hero() {
       onEnter: () => void;
       onDown: () => void;
     }> = [];
+    let burstRafId: number | null = null;
+    let queuedBurstIndex = -1;
+    let lastBurstAt = 0;
+    const minBurstGapMs = 95;
 
     const ctx = gsap.context(() => {
       // Título principal: efecto jello elástico inspirado en la referencia.
@@ -99,6 +103,29 @@ export default function Hero() {
           });
         };
 
+        const triggerBurst = (index: number, intensity: number, force = false) => {
+          const now = performance.now();
+          const canRunNow = force || now - lastBurstAt >= minBurstGapMs;
+
+          if (canRunNow) {
+            lastBurstAt = now;
+            jelloBurst(index, intensity);
+            return;
+          }
+
+          queuedBurstIndex = index;
+          if (burstRafId !== null) return;
+
+          burstRafId = requestAnimationFrame(() => {
+            burstRafId = null;
+            if (queuedBurstIndex < 0) return;
+            const queuedIndex = queuedBurstIndex;
+            queuedBurstIndex = -1;
+            lastBurstAt = performance.now();
+            jelloBurst(queuedIndex, Math.min(intensity, 0.7));
+          });
+        };
+
         gsap.set(titleRef.current, { perspective: 1000 });
         gsap.set(chars, {
           transformOrigin: "50% 100%",
@@ -127,8 +154,8 @@ export default function Hero() {
         });
 
         chars.forEach((char, index) => {
-          const onEnter = () => jelloBurst(index, 0.8);
-          const onDown = () => jelloBurst(index, 1.15);
+          const onEnter = () => triggerBurst(index, 0.8);
+          const onDown = () => triggerBurst(index, 1.15, true);
           char.addEventListener("mouseenter", onEnter);
           char.addEventListener("mousedown", onDown);
           charHandlers.push({ el: char, onEnter, onDown });
@@ -157,6 +184,9 @@ export default function Hero() {
     }, containerRef);
 
     return () => {
+      if (burstRafId !== null) {
+        cancelAnimationFrame(burstRafId);
+      }
       charHandlers.forEach(({ el, onEnter, onDown }) => {
         el.removeEventListener("mouseenter", onEnter);
         el.removeEventListener("mousedown", onDown);
