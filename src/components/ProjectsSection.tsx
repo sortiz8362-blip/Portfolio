@@ -96,19 +96,37 @@ export default function ProjectsSection() {
       projDescRefs.current.forEach((desc) => {
         if (!desc) return;
         const split = new SplitText(desc, { type: "chars" });
+        // Revelado base
         gsap.from(split.chars, {
           rotateY: 360,
           opacity: 0,
           scale: 0.9,
-          color: "#10b981",
-          duration: 0.8,
-          stagger: 0.02,
+          duration: 0.6,
+          stagger: 0.005,
           ease: "power1.out",
           scrollTrigger: {
             trigger: desc,
             start: "top 90%",
           }
         });
+
+        // Barrido seguidor
+        gsap.fromTo(split.chars,
+          { color: "inherit" },
+          {
+            color: "#10b981",
+            duration: 0.3,
+            stagger: 0.005,
+            repeat: 1,
+            yoyo: true,
+            delay: 0.05,
+            ease: "power1.inOut",
+            scrollTrigger: {
+              trigger: desc,
+              start: "top 90%",
+            }
+          }
+        );
       });
 
       // --- Animación Inteligente Adaptativa (Móvil vs PC) ---

@@ -73,17 +73,31 @@ export default function Hero() {
       // --- REVELADO FLUIDO (Subtítulo) ---
       if (subtitleRef.current) {
         const splitSubtitle = new SplitText(subtitleRef.current, { type: "chars" });
+        // Revelado base
         gsap.from(splitSubtitle.chars, {
           rotateY: 360,
           opacity: 0,
           scale: 0.8,
           y: 20,
-          color: "#10b981",
           duration: 0.8,
-          stagger: 0.03, // Aumentado para mayor visibilidad del barrido
+          stagger: 0.012,
           ease: "power2.out",
           delay: 1.5
         });
+
+        // Barrido esmeralda seguidor
+        gsap.fromTo(splitSubtitle.chars, 
+          { color: "inherit" },
+          { 
+            color: "#10b981", 
+            duration: 0.3, 
+            stagger: 0.012, 
+            repeat: 1, 
+            yoyo: true, 
+            delay: 1.6, // Pequeño retraso para ir "atrás" de la escritura
+            ease: "power1.inOut" 
+          }
+        );
       }
 
       // Animamos el resto de elementos (Badge y Botones)

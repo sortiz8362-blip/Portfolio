@@ -113,19 +113,37 @@ export default function SkillsSection() {
       // --- REVELADO FLUIDO (Párrafo Sobre Mí) ---
       if (aboutParaRef.current) {
         const split = new SplitText(aboutParaRef.current, { type: "chars" });
+        // Revelado base
         gsap.from(split.chars, {
           rotateY: 360,
           opacity: 0,
           scale: 0.8,
-          color: "#10b981",
-          duration: 0.8,
-          stagger: 0.025, // Aumentado
+          duration: 0.6,
+          stagger: 0.008,
           ease: "power2.out",
           scrollTrigger: {
             trigger: aboutParaRef.current,
             start: "top 85%",
           }
         });
+
+        // Barrido esmeralda seguidor
+        gsap.fromTo(split.chars,
+          { color: "inherit" },
+          {
+            color: "#10b981",
+            duration: 0.3,
+            stagger: 0.008,
+            repeat: 1,
+            yoyo: true,
+            delay: 0.1, // Retraso respecto al scrollTrigger
+            ease: "power1.inOut",
+            scrollTrigger: {
+              trigger: aboutParaRef.current,
+              start: "top 85%",
+            }
+          }
+        );
       }
 
       // Animación de las categorías

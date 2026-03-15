@@ -73,38 +73,74 @@ export default function ExperienceSection() {
       // --- REVELADO FLUIDO (Descripción Sección) ---
       if (sectionDescRef.current) {
         const split = new SplitText(sectionDescRef.current, { type: "chars" });
+        // Revelado base
         gsap.from(split.chars, {
           rotateY: 360,
           opacity: 0,
           scale: 0.8,
-          color: "#10b981",
           duration: 0.8,
-          stagger: 0.03,
+          stagger: 0.01,
           ease: "power2.out",
           scrollTrigger: {
             trigger: sectionDescRef.current,
             start: "top 85%",
           }
         });
+
+        // Barrido seguidor
+        gsap.fromTo(split.chars,
+          { color: "inherit" },
+          {
+            color: "#10b981",
+            duration: 0.3,
+            stagger: 0.01,
+            repeat: 1,
+            yoyo: true,
+            delay: 0.1,
+            ease: "power1.inOut",
+            scrollTrigger: {
+              trigger: sectionDescRef.current,
+              start: "top 85%",
+            }
+          }
+        );
       }
 
       // --- REVELADO FLUIDO (Descripciones Experiencias) ---
       expDescRefs.current.forEach((desc) => {
         if (!desc) return;
         const split = new SplitText(desc, { type: "chars" });
+        // Revelado base
         gsap.from(split.chars, {
           rotateY: 360,
           opacity: 0,
           scale: 0.9,
-          color: "#10b981",
-          duration: 0.8,
-          stagger: 0.02,
+          duration: 0.6,
+          stagger: 0.005,
           ease: "power1.out",
           scrollTrigger: {
             trigger: desc,
             start: "top 90%",
           }
         });
+
+        // Barrido seguidor
+        gsap.fromTo(split.chars,
+          { color: "inherit" },
+          {
+            color: "#10b981",
+            duration: 0.3,
+            stagger: 0.005,
+            repeat: 1,
+            yoyo: true,
+            delay: 0.05,
+            ease: "power1.inOut",
+            scrollTrigger: {
+              trigger: desc,
+              start: "top 90%",
+            }
+          }
+        );
       });
 
       // Animar el dibujo del trazo SVG

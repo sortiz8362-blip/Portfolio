@@ -64,19 +64,37 @@ export default function ContactSection() {
       const descPara = sectionRef.current?.querySelector(".desc-split");
       if (descPara) {
         const split = new SplitText(descPara, { type: "chars" });
+        // Revelado base
         gsap.from(split.chars, {
           rotateY: 360,
           opacity: 0,
           scale: 0.8,
-          color: "#10b981",
-          duration: 1,
-          stagger: 0.03,
+          duration: 0.8,
+          stagger: 0.01,
           ease: "power2.out",
           scrollTrigger: {
             trigger: descPara,
             start: "top 85%",
           }
         });
+
+        // Barrido seguidor
+        gsap.fromTo(split.chars,
+          { color: "inherit" },
+          {
+            color: "#10b981",
+            duration: 0.3,
+            stagger: 0.01,
+            repeat: 1,
+            yoyo: true,
+            delay: 0.1,
+            ease: "power1.inOut",
+            scrollTrigger: {
+              trigger: descPara,
+              start: "top 85%",
+            }
+          }
+        );
       }
     }, sectionRef);
 
