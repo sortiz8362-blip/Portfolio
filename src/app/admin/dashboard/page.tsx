@@ -27,7 +27,7 @@ export default function Dashboard() {
       try {
         const session = await account.get();
         setUser(session);
-      } catch (error) {
+      } catch {
         router.push("/admin");
       } finally {
         setLoading(false);

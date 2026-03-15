@@ -18,7 +18,7 @@ export default function AdminLogin() {
       try {
         await account.get(); // Si esto funciona, significa que ya estás logueado
         router.push("/admin/dashboard"); // Te mandamos directo al dashboard
-      } catch (err) {
+      } catch {
         // Si falla, significa que no estás logueado. Paramos de cargar y mostramos el formulario.
         setLoading(false);
       }

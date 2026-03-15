@@ -16,10 +16,12 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText);
 }
 
+const CONTACT_EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "hola@tuportafolio.com";
+
 const socialLinks = [
-  { name: "GitHub", icon: <Github className="h-5 w-5" />, url: "https://github.com/tu-usuario" },
-  { name: "LinkedIn", icon: <Linkedin className="h-5 w-5" />, url: "https://linkedin.com/in/tu-usuario" },
-  { name: "Twitter / X", icon: <Twitter className="h-5 w-5" />, url: "https://twitter.com/tu-usuario" },
+  { name: "GitHub", icon: <Github className="h-5 w-5" />, url: process.env.NEXT_PUBLIC_GITHUB_URL || "https://github.com/tu-usuario" },
+  { name: "LinkedIn", icon: <Linkedin className="h-5 w-5" />, url: process.env.NEXT_PUBLIC_LINKEDIN_URL || "https://linkedin.com/in/tu-usuario" },
+  { name: "Twitter / X", icon: <Twitter className="h-5 w-5" />, url: process.env.NEXT_PUBLIC_TWITTER_URL || "https://twitter.com/tu-usuario" },
 ];
 
 export default function FooterSection() {
@@ -67,7 +69,7 @@ export default function FooterSection() {
   }, []);
 
   return (
-    <footer ref={footerRef} id="contact" className="relative z-10 w-full overflow-hidden bg-black/50 border-t border-white/10 pt-24 pb-12 backdrop-blur-md mt-12">
+    <footer ref={footerRef} id="footer" className="relative z-10 w-full overflow-hidden bg-black/50 border-t border-white/10 pt-24 pb-12 backdrop-blur-md mt-12">
       <div ref={contentRef} className="mx-auto max-w-6xl px-6">
         
         {/* Call to Action principal */}
@@ -89,10 +91,10 @@ export default function FooterSection() {
           </p>
           
           <a 
-            href="mailto:hola@tuportafolio.com" 
+            href={`mailto:${CONTACT_EMAIL}`} 
             className="group relative inline-flex items-center gap-3 overflow-hidden rounded-full bg-white px-8 py-4 font-bold text-black transition-transform hover:scale-105"
           >
-            <span>hola@tuportafolio.com</span>
+            <span>{CONTACT_EMAIL}</span>
             <ArrowUpRight className="h-5 w-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
           </a>
         </div>

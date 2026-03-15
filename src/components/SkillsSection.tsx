@@ -143,6 +143,7 @@ export default function SkillsSection() {
       suppressHydrationWarning
     >
       <div className="mx-auto max-w-6xl">
+        <div id="skills" className="sr-only" aria-hidden="true" />
         
         {/* Encabezado: Sobre Mí */}
         <div ref={headerRef} className="mb-24 grid grid-cols-1 gap-12 md:grid-cols-2 lg:gap-20 items-center">

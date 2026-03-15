@@ -2,6 +2,17 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const RESEND_FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "Portfolio Admin <onboarding@resend.dev>";
+const RESEND_TO_EMAIL = process.env.RESEND_TO_EMAIL || "cavich2006@gmail.com";
+
+function escapeHtml(input: string) {
+  return input
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
 
 export async function POST(request: Request) {
   try {
@@ -16,20 +27,23 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Configuracion de email incompleta" }, { status: 500 });
     }
 
-    // Para pruebas, asumimos que el usuario no tiene dominio verificado y usamos `onboarding@resend.dev`
-    // Enviamos el correo a LA MISMA CUENTA con la que se registró en Resend para que no falle
+    const safeName = escapeHtml(name);
+    const safeEmail = escapeHtml(email);
+    const safeMessage = escapeHtml(message).replaceAll("\n", "<br />");
+
     const data = await resend.emails.send({
-      from: "Portfolio Admin <notificaciones@profile.saov.page>",
-      to: ["cavich2006@gmail.com"], // Idealmente esto debería ser tu correo para recibir notificaciones, pero para probar Resend te obliga a enviar a la cuenta verificada. Por ahora lo enviaremos al email configurado pero lo ideal sería una variable de entorno. Modificaremos esto para enviar a un MAIL fijo o al email provisto si es desarrollo.
+      from: RESEND_FROM_EMAIL,
+      to: [RESEND_TO_EMAIL],
+      replyTo: email,
       subject: `Nuevo mensaje de ${name} desde tu Portafolio`,
       html: `
         <h2>Tienes un nuevo mensaje de tu Portafolio</h2>
-        <p><strong>Nombre:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Nombre:</strong> ${safeName}</p>
+        <p><strong>Email:</strong> ${safeEmail}</p>
         <p><strong>Mensaje:</strong></p>
-        <p>${message}</p>
+        <p>${safeMessage}</p>
         <br/>
-        <a href="mailto:${email}?subject=Respuesta a tu mensaje de portafolio">Responder a ${name}</a>
+        <a href="mailto:${safeEmail}?subject=Respuesta a tu mensaje de portafolio">Responder a ${safeName}</a>
       `,
     });
 

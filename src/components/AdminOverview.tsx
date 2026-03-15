@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Loader2, FolderKanban, MessageSquare, Briefcase, TrendingUp, Users, Activity, CheckCircle, Clock } from "lucide-react";
+import { Loader2, FolderKanban, MessageSquare, Briefcase, TrendingUp, Activity, CheckCircle, Clock } from "lucide-react";
 
 // ============================================================================
 // INSTRUCCIONES:

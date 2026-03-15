@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Loader2, Plus, Trash2, Pencil, Wrench, Eye, EyeOff, LayoutTemplate, Database, Terminal } from "lucide-react";
+import { Loader2, Plus, Trash2, Pencil, LayoutTemplate, Database, Terminal } from "lucide-react";
 
 // ============================================================================
 // INSTRUCCIONES: Quita comentarios y MOCKS en local
