@@ -44,20 +44,20 @@ export default function AdminLogin() {
   // Si estamos verificando si ya estás logueado, mostramos un spinner
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-neutral-950">
-        <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
+      <div className="admin-neuro flex min-h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin admin-neuro-accent" />
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-neutral-950 px-4">
-      <div className="w-full max-w-md space-y-8 rounded-2xl border border-white/10 bg-neutral-900/50 p-8 shadow-2xl backdrop-blur-xl">
+    <div className="admin-neuro flex min-h-screen items-center justify-center px-4">
+      <div className="admin-neuro-panel w-full max-w-md space-y-8 p-8">
         <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-white">
+          <h2 className="admin-neuro-title text-3xl font-bold tracking-tight">
             Panel de Control
           </h2>
-          <p className="mt-2 text-sm text-neutral-400">
+          <p className="admin-neuro-muted mt-2 text-sm">
             Ingresa tus credenciales para administrar tu portafolio.
           </p>
         </div>
@@ -65,26 +65,26 @@ export default function AdminLogin() {
         <form className="mt-8 space-y-6" onSubmit={handleLogin}>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-neutral-300">
+              <label className="admin-neuro-muted block text-sm font-medium">
                 Correo Electrónico
               </label>
               <input
                 type="email"
                 required
-                className="mt-1 block w-full rounded-lg border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-neutral-500 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                className="admin-neuro-input mt-1 block px-4 py-3"
                 placeholder="admin@tuportafolio.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-neutral-300">
+              <label className="admin-neuro-muted block text-sm font-medium">
                 Contraseña
               </label>
               <input
                 type="password"
                 required
-                className="mt-1 block w-full rounded-lg border border-white/10 bg-black/50 px-4 py-3 text-white placeholder-neutral-500 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                className="admin-neuro-input mt-1 block px-4 py-3"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -93,7 +93,7 @@ export default function AdminLogin() {
           </div>
 
           {error && (
-            <div className="rounded-lg bg-red-500/10 p-4 text-sm text-red-400 border border-red-500/20">
+            <div className="rounded-xl border border-red-300/40 bg-red-100/70 p-4 text-sm text-red-700">
               {error}
             </div>
           )}
@@ -101,7 +101,7 @@ export default function AdminLogin() {
           <button
             type="submit"
             disabled={loading}
-            className="flex w-full justify-center rounded-lg bg-white px-4 py-3 text-sm font-semibold text-black transition-colors hover:bg-neutral-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-neutral-900 disabled:opacity-50"
+            className="admin-neuro-btn admin-neuro-btn-primary flex w-full justify-center px-4 py-3 text-sm font-semibold disabled:opacity-50"
           >
             Ingresar al Dashboard
           </button>

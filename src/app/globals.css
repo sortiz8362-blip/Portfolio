@@ -24,3 +24,110 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.admin-neuro {
+  --neu-bg: #d9dde3;
+  --neu-surface: #dfe3e9;
+  --neu-text: #222631;
+  --neu-muted: #647083;
+  --neu-accent: #2f8f7b;
+  --neu-accent-soft: #d8f0ea;
+  --neu-danger: #cf4a56;
+  --neu-shadow-dark: #bcc2cc;
+  --neu-shadow-light: #f7fbff;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 10% 10%, #eef3f8 0%, transparent 35%),
+    radial-gradient(circle at 90% 90%, #d4dae3 0%, transparent 40%),
+    linear-gradient(160deg, #e6ebf2 0%, #d7dce4 100%);
+  color: var(--neu-text);
+  font-family: Manrope, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.admin-neuro-panel {
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  background: var(--neu-surface);
+  box-shadow: 10px 10px 24px var(--neu-shadow-dark), -10px -10px 24px var(--neu-shadow-light);
+}
+
+.admin-neuro-panel-inset {
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: #d7dce4;
+  box-shadow: inset 8px 8px 16px #b9bec7, inset -8px -8px 16px #f3f7ff;
+}
+
+.admin-neuro-input,
+.admin-neuro-select,
+.admin-neuro-textarea {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  background: #d9dee6;
+  color: var(--neu-text);
+  box-shadow: inset 4px 4px 10px #c2c8d2, inset -4px -4px 10px #eff4ff;
+}
+
+.admin-neuro-input::placeholder,
+.admin-neuro-textarea::placeholder {
+  color: #7c879a;
+}
+
+.admin-neuro-input:focus,
+.admin-neuro-select:focus,
+.admin-neuro-textarea:focus {
+  outline: none;
+  border-color: rgba(47, 143, 123, 0.35);
+  box-shadow: inset 4px 4px 10px #c2c8d2, inset -4px -4px 10px #eff4ff, 0 0 0 3px rgba(47, 143, 123, 0.15);
+}
+
+.admin-neuro-btn {
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: linear-gradient(140deg, #e8edf4, #cfd5df);
+  color: var(--neu-text);
+  box-shadow: 6px 6px 14px #bac0cb, -6px -6px 14px #f7fbff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.admin-neuro-btn:hover {
+  filter: brightness(1.03);
+}
+
+.admin-neuro-btn:active {
+  transform: translateY(1px);
+  box-shadow: inset 4px 4px 10px #bac0cb, inset -4px -4px 10px #f7fbff;
+}
+
+.admin-neuro-btn-primary {
+  background: linear-gradient(140deg, #3aa790, #2f8f7b);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #f2fffb;
+  box-shadow: 8px 8px 18px #b4bac5, -8px -8px 18px #ffffff;
+}
+
+.admin-neuro-btn-danger {
+  background: linear-gradient(140deg, #e97f88, #cf4a56);
+  color: #fff6f7;
+}
+
+.admin-neuro-chip {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  background: #d9dee6;
+  box-shadow: 4px 4px 9px #c0c7d1, -4px -4px 9px #f5f9ff;
+}
+
+.admin-neuro-title {
+  color: var(--neu-text);
+  letter-spacing: -0.02em;
+}
+
+.admin-neuro-muted {
+  color: var(--neu-muted);
+}
+
+.admin-neuro-accent {
+  color: var(--neu-accent);
+}

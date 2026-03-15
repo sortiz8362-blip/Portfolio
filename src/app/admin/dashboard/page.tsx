@@ -49,36 +49,36 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-neutral-950">
-        <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
+      <div className="admin-neuro flex min-h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin admin-neuro-accent" />
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen bg-neutral-950 text-white">
+    <div className="admin-neuro flex min-h-screen">
       {/* Overlay para móvil */}
       {isSidebarOpen && (
         <div 
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-40 bg-slate-900/25 backdrop-blur-sm md:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar (Menú Lateral) */}
       <aside className={`
-        fixed inset-y-0 left-0 z-50 w-72 transform border-r border-white/10 bg-neutral-900 p-6 flex flex-col transition-transform duration-300 ease-in-out md:relative md:flex md:w-64 md:translate-x-0 md:bg-neutral-900/30
+        admin-neuro-panel fixed inset-y-0 left-0 z-50 m-3 w-72 transform p-6 flex flex-col transition-transform duration-300 ease-in-out md:relative md:m-4 md:flex md:w-64 md:translate-x-0
         ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
       `}>
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-emerald-500">
+            <h1 className="admin-neuro-title text-xl font-bold tracking-tight">
               Admin Panel
             </h1>
-            <p className="mt-1 text-xs text-neutral-400 truncate max-w-[180px]">{user?.email}</p>
+            <p className="admin-neuro-muted mt-1 max-w-45 truncate text-xs">{user?.email}</p>
           </div>
           <button 
-            className="rounded-lg p-2 text-neutral-400 hover:bg-white/5 md:hidden"
+            className="admin-neuro-btn p-2 md:hidden"
             onClick={() => setIsSidebarOpen(false)}
           >
             <X className="h-6 w-6" />
@@ -86,25 +86,25 @@ export default function Dashboard() {
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto pr-2 custom-scrollbar">
-          <p className="px-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2 mt-4">Principal</p>
+          <p className="admin-neuro-muted mb-2 mt-4 px-4 text-xs font-semibold uppercase tracking-wider">Principal</p>
           <SidebarButton icon={<LayoutDashboard className="h-4 w-4" />} label="Vista General" isActive={activeTab === "overview"} onClick={() => { setActiveTab("overview"); setIsSidebarOpen(false); }} />
           <SidebarButton icon={<BarChart className="h-4 w-4" />} label="Analíticas" isActive={activeTab === "analytics"} onClick={() => { setActiveTab("analytics"); setIsSidebarOpen(false); }} />
           
-          <p className="px-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2 mt-6">Contenido</p>
+          <p className="admin-neuro-muted mb-2 mt-6 px-4 text-xs font-semibold uppercase tracking-wider">Contenido</p>
           <SidebarButton icon={<FolderKanban className="h-4 w-4" />} label="Proyectos" isActive={activeTab === "projects"} onClick={() => { setActiveTab("projects"); setIsSidebarOpen(false); }} />
           <SidebarButton icon={<Briefcase className="h-4 w-4" />} label="Experiencia" isActive={activeTab === "experience"} onClick={() => { setActiveTab("experience"); setIsSidebarOpen(false); }} />
           <SidebarButton icon={<Wrench className="h-4 w-4" />} label="Habilidades" isActive={activeTab === "skills"} onClick={() => { setActiveTab("skills"); setIsSidebarOpen(false); }} />
           
-          <p className="px-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2 mt-6">Interacción</p>
+          <p className="admin-neuro-muted mb-2 mt-6 px-4 text-xs font-semibold uppercase tracking-wider">Interacción</p>
           <SidebarButton icon={<Mail className="h-4 w-4" />} label="Mensajes" isActive={activeTab === "messages"} onClick={() => { setActiveTab("messages"); setIsSidebarOpen(false); }} />
           <SidebarButton icon={<MessageSquare className="h-4 w-4" />} label="Testimonios" isActive={activeTab === "testimonials"} onClick={() => { setActiveTab("testimonials"); setIsSidebarOpen(false); }} />
           
-          <p className="px-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2 mt-6">Sistema</p>
+          <p className="admin-neuro-muted mb-2 mt-6 px-4 text-xs font-semibold uppercase tracking-wider">Sistema</p>
           <SidebarButton icon={<Settings className="h-4 w-4" />} label="Configuración" isActive={activeTab === "settings"} onClick={() => { setActiveTab("settings"); setIsSidebarOpen(false); }} />
         </nav>
 
-        <div className="mt-8 pt-6 border-t border-white/10">
-          <button onClick={handleLogout} disabled={isLoggingOut} className="flex w-full items-center gap-3 rounded-lg px-4 py-2 text-sm font-medium text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-300 disabled:opacity-50">
+        <div className="mt-8 border-t border-slate-400/30 pt-6">
+          <button onClick={handleLogout} disabled={isLoggingOut} className="admin-neuro-btn admin-neuro-btn-danger flex w-full items-center gap-3 px-4 py-2 text-sm font-medium disabled:opacity-50">
             {isLoggingOut ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogOut className="h-4 w-4" />}
             Cerrar Sesión
           </button>
@@ -114,23 +114,23 @@ export default function Dashboard() {
       {/* Contenido Principal */}
       <main className="flex-1 overflow-x-hidden">
         {/* Mobile Header */}
-        <div className="flex items-center justify-between border-b border-white/5 bg-neutral-950/80 px-6 py-4 backdrop-blur-md md:hidden">
-          <h1 className="text-lg font-bold text-emerald-500">Admin Panel</h1>
+        <div className="mx-3 mt-3 flex items-center justify-between rounded-2xl border border-white/70 bg-slate-100/70 px-6 py-4 shadow-[8px_8px_18px_#c0c6d1,-8px_-8px_18px_#f9fdff] backdrop-blur-md md:hidden">
+          <h1 className="admin-neuro-title text-lg font-bold">Admin Panel</h1>
           <button 
             onClick={() => setIsSidebarOpen(true)}
-            className="rounded-lg bg-neutral-900 p-2 text-neutral-400 border border-white/10 hover:text-white"
+            className="admin-neuro-btn p-2"
           >
             <Menu className="h-6 w-6" />
           </button>
         </div>
 
         <div className="p-6 md:p-10">
-          <header className="mb-8">
-            <h2 className="text-3xl font-bold capitalize">
+          <header className="admin-neuro-panel mb-8 p-6">
+            <h2 className="admin-neuro-title text-3xl font-bold capitalize">
               {activeTab === "overview" || activeTab === "analytics" ? "Centro de Mando" : activeTab}
             </h2>
-            <p className="mt-2 text-neutral-400">
-              Gestiona la sección de <span className="text-emerald-500 font-medium">{activeTab}</span> de tu plataforma.
+            <p className="admin-neuro-muted mt-2">
+              Gestiona la sección de <span className="admin-neuro-accent font-medium">{activeTab}</span> de tu plataforma.
             </p>
           </header>
 
@@ -154,10 +154,10 @@ function SidebarButton({ icon, label, isActive, onClick }: { icon: React.ReactNo
   return (
     <button
       onClick={onClick}
-      className={`flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-all ${
+      className={`flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-all ${
         isActive
-          ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-          : "text-neutral-400 hover:bg-white/5 hover:text-white border border-transparent"
+          ? "admin-neuro-chip text-teal-700"
+          : "text-slate-600 hover:bg-slate-200/40 border border-transparent"
       }`}
     >
       {icon}

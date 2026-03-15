@@ -89,37 +89,37 @@ export default function AdminSkills() {
     return <Terminal className="h-4 w-4 text-amber-400" />;
   };
 
-  if (loading) return <div className="flex justify-center p-8"><Loader2 className="animate-spin text-emerald-500" /></div>;
+  if (loading) return <div className="flex justify-center p-8"><Loader2 className="admin-neuro-accent animate-spin" /></div>;
 
   return (
     <div className="space-y-8">
-      <div className={`rounded-xl border p-6 transition-colors ${editingId ? 'bg-emerald-950/20 border-emerald-500/50' : 'bg-neutral-900/50 border-white/10'}`}>
-        <h3 className="mb-6 text-xl font-semibold flex items-center justify-between">
+      <div className={`admin-neuro-panel p-6 transition-colors ${editingId ? 'ring-2 ring-emerald-400/35' : ''}`}>
+        <h3 className="admin-neuro-title mb-6 text-xl font-semibold flex items-center justify-between">
           <span className="flex items-center gap-2">
-            {editingId ? <Pencil className="h-5 w-5 text-emerald-400"/> : <Plus className="h-5 w-5 text-emerald-500"/>}
+            {editingId ? <Pencil className="h-5 w-5 text-teal-700"/> : <Plus className="h-5 w-5 text-teal-700"/>}
             {editingId ? "Editar Habilidad" : "Añadir Habilidad"}
           </span>
-          {editingId && <button onClick={handleCancel} className="text-sm text-neutral-400 hover:text-white bg-white/5 px-3 py-1 rounded-full">Cancelar</button>}
+          {editingId && <button onClick={handleCancel} className="admin-neuro-btn rounded-full px-3 py-1 text-sm">Cancelar</button>}
         </h3>
         
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           <div className="flex flex-col md:flex-row gap-4 items-end">
             <div className="flex-2 w-full">
-              <label className="block text-sm text-neutral-400 mb-1">Nombre (Ej: React)</label>
-              <input required type="text" list="skills-suggestions-list" value={name} onChange={e => setName(e.target.value)} className="w-full rounded-lg bg-black/50 border border-white/10 p-3 text-white focus:border-emerald-500 focus:outline-none" />
+              <label className="admin-neuro-muted mb-1 block text-sm">Nombre (Ej: React)</label>
+              <input required type="text" list="skills-suggestions-list" value={name} onChange={e => setName(e.target.value)} className="admin-neuro-input p-3" />
               <datalist id="skills-suggestions-list">
                 {SKILLS_SUGGESTIONS.map(s => <option key={s} value={s} />)}
               </datalist>
             </div>
             <div className="flex-1 w-full">
-              <label className="block text-sm text-neutral-400 mb-1">Categoría</label>
-              <select value={category} onChange={e => setCategory(e.target.value)} className="w-full rounded-lg bg-black/50 border border-white/10 p-3 text-white focus:border-emerald-500 focus:outline-none appearance-none cursor-pointer">
-                {CATEGORIES.map(c => <option key={c} value={c} className="bg-neutral-900">{c}</option>)}
+              <label className="admin-neuro-muted mb-1 block text-sm">Categoría</label>
+              <select value={category} onChange={e => setCategory(e.target.value)} className="admin-neuro-select cursor-pointer appearance-none p-3">
+                {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             
             <div className="w-full md:w-32">
-              <label className="block text-sm text-neutral-400 mb-1">Nivel %</label>
+              <label className="admin-neuro-muted mb-1 block text-sm">Nivel %</label>
               <input 
                 required 
                 type="number" 
@@ -127,16 +127,16 @@ export default function AdminSkills() {
                 max="100" 
                 value={percentage} 
                 onChange={e => setPercentage(parseInt(e.target.value) || 0)} 
-                className="w-full rounded-lg bg-black/50 border border-white/10 p-3 text-white focus:border-emerald-500 focus:outline-none" 
+                className="admin-neuro-input p-3" 
               />
             </div>
 
-            <div className="flex items-center gap-2 p-3 bg-black/30 rounded-lg border border-white/5 h-[50px]">
+            <div className="admin-neuro-panel-inset flex h-12.5 items-center gap-2 p-3">
               <input type="checkbox" id="visibleSkill" checked={isVisible} onChange={(e) => setIsVisible(e.target.checked)} className="w-4 h-4 accent-emerald-500 cursor-pointer" />
-              <label htmlFor="visibleSkill" className="text-sm cursor-pointer whitespace-nowrap">{isVisible ? "Visible" : "Oculto"}</label>
+              <label htmlFor="visibleSkill" className="cursor-pointer whitespace-nowrap text-sm text-slate-700">{isVisible ? "Visible" : "Oculto"}</label>
             </div>
             
-            <button disabled={isSubmitting} type="submit" className="bg-emerald-500 hover:bg-emerald-600 text-black font-bold h-[50px] px-6 rounded-lg transition-colors w-full md:w-auto flex items-center justify-center min-w-[120px]">
+            <button disabled={isSubmitting} type="submit" className="admin-neuro-btn admin-neuro-btn-primary h-12.5 min-w-30 w-full px-6 font-bold md:w-auto flex items-center justify-center">
               {isSubmitting ? <Loader2 className="h-5 w-5 animate-spin" /> : editingId ? "Actualizar" : "Añadir"}
             </button>
           </div>
@@ -145,20 +145,20 @@ export default function AdminSkills() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {skills.map(skill => (
-          <div key={skill.$id} className={`flex items-center justify-between p-4 rounded-xl border ${skill.isVisible ? 'bg-neutral-900/30 border-white/10' : 'bg-neutral-900/10 border-neutral-800 opacity-60'}`}>
+          <div key={skill.$id} className={`admin-neuro-panel flex items-center justify-between p-4 ${skill.isVisible ? '' : 'opacity-60'}`}>
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-black/50 rounded-lg border border-white/5">{getCategoryIcon(skill.category)}</div>
+              <div className="admin-neuro-panel-inset p-2">{getCategoryIcon(skill.category)}</div>
               <div>
-                <h4 className="font-bold text-white leading-tight">{skill.name}</h4>
+                <h4 className="admin-neuro-title font-bold leading-tight">{skill.name}</h4>
                 <div className="flex items-center gap-2">
-                  <p className="text-xs text-neutral-500">{skill.category} {!skill.isVisible && "• Oculto"}</p>
-                  <span className="text-[10px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded-full border border-emerald-500/20">{skill.percentage || 0}%</span>
+                  <p className="admin-neuro-muted text-xs">{skill.category} {!skill.isVisible && "• Oculto"}</p>
+                  <span className="admin-neuro-chip border border-emerald-500/20 px-1.5 py-0.5 text-[10px] text-teal-700">{skill.percentage || 0}%</span>
                 </div>
               </div>
             </div>
             <div className="flex gap-1">
-              <button onClick={() => handleEdit(skill)} className="p-2 text-neutral-400 hover:text-emerald-400 bg-white/5 hover:bg-emerald-500/10 rounded transition"><Pencil className="h-3 w-3"/></button>
-              <button onClick={() => handleDelete(skill.$id)} className="p-2 text-neutral-400 hover:text-red-400 bg-white/5 hover:bg-red-500/10 rounded transition"><Trash2 className="h-3 w-3"/></button>
+              <button onClick={() => handleEdit(skill)} className="admin-neuro-btn rounded p-2 text-slate-600 hover:text-teal-700 transition"><Pencil className="h-3 w-3"/></button>
+              <button onClick={() => handleDelete(skill.$id)} className="admin-neuro-btn rounded p-2 text-slate-600 hover:text-red-600 transition"><Trash2 className="h-3 w-3"/></button>
             </div>
           </div>
         ))}

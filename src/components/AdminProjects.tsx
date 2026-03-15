@@ -111,31 +111,31 @@ export default function AdminProjects() {
     } catch (error) { console.error(error); }
   };
 
-  if (loading) return <div className="flex justify-center p-8"><Loader2 className="animate-spin text-emerald-500" /></div>;
+  if (loading) return <div className="flex justify-center p-8"><Loader2 className="admin-neuro-accent animate-spin" /></div>;
 
   return (
     <div className="space-y-8">
       {/* Formulario */}
-      <div className={`rounded-xl border p-6 transition-colors ${editingId ? 'bg-emerald-950/20 border-emerald-500/50' : 'bg-neutral-900/50 border-white/10'}`}>
+      <div className={`admin-neuro-panel p-6 transition-colors ${editingId ? 'ring-2 ring-emerald-400/35' : ''}`}>
         <div className="mb-6 flex items-center justify-between">
-          <h3 className="text-xl font-semibold flex items-center gap-2">
-            {editingId ? <><Pencil className="h-5 w-5 text-emerald-400" /> Editando Proyecto</> : <><Plus className="h-5 w-5 text-emerald-500" /> Añadir Nuevo Proyecto</>}
+          <h3 className="admin-neuro-title text-xl font-semibold flex items-center gap-2">
+            {editingId ? <><Pencil className="h-5 w-5 text-teal-700" /> Editando Proyecto</> : <><Plus className="h-5 w-5 text-teal-700" /> Añadir Nuevo Proyecto</>}
           </h3>
-          {editingId && <button onClick={handleCancelEdit} className="text-neutral-400 hover:text-white flex items-center gap-1 text-sm bg-white/5 px-3 py-1 rounded-full"><X className="h-4 w-4" /> Cancelar</button>}
+          {editingId && <button onClick={handleCancelEdit} className="admin-neuro-btn flex items-center gap-1 text-sm px-3 py-1 rounded-full"><X className="h-4 w-4" /> Cancelar</button>}
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-neutral-400 mb-1">Título del Proyecto</label>
-                <input required type="text" value={title} onChange={e => setTitle(e.target.value)} className="w-full rounded-lg bg-black/50 border border-white/10 p-3 text-white focus:border-emerald-500 focus:outline-none" />
+                <label className="admin-neuro-muted mb-1 block text-sm">Título del Proyecto</label>
+                <input required type="text" value={title} onChange={e => setTitle(e.target.value)} className="admin-neuro-input p-3" />
               </div>
               
               {/* UPLOAD DE IMAGEN DE PROYECTO */}
               <div>
-                <label className="block text-sm text-neutral-400 mb-1 flex items-center gap-2"><ImageIcon className="h-4 w-4"/> Imagen del Proyecto</label>
-                <div className="relative overflow-hidden rounded-lg border border-dashed border-white/20 bg-black/50 hover:border-emerald-500/50 transition-colors h-32 flex flex-col items-center justify-center cursor-pointer group">
+                <label className="admin-neuro-muted mb-1 flex items-center gap-2 text-sm"><ImageIcon className="h-4 w-4"/> Imagen del Proyecto</label>
+                <div className="admin-neuro-panel-inset relative h-32 cursor-pointer overflow-hidden border border-dashed border-slate-300/90 transition-colors group flex flex-col items-center justify-center">
                   <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
                   
                   {imagePreview || imageUrl ? (
@@ -143,8 +143,8 @@ export default function AdminProjects() {
                   ) : null}
                   
                   <div className="z-0 flex flex-col items-center text-center p-4">
-                    <UploadCloud className="h-6 w-6 text-emerald-500 mb-2" />
-                    <span className="text-sm font-medium text-white">{imagePreview || imageUrl ? "Haz clic para cambiar imagen" : "Sube una captura del proyecto"}</span>
+                    <UploadCloud className="admin-neuro-accent mb-2 h-6 w-6" />
+                    <span className="text-sm font-medium text-slate-700">{imagePreview || imageUrl ? "Haz clic para cambiar imagen" : "Sube una captura del proyecto"}</span>
                   </div>
                 </div>
               </div>
@@ -152,27 +152,27 @@ export default function AdminProjects() {
 
             <div className="space-y-4">
                <div>
-                <label className="block text-sm text-neutral-400 mb-1">Descripción</label>
-                <textarea required value={description} onChange={e => setDescription(e.target.value)} className="w-full rounded-lg bg-black/50 border border-white/10 p-3 text-white focus:border-emerald-500 focus:outline-none h-32 resize-none" />
+                <label className="admin-neuro-muted mb-1 block text-sm">Descripción</label>
+                <textarea required value={description} onChange={e => setDescription(e.target.value)} className="admin-neuro-textarea h-32 resize-none p-3" />
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end pt-2 border-t border-white/5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end pt-2 border-t border-slate-300/55">
             <div>
-              <label className="block text-sm text-neutral-400 mb-1">Enlace al Proyecto (Opcional)</label>
-              <input type="url" value={link} onChange={e => setLink(e.target.value)} placeholder="https://..." className="w-full rounded-lg bg-black/50 border border-white/10 p-3 text-white focus:border-emerald-500 focus:outline-none" />
+              <label className="admin-neuro-muted mb-1 block text-sm">Enlace al Proyecto (Opcional)</label>
+              <input type="url" value={link} onChange={e => setLink(e.target.value)} placeholder="https://..." className="admin-neuro-input p-3" />
             </div>
-            <div className="flex items-center gap-3 p-3 bg-black/30 rounded-lg border border-white/5">
+            <div className="admin-neuro-panel-inset flex items-center gap-3 p-3">
               <input type="checkbox" id="visibleToggle" checked={isVisible} onChange={(e) => setIsVisible(e.target.checked)} className="w-5 h-5 accent-emerald-500 cursor-pointer" />
-              <label htmlFor="visibleToggle" className="text-sm font-medium cursor-pointer flex items-center gap-2">
-                {isVisible ? <Eye className="w-4 h-4 text-emerald-400" /> : <EyeOff className="w-4 h-4 text-neutral-500" />}
+              <label htmlFor="visibleToggle" className="cursor-pointer flex items-center gap-2 text-sm font-medium text-slate-700">
+                {isVisible ? <Eye className="w-4 h-4 text-teal-700" /> : <EyeOff className="w-4 h-4 text-slate-500" />}
                 {isVisible ? "Proyecto Público" : "Oculto (Borrador)"}
               </label>
             </div>
           </div>
           
-          <button disabled={isSubmitting} type="submit" className="flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-black font-bold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 w-full sm:w-auto mt-4">
+          <button disabled={isSubmitting} type="submit" className="admin-neuro-btn admin-neuro-btn-primary mt-4 flex w-full items-center justify-center gap-2 px-6 py-3 font-bold disabled:opacity-50 sm:w-auto">
             {isSubmitting ? <Loader2 className="h-5 w-5 animate-spin" /> : editingId ? "Actualizar Proyecto" : "Crear Proyecto"}
           </button>
         </form>
@@ -180,35 +180,35 @@ export default function AdminProjects() {
 
       {/* Lista de Proyectos */}
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold">Tus Proyectos ({projects.length})</h3>
+        <h3 className="admin-neuro-title text-xl font-semibold">Tus Proyectos ({projects.length})</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {projects.map((project) => (
-            <div key={project.$id} className={`group flex flex-col justify-between rounded-xl border p-0 overflow-hidden transition-colors ${project.isVisible ? 'bg-neutral-900/30 border-white/10' : 'bg-neutral-900/10 border-neutral-800 opacity-70'}`}>
-              <div className="h-32 w-full relative bg-neutral-950 border-b border-white/5">
+            <div key={project.$id} className={`admin-neuro-panel group flex flex-col justify-between overflow-hidden p-0 transition-colors ${project.isVisible ? '' : 'opacity-70'}`}>
+              <div className="h-32 w-full relative border-b border-slate-300/55 bg-slate-300/30">
                 <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover" />
               </div>
               <div className="p-5">
                 <div className="flex justify-between items-start mb-2">
-                  <h4 className="font-bold text-lg text-white">{project.title}</h4>
-                  {!project.isVisible && <span className="text-[10px] uppercase tracking-wider bg-neutral-800 px-2 py-1 rounded text-neutral-400">Oculto</span>}
+                  <h4 className="admin-neuro-title font-bold text-lg">{project.title}</h4>
+                  {!project.isVisible && <span className="admin-neuro-chip text-[10px] uppercase tracking-wider px-2 py-1 text-slate-600">Oculto</span>}
                 </div>
-                <p className="text-sm text-neutral-400 line-clamp-2">{project.description}</p>
-                <div className="mt-5 flex items-center justify-between border-t border-white/5 pt-4">
+                <p className="admin-neuro-muted line-clamp-2 text-sm">{project.description}</p>
+                <div className="mt-5 flex items-center justify-between border-t border-slate-300/55 pt-4">
                   {project.link ? (
-                    <a href={project.link} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-sm text-emerald-400 hover:text-emerald-300">
+                    <a href={project.link} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-sm text-teal-700 hover:text-teal-900">
                       <ExternalLink className="h-4 w-4" /> Ver url
                     </a>
                   ) : <span />}
                   <div className="flex gap-2">
-                    <button onClick={() => handleEditClick(project)} className="rounded p-2 text-neutral-400 bg-white/5 hover:bg-emerald-500/10 hover:text-emerald-400 transition-colors"><Pencil className="h-4 w-4" /></button>
-                    <button onClick={() => handleDelete(project.$id)} className="rounded p-2 text-neutral-400 bg-white/5 hover:bg-red-500/10 hover:text-red-400 transition-colors"><Trash2 className="h-4 w-4" /></button>
+                    <button onClick={() => handleEditClick(project)} className="admin-neuro-btn rounded p-2 text-slate-600 hover:text-teal-700 transition-colors"><Pencil className="h-4 w-4" /></button>
+                    <button onClick={() => handleDelete(project.$id)} className="admin-neuro-btn rounded p-2 text-slate-600 hover:text-red-600 transition-colors"><Trash2 className="h-4 w-4" /></button>
                   </div>
                 </div>
               </div>
             </div>
           ))}
           {projects.length === 0 && (
-             <p className="text-neutral-500 col-span-2 text-center py-8">Aún no has creado ningún proyecto.</p>
+             <p className="admin-neuro-muted col-span-2 py-8 text-center">Aún no has creado ningún proyecto.</p>
           )}
         </div>
       </div>
