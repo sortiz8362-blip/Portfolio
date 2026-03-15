@@ -100,6 +100,7 @@ export default function ProjectsSection() {
           rotateY: 360,
           opacity: 0,
           scale: 0.9,
+          color: "#10b981",
           duration: 0.6,
           stagger: 0.005,
           ease: "power1.out",

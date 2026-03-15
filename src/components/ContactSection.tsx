@@ -68,6 +68,7 @@ export default function ContactSection() {
           rotateY: 360,
           opacity: 0,
           scale: 0.8,
+          color: "#10b981",
           duration: 0.8,
           stagger: 0.01,
           ease: "power2.out",

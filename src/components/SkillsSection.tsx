@@ -117,6 +117,7 @@ export default function SkillsSection() {
           rotateY: 360,
           opacity: 0,
           scale: 0.8,
+          color: "#10b981",
           duration: 0.6,
           stagger: 0.008,
           ease: "power2.out",
