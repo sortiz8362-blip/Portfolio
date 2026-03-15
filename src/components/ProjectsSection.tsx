@@ -101,8 +101,8 @@ export default function ProjectsSection() {
           opacity: 0,
           scale: 0.9,
           color: "#10b981",
-          duration: 0.6,
-          stagger: 0.005,
+          duration: 0.8,
+          stagger: 0.02,
           ease: "power1.out",
           scrollTrigger: {
             trigger: desc,

@@ -118,8 +118,8 @@ export default function SkillsSection() {
           opacity: 0,
           scale: 0.8,
           color: "#10b981",
-          duration: 0.6,
-          stagger: 0.008,
+          duration: 0.8,
+          stagger: 0.025, // Aumentado
           ease: "power2.out",
           scrollTrigger: {
             trigger: aboutParaRef.current,

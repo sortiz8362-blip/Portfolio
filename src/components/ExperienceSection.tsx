@@ -79,7 +79,7 @@ export default function ExperienceSection() {
           scale: 0.8,
           color: "#10b981",
           duration: 0.8,
-          stagger: 0.01,
+          stagger: 0.03,
           ease: "power2.out",
           scrollTrigger: {
             trigger: sectionDescRef.current,
@@ -97,8 +97,8 @@ export default function ExperienceSection() {
           opacity: 0,
           scale: 0.9,
           color: "#10b981",
-          duration: 0.6,
-          stagger: 0.005,
+          duration: 0.8,
+          stagger: 0.02,
           ease: "power1.out",
           scrollTrigger: {
             trigger: desc,

@@ -69,8 +69,8 @@ export default function ContactSection() {
           opacity: 0,
           scale: 0.8,
           color: "#10b981",
-          duration: 0.8,
-          stagger: 0.01,
+          duration: 1,
+          stagger: 0.03,
           ease: "power2.out",
           scrollTrigger: {
             trigger: descPara,

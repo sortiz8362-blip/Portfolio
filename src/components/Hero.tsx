@@ -80,7 +80,7 @@ export default function Hero() {
           y: 20,
           color: "#10b981",
           duration: 0.8,
-          stagger: 0.012,
+          stagger: 0.03, // Aumentado para mayor visibilidad del barrido
           ease: "power2.out",
           delay: 1.5
         });
