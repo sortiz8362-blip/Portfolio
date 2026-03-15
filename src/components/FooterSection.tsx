@@ -10,10 +10,10 @@ import { Github, Linkedin, Twitter, Mail, ArrowUpRight } from "lucide-react";
 // ============================================================================
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SplitText } from "@/utils/SplitText";
+import { SplitText } from "gsap/SplitText";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger, SplitText);
 }
 
 const socialLinks = [

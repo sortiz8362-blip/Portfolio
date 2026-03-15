@@ -7,7 +7,7 @@ import { Loader2, MessageSquareQuote, Send, X } from "lucide-react";
 // INSTRUCCIONES: Quita comentarios y MOCKS.
 // ============================================================================
 import gsap from "gsap";
-// import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { databases, APPWRITE_DB_ID } from "../../appwrite";
 import { ID } from "appwrite";
 import { Testimonial } from "@/types/appwrite";
