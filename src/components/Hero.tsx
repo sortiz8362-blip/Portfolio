@@ -78,6 +78,7 @@ export default function Hero() {
           opacity: 0,
           scale: 0.8,
           y: 20,
+          color: "#10b981",
           duration: 0.8,
           stagger: 0.012,
           ease: "power2.out",
