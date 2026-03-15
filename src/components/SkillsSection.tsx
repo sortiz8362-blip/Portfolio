@@ -203,7 +203,7 @@ export default function SkillsSection() {
                   <div className="h-px flex-1 bg-linear-to-r from-white/10 to-transparent ml-4"></div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
                   {category.skills.map((skill, skillIndex) => {
                     return (
                       <SkillCard key={skillIndex} name={skill.name} percentage={skill.percentage} />
@@ -266,7 +266,7 @@ function SkillCard({ name, percentage }: { name: string; percentage: number }) {
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (window.innerWidth < 1024) return;
     
-    const card = cardRef.current;
+    const card = e.currentTarget;
     if (!card) return;
     
     const rect = card.getBoundingClientRect();
@@ -279,12 +279,12 @@ function SkillCard({ name, percentage }: { name: string; percentage: number }) {
     const rotateX = ((y - centerY) / centerY) * -10;
     const rotateY = ((x - centerX) / centerX) * 10;
 
-    // Efecto Tilt Suave
+    // Efecto Tilt Suave (Sin Pop-out como en Proyectos)
     gsap.to(card, {
       rotateX,
       rotateY,
-      scale: 1.01,
-      z: 5,
+      scale: 1,
+      z: 0,
       transformPerspective: 1000,
       duration: 0.5,
       ease: "power2.out"
@@ -296,24 +296,22 @@ function SkillCard({ name, percentage }: { name: string; percentage: number }) {
             left: x,
             top: y,
             opacity: 1,
-            duration: 0.2
+            duration: 0.3
         });
     }
   };
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
     if (window.innerWidth < 1024) return;
     
-    if (cardRef.current) {
-      gsap.to(cardRef.current, {
-        rotateX: 0,
-        rotateY: 0,
-        scale: 1,
-        z: 0,
-        duration: 0.6,
-        ease: "elastic.out(1, 0.5)"
-      });
-    }
+    gsap.to(e.currentTarget, {
+      rotateX: 0,
+      rotateY: 0,
+      scale: 1,
+      z: 0,
+      duration: 0.6,
+      ease: "power2.out"
+    });
 
     if (glowRef.current) {
         gsap.to(glowRef.current, {
@@ -325,10 +323,9 @@ function SkillCard({ name, percentage }: { name: string; percentage: number }) {
 
   return (
     <div 
-      ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="group relative flex flex-col items-start gap-3 rounded-2xl border border-white/10 bg-neutral-900/40 p-4 backdrop-blur-md transition-all duration-300 hover:border-emerald-500/40 hover:bg-neutral-800/60 overflow-hidden cursor-default"
+      className="group relative flex flex-col items-start gap-3 rounded-xl border border-white/5 bg-neutral-900/40 p-3 backdrop-blur-md transition-colors duration-300 hover:border-emerald-500/30 hover:bg-neutral-800/60 overflow-hidden cursor-default"
       style={{ transformStyle: "preserve-3d" }}
       suppressHydrationWarning
     >
