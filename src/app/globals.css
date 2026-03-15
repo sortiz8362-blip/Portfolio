@@ -82,7 +82,7 @@ body {
 .admin-neuro-textarea:focus {
   outline: none;
   border-color: rgba(47, 143, 123, 0.35);
-  box-shadow: inset 4px 4px 10px #c2c8d2, inset -4px -4px 10px #eff4ff, 0 0 0 3px rgba(47, 143, 123, 0.15);
+  box-shadow: inset 3px 3px 8px color-mix(in srgb, var(--neu-shadow-dark) 90%, #000 10%), inset -3px -3px 8px color-mix(in srgb, var(--neu-shadow-light) 90%, #fff 10%), 0 0 0 1px rgba(47, 143, 123, 0.18);
 }
 
 .admin-neuro-btn {
@@ -184,4 +184,129 @@ body {
 :root[data-admin-theme="dark"] .admin-neuro .border-slate-300\/90,
 :root[data-admin-theme="dark"] .admin-neuro .border-slate-400\/30 {
   border-color: rgba(108, 127, 157, 0.42) !important;
+}
+
+.site-neuro {
+  --site-bg: #0b1019;
+  --site-surface: rgba(17, 24, 39, 0.55);
+  --site-panel: rgba(17, 24, 39, 0.8);
+  --site-border: rgba(255, 255, 255, 0.1);
+  --site-text: #f3f6ff;
+  --site-muted: #9ca8bf;
+  --site-accent: #48c7a8;
+  --site-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+  color: var(--site-text);
+}
+
+.site-theme-toggle {
+  position: fixed;
+  right: 18px;
+  top: 18px;
+  z-index: 60;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(15, 23, 42, 0.72);
+  color: #e7edf8;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.24);
+  padding: 0.6rem;
+  backdrop-filter: blur(10px);
+}
+
+.site-theme-toggle:hover {
+  filter: brightness(1.05);
+}
+
+.site-neuro :is(section, footer) {
+  position: relative;
+}
+
+.site-neuro :is(section, footer)::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border-radius: 28px;
+  border: 1px solid var(--site-border);
+  background: var(--site-surface);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--site-shadow);
+  z-index: -1;
+}
+
+.site-neuro .focus\:ring-emerald-500:focus,
+.site-neuro .focus\:border-emerald-500:focus {
+  box-shadow: 0 0 0 1px rgba(72, 199, 168, 0.22) !important;
+  border-color: rgba(72, 199, 168, 0.45) !important;
+}
+
+.site-neuro .bg-white,
+.site-neuro .text-black {
+  color: #0f172a;
+}
+
+:root[data-site-theme="light"] .site-neuro {
+  --site-bg: #e6ebf2;
+  --site-surface: rgba(231, 237, 246, 0.78);
+  --site-panel: rgba(225, 232, 243, 0.88);
+  --site-border: rgba(255, 255, 255, 0.8);
+  --site-text: #1f2937;
+  --site-muted: #5f6f86;
+  --site-accent: #2f8f7b;
+  --site-shadow: 0 8px 18px rgba(120, 136, 160, 0.24);
+}
+
+:root[data-site-theme="light"] .site-theme-toggle {
+  background: rgba(232, 238, 247, 0.9);
+  border-color: rgba(255, 255, 255, 0.85);
+  color: #1f2937;
+  box-shadow: 4px 4px 10px rgba(160, 172, 192, 0.45), -4px -4px 10px rgba(255, 255, 255, 0.9);
+}
+
+:root[data-site-theme="light"] .site-neuro .text-white,
+:root[data-site-theme="light"] .site-neuro .hover\:text-white:hover {
+  color: #1f2937 !important;
+}
+
+:root[data-site-theme="light"] .site-neuro .text-neutral-400,
+:root[data-site-theme="light"] .site-neuro .text-neutral-500,
+:root[data-site-theme="light"] .site-neuro .text-neutral-600,
+:root[data-site-theme="light"] .site-neuro .text-neutral-700,
+:root[data-site-theme="light"] .site-neuro .text-neutral-300 {
+  color: #5f6f86 !important;
+}
+
+:root[data-site-theme="light"] .site-neuro .bg-neutral-950,
+:root[data-site-theme="light"] .site-neuro .bg-neutral-900\/40,
+:root[data-site-theme="light"] .site-neuro .bg-neutral-900\/50,
+:root[data-site-theme="light"] .site-neuro .bg-neutral-900\/60,
+:root[data-site-theme="light"] .site-neuro .bg-neutral-900\/80,
+:root[data-site-theme="light"] .site-neuro .bg-black\/50,
+:root[data-site-theme="light"] .site-neuro .bg-black\/40,
+:root[data-site-theme="light"] .site-neuro .bg-black\/20,
+:root[data-site-theme="light"] .site-neuro .bg-white\/5 {
+  background-color: var(--site-panel) !important;
+}
+
+:root[data-site-theme="light"] .site-neuro .border-white\/5,
+:root[data-site-theme="light"] .site-neuro .border-white\/10,
+:root[data-site-theme="light"] .site-neuro .border-white\/20 {
+  border-color: rgba(255, 255, 255, 0.75) !important;
+}
+
+:root[data-site-theme="light"] .site-neuro .shadow-2xl,
+:root[data-site-theme="light"] .site-neuro .shadow-xl,
+:root[data-site-theme="light"] .site-neuro .shadow-lg {
+  box-shadow: 6px 6px 14px rgba(177, 189, 207, 0.38), -6px -6px 14px rgba(255, 255, 255, 0.9) !important;
+}
+
+:root[data-site-theme="light"] .site-neuro .bg-black\/80 {
+  background-color: rgba(111, 125, 146, 0.45) !important;
+}
+
+:root[data-site-theme="light"] .site-neuro .bg-black {
+  background-color: rgba(226, 233, 244, 0.92) !important;
+}
+
+:root[data-site-theme="light"] .site-neuro .text-emerald-500,
+:root[data-site-theme="light"] .site-neuro .text-emerald-400 {
+  color: var(--site-accent) !important;
 }

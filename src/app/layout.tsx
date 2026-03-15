@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import SmoothScroll from "@/components/SmoothScroll";
-import Dock from "@/components/Dock";
-import LiquidBackground from "@/components/LiquidBackground";
+import SiteShell from "@/components/SiteShell";
 
 // Fuente principal premium (Inter es una excelente opción corporativa e impactante)
 const inter = Inter({ subsets: ["latin"], display: "swap" });
@@ -21,13 +19,7 @@ export default function RootLayout({
   return (
     <html lang="es" className="antialiased">
       <body className={`${inter.className} bg-black text-white selection:bg-white selection:text-black`}>
-        {/* Fondo interactivo global */}
-        <LiquidBackground />
-        {/* Envoltura del scroll fluido en todo el layout */}
-        <SmoothScroll>
-          {children}
-          <Dock />
-        </SmoothScroll>
+        <SiteShell>{children}</SiteShell>
       </body>
     </html>
   );
