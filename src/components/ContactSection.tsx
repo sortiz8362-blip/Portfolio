@@ -78,17 +78,15 @@ export default function ContactSection() {
           }
         });
 
-        // Barrido seguidor
+        // Ola de color simultánea
         gsap.fromTo(split.chars,
-          { color: "inherit" },
+          { color: "#10b981" },
           {
-            color: "#10b981",
-            duration: 0.3,
+            color: "#a3a3a3",
+            duration: 0.4,
             stagger: 0.01,
-            repeat: 1,
-            yoyo: true,
-            delay: 0.1,
-            ease: "power1.inOut",
+            delay: 0.02,
+            ease: "power1.in",
             scrollTrigger: {
               trigger: descPara,
               start: "top 85%",

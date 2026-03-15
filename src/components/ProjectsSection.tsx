@@ -110,17 +110,15 @@ export default function ProjectsSection() {
           }
         });
 
-        // Barrido seguidor
+        // Ola de color simultánea
         gsap.fromTo(split.chars,
-          { color: "inherit" },
+          { color: "#10b981" },
           {
-            color: "#10b981",
-            duration: 0.3,
+            color: "#a3a3a3",
+            duration: 0.4,
             stagger: 0.005,
-            repeat: 1,
-            yoyo: true,
-            delay: 0.05,
-            ease: "power1.inOut",
+            delay: 0.02,
+            ease: "power2.inOut",
             scrollTrigger: {
               trigger: desc,
               start: "top 90%",

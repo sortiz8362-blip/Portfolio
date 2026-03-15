@@ -85,17 +85,15 @@ export default function Hero() {
           delay: 1.5
         });
 
-        // Barrido esmeralda seguidor
+        // Ola de color simultánea (empieza en esmeralda y "deja" blanco)
         gsap.fromTo(splitSubtitle.chars, 
-          { color: "inherit" },
+          { color: "#10b981" },
           { 
-            color: "#10b981", 
-            duration: 0.3, 
+            color: "#ffffff", 
+            duration: 0.4, 
             stagger: 0.012, 
-            repeat: 1, 
-            yoyo: true, 
-            delay: 1.6, // Pequeño retraso para ir "atrás" de la escritura
-            ease: "power1.inOut" 
+            delay: 1.52, // Micro-retraso para que se note el inicio verde
+            ease: "power1.in" 
           }
         );
       }
