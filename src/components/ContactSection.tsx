@@ -59,6 +59,24 @@ export default function ContactSection() {
           },
         }
       );
+
+      // --- REVELADO FLUIDO (Descripción Contacto) ---
+      const descPara = sectionRef.current?.querySelector(".desc-split");
+      if (descPara) {
+        const split = new SplitText(descPara, { type: "chars" });
+        gsap.from(split.chars, {
+          rotateY: 360,
+          opacity: 0,
+          scale: 0.8,
+          duration: 0.8,
+          stagger: 0.01,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: descPara,
+            start: "top 85%",
+          }
+        });
+      }
     }, sectionRef);
 
     return () => ctx.revert();
@@ -119,7 +137,7 @@ export default function ContactSection() {
           <h2 className="text-4xl font-bold tracking-tight text-white md:text-5xl mb-4 perspective-[1000px]">
             <span className="text-emerald-500">¿Hablamos?</span>
           </h2>
-          <p className="text-neutral-400 text-lg">
+          <p className="text-neutral-400 text-lg perspective-[1000px] desc-split">
             Si tienes un proyecto en mente, o simplemente quieres saludar, envíame un mensaje.
           </p>
         </div>

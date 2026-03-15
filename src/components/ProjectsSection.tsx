@@ -26,6 +26,7 @@ export default function ProjectsSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const projDescRefs = useRef<(HTMLParagraphElement | null)[]>([]);
 
   useEffect(() => {
     // 1. Obtener los proyectos de Appwrite
@@ -91,6 +92,24 @@ export default function ProjectsSection() {
         }
       );
 
+      // --- REVELADO FLUIDO (Descripciones Proyectos) ---
+      projDescRefs.current.forEach((desc) => {
+        if (!desc) return;
+        const split = new SplitText(desc, { type: "chars" });
+        gsap.from(split.chars, {
+          rotateY: 360,
+          opacity: 0,
+          scale: 0.9,
+          duration: 0.6,
+          stagger: 0.005,
+          ease: "power1.out",
+          scrollTrigger: {
+            trigger: desc,
+            start: "top 90%",
+          }
+        });
+      });
+
       // --- Animación Inteligente Adaptativa (Móvil vs PC) ---
       const mm = gsap.matchMedia();
 
@@ -116,6 +135,12 @@ export default function ProjectsSection() {
   const addToCardsRef = (el: HTMLDivElement | null) => {
     if (el && !cardsRef.current.includes(el)) {
       cardsRef.current.push(el);
+    }
+  };
+
+  const addToProjDescRefs = (el: HTMLParagraphElement | null) => {
+    if (el && !projDescRefs.current.includes(el)) {
+      projDescRefs.current.push(el);
     }
   };
 
@@ -197,7 +222,10 @@ export default function ProjectsSection() {
                     <h3 className="text-2xl font-bold text-white mb-3">
                       {project.title}
                     </h3>
-                    <p className="text-neutral-400 mb-8 flex-1">
+                    <p 
+                      ref={addToProjDescRefs}
+                      className="text-neutral-400 mb-8 flex-1 perspective-[1000px]"
+                    >
                       {project.description}
                     </p>
                     

@@ -27,6 +27,8 @@ export default function ExperienceSection() {
   const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
   const pathRef = useRef<SVGPathElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const sectionDescRef = useRef<HTMLParagraphElement>(null);
+  const expDescRefs = useRef<(HTMLParagraphElement | null)[]>([]);
 
   useEffect(() => {
     const fetchExperience = async () => {
@@ -68,6 +70,41 @@ export default function ExperienceSection() {
           }
         });
       }
+      // --- REVELADO FLUIDO (Descripción Sección) ---
+      if (sectionDescRef.current) {
+        const split = new SplitText(sectionDescRef.current, { type: "chars" });
+        gsap.from(split.chars, {
+          rotateY: 360,
+          opacity: 0,
+          scale: 0.8,
+          duration: 0.8,
+          stagger: 0.01,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: sectionDescRef.current,
+            start: "top 85%",
+          }
+        });
+      }
+
+      // --- REVELADO FLUIDO (Descripciones Experiencias) ---
+      expDescRefs.current.forEach((desc) => {
+        if (!desc) return;
+        const split = new SplitText(desc, { type: "chars" });
+        gsap.from(split.chars, {
+          rotateY: 360,
+          opacity: 0,
+          scale: 0.9,
+          duration: 0.6,
+          stagger: 0.005,
+          ease: "power1.out",
+          scrollTrigger: {
+            trigger: desc,
+            start: "top 90%",
+          }
+        });
+      });
+
       // Animar el dibujo del trazo SVG
       const path = pathRef.current;
       if (path) {
@@ -149,7 +186,10 @@ export default function ExperienceSection() {
           >
             Mi <span className="text-emerald-500">Trayectoria</span>
           </h2>
-          <p className="text-neutral-400 text-lg">
+          <p 
+            ref={sectionDescRef}
+            className="text-neutral-400 text-lg perspective-[1000px]"
+          >
             Un resumen de mi evolución profesional y los lugares donde he dejado mi huella.
           </p>
         </div>
@@ -227,7 +267,11 @@ export default function ExperienceSection() {
                       </div>
                     </div>
                     
-                    <p className="text-neutral-400 leading-relaxed" style={{ transform: "translateZ(20px)" }}>
+                    <p 
+                      ref={addToExpDescRefs}
+                      className="text-neutral-400 leading-relaxed perspective-[1000px]" 
+                      style={{ transform: "translateZ(20px)" }}
+                    >
                       {exp.description}
                     </p>
                   </div>

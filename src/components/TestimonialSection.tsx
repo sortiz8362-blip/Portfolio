@@ -34,7 +34,9 @@ export default function TestimonialSection() {
 
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const sectionDescRef = useRef<HTMLParagraphElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const msgRefs = useRef<(HTMLParagraphElement | null)[]>([]);
 
   useEffect(() => {
     const fetchTestimonials = async () => {
@@ -69,6 +71,41 @@ export default function TestimonialSection() {
           }
         });
       }
+
+      // --- REVELADO FLUIDO (Descripción Sección) ---
+      if (sectionDescRef.current) {
+        const split = new SplitText(sectionDescRef.current, { type: "chars" });
+        gsap.from(split.chars, {
+          rotateY: 360,
+          opacity: 0,
+          scale: 0.8,
+          duration: 0.8,
+          stagger: 0.01,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: sectionDescRef.current,
+            start: "top 85%",
+          }
+        });
+      }
+
+      // --- REVELADO FLUIDO (Mensajes Testimonios) ---
+      msgRefs.current.forEach((msg) => {
+        if (!msg) return;
+        const split = new SplitText(msg, { type: "chars" });
+        gsap.from(split.chars, {
+          rotateY: 360,
+          opacity: 0,
+          scale: 0.9,
+          duration: 0.6,
+          stagger: 0.005,
+          ease: "power1.out",
+          scrollTrigger: {
+            trigger: msg,
+            start: "top 90%",
+          }
+        });
+      });
       gsap.fromTo(cardsRef.current, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: "power3.out", scrollTrigger: { trigger: sectionRef.current, start: "top 75%" } });
 
       // --- Animación Inteligente Adaptativa (Móvil vs PC) ---
@@ -92,6 +129,10 @@ export default function TestimonialSection() {
 
   const addToCardsRef = (el: HTMLDivElement | null) => {
     if (el && !cardsRef.current.includes(el)) cardsRef.current.push(el);
+  };
+
+  const addToMsgRefs = (el: HTMLParagraphElement | null) => {
+    if (el && !msgRefs.current.includes(el)) msgRefs.current.push(el);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -120,7 +161,10 @@ export default function TestimonialSection() {
         >
           Lo que dicen <span className="text-emerald-500">sobre mi trabajo</span>
         </h2>
-            <p className="text-neutral-400 text-lg max-w-xl">
+            <p 
+              ref={sectionDescRef}
+              className="text-neutral-400 text-lg max-w-xl perspective-[1000px]"
+            >
               Experiencias reales de personas y empresas con las que he colaborado.
             </p>
           </div>
@@ -162,7 +206,13 @@ export default function TestimonialSection() {
                 <div style={{ transform: "translateZ(40px)" }}>
                   <MessageSquareQuote className="h-8 w-8 text-neutral-700 mb-6" />
                 </div>
-                <p className="text-neutral-300 italic mb-8 flex-1 leading-relaxed" style={{ transform: "translateZ(20px)" }}>&quot;{t.message}&quot;</p>
+                <p 
+                  ref={addToMsgRefs}
+                  className="text-neutral-300 italic mb-8 flex-1 leading-relaxed perspective-[1000px]" 
+                  style={{ transform: "translateZ(20px)" }}
+                >
+                  &quot;{t.message}&quot;
+                </p>
                 <div className="border-t border-white/10 pt-6" style={{ transform: "translateZ(30px)" }}>
                   <h4 className="font-bold text-white">{t.name}</h4>
                   <p className="text-sm text-emerald-500">{t.role}</p>
