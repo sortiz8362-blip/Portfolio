@@ -55,14 +55,19 @@ export default function Hero() {
         const splitTitle = new SplitText(titleRef.current, { type: "lines,chars" });
         gsap.set(titleRef.current, { perspective: 1000 });
         gsap.from(splitTitle.chars, {
-          yPercent: 120,
-          rotateX: -35,
-          z: 80,
+          y: () => gsap.utils.random(-360, -220),
+          x: () => gsap.utils.random(-140, 140),
+          rotateX: () => gsap.utils.random(-320, 320),
+          rotateY: () => gsap.utils.random(-220, 220),
+          rotateZ: () => gsap.utils.random(-140, 140),
+          z: () => gsap.utils.random(80, 180),
+          scale: () => gsap.utils.random(0.7, 1.25),
+          transformOrigin: "50% 50% -80",
           opacity: 0,
-          filter: "blur(10px)",
-          duration: 1.2,
-          stagger: { each: 0.015, from: "start" },
-          ease: "power4.out",
+          filter: "blur(12px)",
+          duration: 1.35,
+          stagger: { each: 0.02, from: "random" },
+          ease: "expo.out",
           delay: 0.1,
         });
       }
