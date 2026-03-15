@@ -1,5 +1,4 @@
 import Hero from "@/components/Hero";
-import Background from "@/components/Background";
 import ProjectsSection from "@/components/ProjectsSection";
 import SkillsSection from "@/components/SkillsSection";
 import FooterSection from "@/components/FooterSection";
@@ -9,8 +8,7 @@ import ContactSection from "@/components/ContactSection";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col relative">
-      <Background />
+    <main className="flex min-h-screen flex-col">
       <Hero />
       <ProjectsSection />
       <SkillsSection />
