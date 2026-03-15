@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import { Github, Linkedin, Twitter, Mail, ArrowUpRight } from "lucide-react";
+import { Github, Linkedin, Twitter, ArrowUpRight } from "lucide-react";
 
 // ============================================================================
 // INSTRUCCIONES PARA TU ENTORNO LOCAL:

@@ -176,6 +176,12 @@ export default function ExperienceSection() {
     }
   };
 
+  const addToExpDescRefs = (el: HTMLParagraphElement | null) => {
+    if (el && !expDescRefs.current.includes(el)) {
+      expDescRefs.current.push(el);
+    }
+  };
+
   return (
     <section ref={sectionRef} id="experience" className="relative z-10 w-full px-6 py-24 md:py-32">
       <div className="mx-auto max-w-4xl">
