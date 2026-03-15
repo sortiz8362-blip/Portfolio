@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const RESEND_FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "Portfolio Admin <onboarding@resend.dev>";
-const RESEND_TO_EMAIL = process.env.RESEND_TO_EMAIL || "cavich2006@gmail.com";
+const DEFAULT_FROM_EMAIL = "Portfolio Admin <onboarding@resend.dev>";
+const DEFAULT_TO_EMAIL = "cavich2006@gmail.com";
 
 function escapeHtml(input: string) {
   return input
@@ -12,6 +12,17 @@ function escapeHtml(input: string) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
+}
+
+function normalizeEnvValue(value: string | undefined) {
+  if (!value) return "";
+  const trimmed = value.trim();
+  const hasDoubleQuotes = trimmed.startsWith('"') && trimmed.endsWith('"');
+  const hasSingleQuotes = trimmed.startsWith("'") && trimmed.endsWith("'");
+  if (hasDoubleQuotes || hasSingleQuotes) {
+    return trimmed.slice(1, -1).trim();
+  }
+  return trimmed;
 }
 
 export async function POST(request: Request) {
@@ -30,10 +41,12 @@ export async function POST(request: Request) {
     const safeName = escapeHtml(name);
     const safeEmail = escapeHtml(email);
     const safeMessage = escapeHtml(message).replaceAll("\n", "<br />");
+    const fromEmail = normalizeEnvValue(process.env.RESEND_FROM_EMAIL) || DEFAULT_FROM_EMAIL;
+    const toEmail = normalizeEnvValue(process.env.RESEND_TO_EMAIL) || DEFAULT_TO_EMAIL;
 
     const data = await resend.emails.send({
-      from: RESEND_FROM_EMAIL,
-      to: [RESEND_TO_EMAIL],
+      from: fromEmail,
+      to: [toEmail],
       replyTo: email,
       subject: `Nuevo mensaje de ${name} desde tu Portafolio`,
       html: `
@@ -46,6 +59,11 @@ export async function POST(request: Request) {
         <a href="mailto:${safeEmail}?subject=Respuesta a tu mensaje de portafolio">Responder a ${safeName}</a>
       `,
     });
+
+    if (data.error) {
+      console.error("Resend error:", data.error);
+      return NextResponse.json({ error: data.error.message || "Error enviando correo" }, { status: 502 });
+    }
 
     return NextResponse.json(data);
   } catch (error) {
