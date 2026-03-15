@@ -187,15 +187,19 @@ body {
 }
 
 .site-neuro {
-  --site-bg: #0b1019;
-  --site-surface: rgba(17, 24, 39, 0.55);
-  --site-panel: rgba(17, 24, 39, 0.8);
-  --site-border: rgba(255, 255, 255, 0.1);
-  --site-text: #f3f6ff;
-  --site-muted: #9ca8bf;
-  --site-accent: #48c7a8;
-  --site-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+  --site-bg: #d9dde3;
+  --site-surface: rgba(223, 227, 233, 0.88);
+  --site-panel: rgba(217, 222, 230, 0.9);
+  --site-border: rgba(255, 255, 255, 0.78);
+  --site-text: #222631;
+  --site-muted: #647083;
+  --site-accent: #2f8f7b;
+  --site-shadow: 4px 4px 10px #bcc2cc, -4px -4px 10px #f7fbff;
   color: var(--site-text);
+  background:
+    radial-gradient(circle at 12% 12%, #eef3f8 0%, transparent 34%),
+    radial-gradient(circle at 90% 88%, #d4dae3 0%, transparent 36%),
+    linear-gradient(160deg, #e6ebf2 0%, #d7dce4 100%);
 }
 
 .site-theme-toggle {
@@ -204,10 +208,10 @@ body {
   top: 18px;
   z-index: 60;
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(15, 23, 42, 0.72);
-  color: #e7edf8;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.24);
+  border: 1px solid var(--site-border);
+  background: rgba(232, 238, 247, 0.92);
+  color: var(--site-text);
+  box-shadow: var(--site-shadow);
   padding: 0.6rem;
   backdrop-filter: blur(10px);
 }
@@ -234,79 +238,84 @@ body {
 
 .site-neuro .focus\:ring-emerald-500:focus,
 .site-neuro .focus\:border-emerald-500:focus {
-  box-shadow: 0 0 0 1px rgba(72, 199, 168, 0.22) !important;
-  border-color: rgba(72, 199, 168, 0.45) !important;
+  box-shadow: 0 0 0 1px rgba(47, 143, 123, 0.16) !important;
+  border-color: rgba(47, 143, 123, 0.35) !important;
 }
 
 .site-neuro .bg-white,
 .site-neuro .text-black {
-  color: #0f172a;
-}
-
-:root[data-site-theme="light"] .site-neuro {
-  --site-bg: #e6ebf2;
-  --site-surface: rgba(231, 237, 246, 0.78);
-  --site-panel: rgba(225, 232, 243, 0.88);
-  --site-border: rgba(255, 255, 255, 0.8);
-  --site-text: #1f2937;
-  --site-muted: #5f6f86;
-  --site-accent: #2f8f7b;
-  --site-shadow: 0 8px 18px rgba(120, 136, 160, 0.24);
-}
-
-:root[data-site-theme="light"] .site-theme-toggle {
-  background: rgba(232, 238, 247, 0.9);
-  border-color: rgba(255, 255, 255, 0.85);
   color: #1f2937;
-  box-shadow: 4px 4px 10px rgba(160, 172, 192, 0.45), -4px -4px 10px rgba(255, 255, 255, 0.9);
-}
-
-:root[data-site-theme="light"] .site-neuro .text-white,
-:root[data-site-theme="light"] .site-neuro .hover\:text-white:hover {
-  color: #1f2937 !important;
-}
-
-:root[data-site-theme="light"] .site-neuro .text-neutral-400,
-:root[data-site-theme="light"] .site-neuro .text-neutral-500,
-:root[data-site-theme="light"] .site-neuro .text-neutral-600,
-:root[data-site-theme="light"] .site-neuro .text-neutral-700,
-:root[data-site-theme="light"] .site-neuro .text-neutral-300 {
-  color: #5f6f86 !important;
-}
-
-:root[data-site-theme="light"] .site-neuro .bg-neutral-950,
-:root[data-site-theme="light"] .site-neuro .bg-neutral-900\/40,
-:root[data-site-theme="light"] .site-neuro .bg-neutral-900\/50,
-:root[data-site-theme="light"] .site-neuro .bg-neutral-900\/60,
-:root[data-site-theme="light"] .site-neuro .bg-neutral-900\/80,
-:root[data-site-theme="light"] .site-neuro .bg-black\/50,
-:root[data-site-theme="light"] .site-neuro .bg-black\/40,
-:root[data-site-theme="light"] .site-neuro .bg-black\/20,
-:root[data-site-theme="light"] .site-neuro .bg-white\/5 {
-  background-color: var(--site-panel) !important;
-}
-
-:root[data-site-theme="light"] .site-neuro .border-white\/5,
-:root[data-site-theme="light"] .site-neuro .border-white\/10,
-:root[data-site-theme="light"] .site-neuro .border-white\/20 {
-  border-color: rgba(255, 255, 255, 0.75) !important;
-}
-
-:root[data-site-theme="light"] .site-neuro .shadow-2xl,
-:root[data-site-theme="light"] .site-neuro .shadow-xl,
-:root[data-site-theme="light"] .site-neuro .shadow-lg {
-  box-shadow: 6px 6px 14px rgba(177, 189, 207, 0.38), -6px -6px 14px rgba(255, 255, 255, 0.9) !important;
-}
-
-:root[data-site-theme="light"] .site-neuro .bg-black\/80 {
-  background-color: rgba(111, 125, 146, 0.45) !important;
-}
-
-:root[data-site-theme="light"] .site-neuro .bg-black {
-  background-color: rgba(226, 233, 244, 0.92) !important;
 }
 
 :root[data-site-theme="light"] .site-neuro .text-emerald-500,
-:root[data-site-theme="light"] .site-neuro .text-emerald-400 {
+:root[data-site-theme="light"] .site-neuro .text-emerald-400,
+:root[data-site-theme="dark"] .site-neuro .text-emerald-500,
+:root[data-site-theme="dark"] .site-neuro .text-emerald-400 {
   color: var(--site-accent) !important;
+}
+
+.site-neuro .text-white,
+.site-neuro .hover\:text-white:hover {
+  color: var(--site-text) !important;
+}
+
+.site-neuro .text-neutral-400,
+.site-neuro .text-neutral-500,
+.site-neuro .text-neutral-600,
+.site-neuro .text-neutral-700,
+.site-neuro .text-neutral-300 {
+  color: var(--site-muted) !important;
+}
+
+.site-neuro .bg-neutral-950,
+.site-neuro .bg-neutral-900\/40,
+.site-neuro .bg-neutral-900\/50,
+.site-neuro .bg-neutral-900\/60,
+.site-neuro .bg-neutral-900\/80,
+.site-neuro .bg-black\/50,
+.site-neuro .bg-black\/40,
+.site-neuro .bg-black\/20,
+.site-neuro .bg-white\/5 {
+  background-color: var(--site-panel) !important;
+}
+
+.site-neuro .border-white\/5,
+.site-neuro .border-white\/10,
+.site-neuro .border-white\/20 {
+  border-color: var(--site-border) !important;
+}
+
+.site-neuro .shadow-2xl,
+.site-neuro .shadow-xl,
+.site-neuro .shadow-lg {
+  box-shadow: var(--site-shadow) !important;
+}
+
+.site-neuro .bg-black\/80 {
+  background-color: rgba(111, 125, 146, 0.38) !important;
+}
+
+.site-neuro .bg-black {
+  background-color: rgba(226, 233, 244, 0.94) !important;
+}
+
+:root[data-site-theme="dark"] .site-neuro {
+  --site-bg: #111827;
+  --site-surface: rgba(27, 36, 51, 0.78);
+  --site-panel: rgba(26, 35, 50, 0.88);
+  --site-border: rgba(130, 149, 179, 0.28);
+  --site-text: #ebf1fb;
+  --site-muted: #9ba9c0;
+  --site-accent: #6fd2bb;
+  --site-shadow: 4px 4px 10px #0a0f1a, -4px -4px 10px #2a3447;
+  background:
+    radial-gradient(circle at 12% 12%, #1e293b 0%, transparent 40%),
+    radial-gradient(circle at 90% 88%, #111827 0%, transparent 42%),
+    linear-gradient(160deg, #0e1624 0%, #131e2e 100%);
+}
+
+:root[data-site-theme="dark"] .site-theme-toggle {
+  background: rgba(20, 29, 43, 0.82);
+  color: var(--site-text);
+  box-shadow: var(--site-shadow);
 }

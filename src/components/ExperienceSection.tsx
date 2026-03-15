@@ -12,10 +12,9 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { databases, APPWRITE_DB_ID } from "../../appwrite";
 import { Experience } from "@/types/appwrite";
-import { SplitText } from "gsap/SplitText";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, SplitText);
+  gsap.registerPlugin(ScrollTrigger);
 }
 const APPWRITE_COLLECTION_EXPERIENCE_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_EXPERIENCE_ID || "";
 
@@ -26,11 +25,6 @@ export default function ExperienceSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
   const pathRef = useRef<SVGPathElement>(null);
-  const titleAccentRef = useRef<HTMLSpanElement>(null);
-  const descAccentRef = useRef<HTMLSpanElement>(null);
-  const roleTitleRefs = useRef<(HTMLHeadingElement | null)[]>([]);
-  const expDescRefs = useRef<(HTMLParagraphElement | null)[]>([]);
-  const emptyStateRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     const fetchExperience = async () => {
@@ -52,43 +46,6 @@ export default function ExperienceSection() {
     if (loading) return;
 
     const ctx = gsap.context(() => {
-      // Solo animamos la parte destacada del título.
-      if (titleAccentRef.current) {
-        const split = new SplitText(titleAccentRef.current, { type: "chars" });
-        gsap.set(titleAccentRef.current, { perspective: 1000 });
-        gsap.from(split.chars, {
-          y: () => gsap.utils.random(-180, -90),
-          x: () => gsap.utils.random(-40, 40),
-          rotateX: () => gsap.utils.random(-160, 160),
-          rotateY: () => gsap.utils.random(-120, 120),
-          opacity: 0,
-          filter: "blur(10px)",
-          duration: 1,
-          stagger: { each: 0.02, from: "random" },
-          ease: "expo.out",
-          scrollTrigger: {
-            trigger: titleAccentRef.current,
-            start: "top 85%",
-          }
-        });
-      }
-
-      if (descAccentRef.current) {
-        const sectionDescSplit = new SplitText(descAccentRef.current, { type: "words" });
-        gsap.from(sectionDescSplit.words, {
-          y: 36,
-          x: -28,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.06,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: descAccentRef.current,
-            start: "top 92%",
-          },
-        });
-      }
-
       if (experiences.length > 0) {
         // --- REVELADO FLUIDO (Descripciones Experiencias) ---
         // Animar el dibujo del trazo SVG
@@ -156,54 +113,6 @@ export default function ExperienceSection() {
         });
       }
 
-      roleTitleRefs.current.forEach((title, idx) => {
-        if (!title) return;
-        const split = new SplitText(title, { type: "chars" });
-        gsap.from(split.chars, {
-          x: idx % 2 === 0 ? -50 : 50,
-          y: 24,
-          opacity: 0,
-          rotateZ: idx % 2 === 0 ? -8 : 8,
-          duration: 0.75,
-          stagger: 0.018,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: title,
-            start: "top 93%",
-          },
-        });
-      });
-
-      if (emptyStateRef.current) {
-        const split = new SplitText(emptyStateRef.current, { type: "lines" });
-        gsap.from(split.lines, {
-          y: 36,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.06,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: emptyStateRef.current,
-            start: "top 92%",
-          },
-        });
-      }
-
-      expDescRefs.current.forEach((desc) => {
-        if (!desc) return;
-        const split = new SplitText(desc, { type: "lines" });
-        gsap.from(split.lines, {
-          yPercent: 110,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.06,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: desc,
-            start: "top 92%",
-          },
-        });
-      });
       // ------------------------------------------------------
     }, sectionRef);
 
@@ -216,18 +125,6 @@ export default function ExperienceSection() {
     }
   };
 
-  const addToExpDescRefs = (el: HTMLParagraphElement | null) => {
-    if (el && !expDescRefs.current.includes(el)) {
-      expDescRefs.current.push(el);
-    }
-  };
-
-  const addToRoleTitleRefs = (el: HTMLHeadingElement | null) => {
-    if (el && !roleTitleRefs.current.includes(el)) {
-      roleTitleRefs.current.push(el);
-    }
-  };
-
   return (
     <section ref={sectionRef} id="experience" className="relative z-10 w-full px-6 py-24 md:py-32">
       <div className="mx-auto max-w-4xl">
@@ -235,10 +132,10 @@ export default function ExperienceSection() {
           <h2 
             className="text-4xl font-bold tracking-tight text-white md:text-5xl mb-4 perspective-[1000px]"
           >
-            Mi <span ref={titleAccentRef} className="text-emerald-500">Trayectoria</span>
+            Mi <span className="text-emerald-500">Trayectoria</span>
           </h2>
           <p className="text-neutral-400 text-lg perspective-[1000px]">
-            Un resumen de mi evolución profesional y los lugares donde he dejado <span ref={descAccentRef}>mi huella.</span>
+            Un resumen de mi evolución profesional y los lugares donde he dejado <span>mi huella.</span>
           </p>
         </div>
 
@@ -247,7 +144,7 @@ export default function ExperienceSection() {
             <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
           </div>
         ) : experiences.length === 0 ? (
-          <p ref={emptyStateRef} className="text-neutral-500 text-center py-12 border border-white/5 rounded-2xl bg-white/5">
+          <p className="text-neutral-500 text-center py-12 border border-white/5 rounded-2xl bg-white/5">
             Aún construyendo mi historia profesional...
           </p>
         ) : (
@@ -279,7 +176,7 @@ export default function ExperienceSection() {
                 <div key={exp.$id} ref={addToItemsRef} className="relative pl-12 md:pl-24">
                   
                   {/* El "Punto" en la línea de tiempo */}
-                  <div className="absolute left-[11px] md:left-[27px] top-1.5 h-4 w-4 rounded-full border-4 border-neutral-950 bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)] z-10" />
+                  <div className="absolute left-2.75 md:left-6.75 top-1.5 h-4 w-4 rounded-full border-4 border-neutral-950 bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)] z-10" />
 
                   {/* Tarjeta de Contenido */}
                   <div 
@@ -302,7 +199,7 @@ export default function ExperienceSection() {
                   >
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4" style={{ transform: "translateZ(30px)" }}>
                       <div>
-                        <h3 ref={addToRoleTitleRefs} className="text-xl md:text-2xl font-bold text-white mb-1 group-hover:text-emerald-400 transition-colors">
+                        <h3 className="text-xl md:text-2xl font-bold text-white mb-1 group-hover:text-emerald-400 transition-colors">
                           {exp.role}
                         </h3>
                         <p className="text-lg font-medium text-neutral-300 flex items-center gap-2">
@@ -316,7 +213,6 @@ export default function ExperienceSection() {
                     </div>
                     
                     <p 
-                      ref={addToExpDescRefs}
                       className="text-neutral-400 leading-relaxed perspective-[1000px]" 
                       style={{ transform: "translateZ(20px)" }}
                     >

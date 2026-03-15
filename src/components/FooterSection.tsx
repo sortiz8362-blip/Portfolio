@@ -10,10 +10,9 @@ import { Github, Linkedin, Twitter, ArrowUpRight } from "lucide-react";
 // ============================================================================
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SplitText } from "gsap/SplitText";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, SplitText);
+  gsap.registerPlugin(ScrollTrigger);
 }
 
 const CONTACT_EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "hola@tuportafolio.com";
@@ -27,65 +26,9 @@ const socialLinks = [
 export default function FooterSection() {
   const footerRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const titleAccentRef = useRef<HTMLSpanElement>(null);
-  const descAccentRef = useRef<HTMLSpanElement>(null);
-  const copyrightRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Solo se anima la palabra final destacada.
-      if (titleAccentRef.current) {
-        const split = new SplitText(titleAccentRef.current, { type: "chars" });
-        gsap.set(titleAccentRef.current, { perspective: 1000 });
-        gsap.from(split.chars, {
-          y: () => gsap.utils.random(-140, -80),
-          x: () => gsap.utils.random(-36, 36),
-          rotateZ: () => gsap.utils.random(-50, 50),
-          rotateX: () => gsap.utils.random(-120, 120),
-          opacity: 0,
-          filter: "blur(9px)",
-          duration: 1,
-          stagger: { each: 0.02, from: "end" },
-          ease: "expo.out",
-          scrollTrigger: {
-            trigger: titleAccentRef.current,
-            start: "top 85%",
-          }
-        });
-      }
-
-      if (descAccentRef.current) {
-        const splitDesc = new SplitText(descAccentRef.current, { type: "words" });
-        gsap.from(splitDesc.words, {
-          y: 28,
-          x: 22,
-          opacity: 0,
-          duration: 0.75,
-          stagger: 0.05,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: descAccentRef.current,
-            start: "top 92%",
-          },
-        });
-      }
-
-      if (copyrightRef.current) {
-        const split = new SplitText(copyrightRef.current, { type: "lines" });
-        gsap.from(split.lines, {
-          y: 32,
-          x: 18,
-          opacity: 0,
-          duration: 0.75,
-          stagger: 0.06,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: copyrightRef.current,
-            start: "top 95%",
-          },
-        });
-      }
-
       gsap.fromTo(
         contentRef.current,
         { y: 100, opacity: 0 },
@@ -119,11 +62,11 @@ export default function FooterSection() {
           >
             Trabajemos 
             <br className="md:hidden" />
-            <span ref={titleAccentRef}>Juntos.</span>
+            <span>Juntos.</span>
           </h2>
           <p className="max-w-xl text-lg text-neutral-400 mb-10">
             Siempre estoy abierto a discutir nuevos proyectos, ideas creativas o 
-            visión para construir el <span ref={descAccentRef}>próximo gran producto digital.</span>
+            visión para construir el <span>próximo gran producto digital.</span>
           </p>
           
           <a 
@@ -136,7 +79,7 @@ export default function FooterSection() {
         </div>
 
         {/* Separador */}
-        <div className="mb-12 h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+        <div className="mb-12 h-px w-full bg-linear-to-r from-transparent via-white/20 to-transparent" />
 
         {/* Enlaces y Copyright */}
         <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
@@ -155,7 +98,7 @@ export default function FooterSection() {
             ))}
           </div>
           
-          <p ref={copyrightRef} className="text-sm text-neutral-500">
+          <p className="text-sm text-neutral-500">
             © {new Date().getFullYear()} Creado con Next.js y Appwrite.
           </p>
         </div>

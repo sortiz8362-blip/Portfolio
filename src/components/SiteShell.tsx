@@ -5,7 +5,6 @@ import { Moon, Sun } from "lucide-react";
 import { usePathname } from "next/navigation";
 import SmoothScroll from "@/components/SmoothScroll";
 import Dock from "@/components/Dock";
-import LiquidBackground from "@/components/LiquidBackground";
 
 type SiteTheme = "light" | "dark";
 
@@ -13,10 +12,10 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
   const [theme, setTheme] = useState<SiteTheme>(() => {
-    if (typeof window === "undefined") return "dark";
+    if (typeof window === "undefined") return "light";
     const storedTheme = localStorage.getItem("site-theme") as SiteTheme | null;
     if (storedTheme) return storedTheme;
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    return "light";
   });
 
   useEffect(() => {
@@ -32,8 +31,6 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      {!isAdmin && <LiquidBackground />}
-
       {!isAdmin && (
         <button
           type="button"

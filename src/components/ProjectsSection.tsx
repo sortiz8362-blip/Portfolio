@@ -12,10 +12,9 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { databases, APPWRITE_DB_ID, APPWRITE_COLLECTION_PROJECTS_ID } from "../../appwrite";
 import { Project } from "@/types/appwrite";
-import { SplitText } from "gsap/SplitText";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, SplitText);
+  gsap.registerPlugin(ScrollTrigger);
 }
 
 export default function ProjectsSection() {
@@ -25,10 +24,7 @@ export default function ProjectsSection() {
   // Referencias para las animaciones
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const sectionDescRef = useRef<HTMLParagraphElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const projectTitleRefs = useRef<(HTMLHeadingElement | null)[]>([]);
-  const projDescRefs = useRef<(HTMLParagraphElement | null)[]>([]);
 
   useEffect(() => {
     // 1. Obtener los proyectos de Appwrite
@@ -56,41 +52,6 @@ export default function ProjectsSection() {
     if (loading) return;
 
     const ctx = gsap.context(() => {
-      // Título principal con entrada por caracteres.
-      if (titleRef.current) {
-        const split = new SplitText(titleRef.current, { type: "lines,chars" });
-        gsap.set(titleRef.current, { perspective: 1000 });
-        gsap.from(split.chars, {
-          yPercent: 120,
-          rotateX: -30,
-          z: 60,
-          opacity: 0,
-          filter: "blur(8px)",
-          duration: 1.1,
-          stagger: { each: 0.012, from: "start" },
-          ease: "power4.out",
-          scrollTrigger: {
-            trigger: titleRef.current,
-            start: "top 85%",
-          }
-        });
-      }
-
-      if (sectionDescRef.current) {
-        const descSplit = new SplitText(sectionDescRef.current, { type: "lines" });
-        gsap.from(descSplit.lines, {
-          yPercent: 120,
-          opacity: 0,
-          duration: 0.9,
-          stagger: 0.08,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: sectionDescRef.current,
-            start: "top 90%",
-          },
-        });
-      }
-
       if (projects.length > 0) {
         // Animar las tarjetas de proyectos una por una (stagger)
         gsap.fromTo(
@@ -127,39 +88,6 @@ export default function ProjectsSection() {
         });
       }
 
-      projectTitleRefs.current.forEach((heading, idx) => {
-        if (!heading) return;
-        const split = new SplitText(heading, { type: "chars" });
-        gsap.from(split.chars, {
-          x: idx % 2 === 0 ? -70 : 70,
-          y: -20,
-          rotateZ: idx % 2 === 0 ? -12 : 12,
-          opacity: 0,
-          duration: 0.9,
-          stagger: 0.02,
-          ease: "back.out(1.8)",
-          scrollTrigger: {
-            trigger: heading,
-            start: "top 93%",
-          },
-        });
-      });
-
-      projDescRefs.current.forEach((desc) => {
-        if (!desc) return;
-        const split = new SplitText(desc, { type: "lines" });
-        gsap.from(split.lines, {
-          yPercent: 120,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.06,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: desc,
-            start: "top 92%",
-          },
-        });
-      });
       // ------------------------------------------------------
     }, sectionRef);
 
@@ -173,18 +101,6 @@ export default function ProjectsSection() {
     }
   };
 
-  const addToProjDescRefs = (el: HTMLParagraphElement | null) => {
-    if (el && !projDescRefs.current.includes(el)) {
-      projDescRefs.current.push(el);
-    }
-  };
-
-  const addToProjectTitleRefs = (el: HTMLHeadingElement | null) => {
-    if (el && !projectTitleRefs.current.includes(el)) {
-      projectTitleRefs.current.push(el);
-    }
-  };
-
   return (
     <section ref={sectionRef} id="projects" className="relative z-10 w-full px-6 py-24 md:py-32">
       <div className="mx-auto max-w-6xl">
@@ -195,7 +111,6 @@ export default function ProjectsSection() {
           Trabajos <span className="text-emerald-500">Destacados</span>
         </h2>
         <p
-          ref={sectionDescRef}
           className="mb-12 max-w-3xl text-lg text-neutral-400"
         >
           Proyectos reales enfocados en rendimiento, diseño y experiencia de usuario.
@@ -266,11 +181,10 @@ export default function ProjectsSection() {
 
                   {/* Contenido (Textos y Botones) */}
                   <div className="flex flex-col flex-1 p-8" style={{ transform: "translateZ(40px)" }}>
-                    <h3 ref={addToProjectTitleRefs} className="text-2xl font-bold text-white mb-3">
+                    <h3 className="text-2xl font-bold text-white mb-3">
                       {project.title}
                     </h3>
                     <p 
-                      ref={addToProjDescRefs}
                       className="text-neutral-400 mb-8 flex-1 perspective-[1000px]"
                     >
                       {project.description}

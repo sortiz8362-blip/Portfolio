@@ -11,10 +11,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { databases, APPWRITE_DB_ID } from "../../appwrite";
 import { ID } from "appwrite";
 import { Testimonial } from "@/types/appwrite";
-import { SplitText } from "gsap/SplitText";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, SplitText);
+  gsap.registerPlugin(ScrollTrigger);
 }
 const APPWRITE_COLLECTION_TESTIMONIALS_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_TESTIMONIALS_ID || "";
 
@@ -33,13 +32,7 @@ export default function TestimonialSection() {
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const sectionRef = useRef<HTMLElement>(null);
-  const titleAccentRef = useRef<HTMLSpanElement>(null);
-  const descAccentRef = useRef<HTMLSpanElement>(null);
-  const authorNameRefs = useRef<(HTMLHeadingElement | null)[]>([]);
-  const authorRoleRefs = useRef<(HTMLParagraphElement | null)[]>([]);
-  const emptyStateRef = useRef<HTMLParagraphElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const msgRefs = useRef<(HTMLParagraphElement | null)[]>([]);
 
   useEffect(() => {
     const fetchTestimonials = async () => {
@@ -56,43 +49,6 @@ export default function TestimonialSection() {
   useEffect(() => {
     if (loading) return;
     const ctx = gsap.context(() => {
-      // Animamos solo la parte resaltada del título.
-      if (titleAccentRef.current) {
-        const split = new SplitText(titleAccentRef.current, { type: "chars" });
-        gsap.set(titleAccentRef.current, { perspective: 1000 });
-        gsap.from(split.chars, {
-          x: () => gsap.utils.random(-160, 160),
-          y: () => gsap.utils.random(-80, 80),
-          rotateZ: () => gsap.utils.random(-90, 90),
-          scale: () => gsap.utils.random(0.6, 1.2),
-          opacity: 0,
-          filter: "blur(9px)",
-          duration: 1,
-          stagger: { each: 0.018, from: "center" },
-          ease: "expo.out",
-          scrollTrigger: {
-            trigger: titleAccentRef.current,
-            start: "top 85%",
-          }
-        });
-      }
-
-      if (descAccentRef.current) {
-        const splitDesc = new SplitText(descAccentRef.current, { type: "words" });
-        gsap.from(splitDesc.words, {
-          y: -24,
-          x: 22,
-          opacity: 0,
-          duration: 0.75,
-          stagger: 0.06,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: descAccentRef.current,
-            start: "top 92%",
-          },
-        });
-      }
-
       // --- REVELADO FLUIDO (Mensajes Testimonios) ---
       if (testimonials.length > 0) {
         gsap.fromTo(cardsRef.current, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: "power3.out", scrollTrigger: { trigger: sectionRef.current, start: "top 75%" } });
@@ -115,69 +71,6 @@ export default function TestimonialSection() {
         });
       }
 
-      msgRefs.current.forEach((msg) => {
-        if (!msg) return;
-        const split = new SplitText(msg, { type: "lines" });
-        gsap.from(split.lines, {
-          yPercent: 120,
-          opacity: 0,
-          duration: 0.75,
-          stagger: 0.05,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: msg,
-            start: "top 92%",
-          },
-        });
-      });
-
-      authorNameRefs.current.forEach((name, idx) => {
-        if (!name) return;
-        const split = new SplitText(name, { type: "chars" });
-        gsap.from(split.chars, {
-          y: idx % 2 === 0 ? -32 : 32,
-          x: idx % 2 === 0 ? -24 : 24,
-          opacity: 0,
-          duration: 0.75,
-          stagger: 0.018,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: name,
-            start: "top 94%",
-          },
-        });
-      });
-
-      authorRoleRefs.current.forEach((role, idx) => {
-        if (!role) return;
-        const split = new SplitText(role, { type: "words" });
-        gsap.from(split.words, {
-          y: idx % 2 === 0 ? 24 : -24,
-          opacity: 0,
-          duration: 0.7,
-          stagger: 0.05,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: role,
-            start: "top 94%",
-          },
-        });
-      });
-
-      if (emptyStateRef.current) {
-        const split = new SplitText(emptyStateRef.current, { type: "lines" });
-        gsap.from(split.lines, {
-          x: -40,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.07,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: emptyStateRef.current,
-            start: "top 92%",
-          },
-        });
-      }
       // ------------------------------------------------------
     }, sectionRef);
     return () => ctx.revert();
@@ -185,18 +78,6 @@ export default function TestimonialSection() {
 
   const addToCardsRef = (el: HTMLDivElement | null) => {
     if (el && !cardsRef.current.includes(el)) cardsRef.current.push(el);
-  };
-
-  const addToMsgRefs = (el: HTMLParagraphElement | null) => {
-    if (el && !msgRefs.current.includes(el)) msgRefs.current.push(el);
-  };
-
-  const addToAuthorNameRefs = (el: HTMLHeadingElement | null) => {
-    if (el && !authorNameRefs.current.includes(el)) authorNameRefs.current.push(el);
-  };
-
-  const addToAuthorRoleRefs = (el: HTMLParagraphElement | null) => {
-    if (el && !authorRoleRefs.current.includes(el)) authorRoleRefs.current.push(el);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -222,10 +103,10 @@ export default function TestimonialSection() {
             <h2 
           className="mb-16 text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-6xl perspective-[1000px]"
         >
-          Lo que dicen <span ref={titleAccentRef} className="text-emerald-500">sobre mi trabajo</span>
+          Lo que dicen <span className="text-emerald-500">sobre mi trabajo</span>
         </h2>
             <p className="text-neutral-400 text-lg max-w-xl perspective-[1000px]">
-              Experiencias reales de personas y empresas con las que <span ref={descAccentRef}>he colaborado.</span>
+              Experiencias reales de personas y empresas con las que <span>he colaborado.</span>
             </p>
           </div>
           <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-6 py-3 text-sm font-semibold text-emerald-400 transition-all hover:bg-emerald-500 hover:text-black">
@@ -238,7 +119,7 @@ export default function TestimonialSection() {
         ) : testimonials.length === 0 ? (
           <div className="border border-white/5 bg-white/5 rounded-3xl p-12 text-center backdrop-blur-sm">
             <MessageSquareQuote className="h-12 w-12 text-neutral-600 mx-auto mb-4 opacity-50" />
-            <p ref={emptyStateRef} className="text-neutral-500">Aún no hay testimonios públicos. ¡Sé el primero en dejar uno!</p>
+            <p className="text-neutral-500">Aún no hay testimonios públicos. ¡Sé el primero en dejar uno!</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -267,15 +148,14 @@ export default function TestimonialSection() {
                   <MessageSquareQuote className="h-8 w-8 text-neutral-700 mb-6" />
                 </div>
                 <p 
-                  ref={addToMsgRefs}
                   className="text-neutral-300 italic mb-8 flex-1 leading-relaxed perspective-[1000px]" 
                   style={{ transform: "translateZ(20px)" }}
                 >
                   &quot;{t.message}&quot;
                 </p>
                 <div className="border-t border-white/10 pt-6" style={{ transform: "translateZ(30px)" }}>
-                  <h4 ref={addToAuthorNameRefs} className="font-bold text-white">{t.name}</h4>
-                  <p ref={addToAuthorRoleRefs} className="text-sm text-emerald-500">{t.role}</p>
+                  <h4 className="font-bold text-white">{t.name}</h4>
+                  <p className="text-sm text-emerald-500">{t.role}</p>
                 </div>
               </div>
             ))}

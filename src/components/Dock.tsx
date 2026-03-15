@@ -21,11 +21,11 @@ export default function Dock() {
     <motion.div
       onMouseMove={(e) => mouseX.set(e.pageX)}
       onMouseLeave={() => mouseX.set(Infinity)}
-      className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex h-16 items-end gap-4 rounded-2xl border border-white/10 bg-black/40 px-4 pb-3 backdrop-blur-xl shadow-2xl"
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex h-16 items-end gap-4 rounded-2xl border border-white/70 bg-[#dfe3e9]/85 px-4 pb-3 backdrop-blur-xl shadow-[4px_4px_10px_#bcc2cc,-4px_-4px_10px_#f7fbff]"
     >
       {dockItems.map((item) => (
         <DockIcon key={item.id} mouseX={mouseX} href={item.href} label={item.label}>
-          <item.icon className="h-full w-full text-white/80 transition-colors group-hover:text-white" />
+          <item.icon className="h-full w-full text-slate-700 transition-colors group-hover:text-slate-900" />
         </DockIcon>
       ))}
     </motion.div>
@@ -64,7 +64,7 @@ function DockIcon({
       <motion.div
         ref={ref}
         style={{ width, height: width }}
-        className="flex cursor-pointer items-center justify-center rounded-full bg-neutral-800/60 border border-white/20 shadow-inner transition-colors hover:bg-neutral-700/80"
+        className="flex cursor-pointer items-center justify-center rounded-full border border-white/80 bg-[#d9dee6] shadow-[inset_3px_3px_8px_#c2c8d2,inset_-3px_-3px_8px_#eff4ff] transition-colors hover:bg-[#d3d9e2]"
       >
         <a href={href} className="flex h-full w-full items-center justify-center p-2.5">
           {children}
@@ -72,7 +72,7 @@ function DockIcon({
       </motion.div>
       
       {/* Tooltip moderno que aparece al hacer hover */}
-      <span className="absolute -top-12 rounded-lg border border-white/10 bg-neutral-900/90 px-3 py-1.5 text-sm font-medium text-white opacity-0 backdrop-blur-md transition-opacity duration-200 group-hover:opacity-100 pointer-events-none shadow-xl whitespace-nowrap">
+      <span className="absolute -top-12 whitespace-nowrap rounded-lg border border-white/75 bg-[#e7ebf2] px-3 py-1.5 text-sm font-medium text-slate-700 opacity-0 shadow-[3px_3px_8px_#c0c7d1,-3px_-3px_8px_#f5f9ff] backdrop-blur-md transition-opacity duration-200 pointer-events-none group-hover:opacity-100">
         {label}
       </span>
     </div>
