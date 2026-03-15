@@ -61,39 +61,6 @@ export default function ContactSection() {
       );
 
       // --- REVELADO FLUIDO (Descripción Contacto) ---
-      const descPara = sectionRef.current?.querySelector(".desc-split");
-      if (descPara) {
-        const split = new SplitText(descPara, { type: "chars" });
-        // Revelado base
-        gsap.from(split.chars, {
-          rotateY: 360,
-          opacity: 0,
-          scale: 0.8,
-          duration: 0.8,
-          stagger: 0.01,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: descPara,
-            start: "top 85%",
-          }
-        });
-
-        // Ola de color simultánea
-        gsap.fromTo(split.chars,
-          { color: "#10b981" },
-          {
-            color: "#a3a3a3",
-            duration: 0.4,
-            stagger: 0.01,
-            delay: 0.02,
-            ease: "power1.in",
-            scrollTrigger: {
-              trigger: descPara,
-              start: "top 85%",
-            }
-          }
-        );
-      }
     }, sectionRef);
 
     return () => ctx.revert();

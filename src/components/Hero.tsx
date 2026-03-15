@@ -70,39 +70,11 @@ export default function Hero() {
         });
       }
 
-      // --- REVELADO FLUIDO (Subtítulo) ---
-      if (subtitleRef.current) {
-        const splitSubtitle = new SplitText(subtitleRef.current, { type: "chars" });
-        // Revelado base
-        gsap.from(splitSubtitle.chars, {
-          rotateY: 360,
-          opacity: 0,
-          scale: 0.8,
-          y: 20,
-          duration: 0.8,
-          stagger: 0.012,
-          ease: "power2.out",
-          delay: 1.5
-        });
-
-        // Ola de color simultánea (empieza en esmeralda y "deja" blanco)
-        gsap.fromTo(splitSubtitle.chars, 
-          { color: "#10b981" },
-          { 
-            color: "#ffffff", 
-            duration: 0.4, 
-            stagger: 0.012, 
-            delay: 1.52, // Micro-retraso para que se note el inicio verde
-            ease: "power1.in" 
-          }
-        );
-      }
-
       // Animamos el resto de elementos (Badge y Botones)
       gsap.fromTo(
         ".hero-element:not(h1):not(p)",
         { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: "power3.out", delay: 2.2 }
+        { y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: "power3.out", delay: 1.2 }
       );
     }, containerRef);
 

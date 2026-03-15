@@ -72,74 +72,7 @@ export default function TestimonialSection() {
         });
       }
 
-      // --- REVELADO FLUIDO (Descripción Sección) ---
-      if (sectionDescRef.current) {
-        const split = new SplitText(sectionDescRef.current, { type: "chars" });
-        // Revelado base
-        gsap.from(split.chars, {
-          rotateY: 360,
-          opacity: 0,
-          scale: 0.8,
-          duration: 0.8,
-          stagger: 0.01,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: sectionDescRef.current,
-            start: "top 85%",
-          }
-        });
-
-        // Ola de color simultánea
-        gsap.fromTo(split.chars,
-          { color: "#10b981" },
-          {
-            color: "#a3a3a3",
-            duration: 0.4,
-            stagger: 0.01,
-            delay: 0.02,
-            ease: "power1.in",
-            scrollTrigger: {
-              trigger: sectionDescRef.current,
-              start: "top 85%",
-            }
-          }
-        );
-      }
-
       // --- REVELADO FLUIDO (Mensajes Testimonios) ---
-      msgRefs.current.forEach((msg) => {
-        if (!msg) return;
-        const split = new SplitText(msg, { type: "chars" });
-        // Revelado base
-        gsap.from(split.chars, {
-          rotateY: 360,
-          opacity: 0,
-          scale: 0.9,
-          duration: 0.6,
-          stagger: 0.005,
-          ease: "power1.out",
-          scrollTrigger: {
-            trigger: msg,
-            start: "top 90%",
-          }
-        });
-
-        // Ola de color simultánea
-        gsap.fromTo(split.chars,
-          { color: "#10b981" },
-          {
-            color: "#d4d4d4", // text-neutral-300
-            duration: 0.4,
-            stagger: 0.005,
-            delay: 0.02,
-            ease: "power1.in",
-            scrollTrigger: {
-              trigger: msg,
-              start: "top 90%",
-            }
-          }
-        );
-      });
       gsap.fromTo(cardsRef.current, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: "power3.out", scrollTrigger: { trigger: sectionRef.current, start: "top 75%" } });
 
       // --- Animación Inteligente Adaptativa (Móvil vs PC) ---

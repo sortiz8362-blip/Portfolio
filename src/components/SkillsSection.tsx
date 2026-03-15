@@ -110,40 +110,6 @@ export default function SkillsSection() {
         }
       }
 
-      // --- REVELADO FLUIDO (Párrafo Sobre Mí) ---
-      if (aboutParaRef.current) {
-        const split = new SplitText(aboutParaRef.current, { type: "chars" });
-        // Revelado base
-        gsap.from(split.chars, {
-          rotateY: 360,
-          opacity: 0,
-          scale: 0.8,
-          duration: 0.6,
-          stagger: 0.008,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: aboutParaRef.current,
-            start: "top 85%",
-          }
-        });
-
-        // Ola de color simultánea
-        gsap.fromTo(split.chars,
-          { color: "#10b981" },
-          {
-            color: "#a3a3a3", // neutral-400
-            duration: 0.4,
-            stagger: 0.008,
-            delay: 0.02,
-            ease: "power1.in",
-            scrollTrigger: {
-              trigger: aboutParaRef.current,
-              start: "top 85%",
-            }
-          }
-        );
-      }
-
       // Animación de las categorías
       gsap.fromTo(
         ".skill-category-card",

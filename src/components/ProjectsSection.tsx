@@ -92,41 +92,6 @@ export default function ProjectsSection() {
         }
       );
 
-      // --- REVELADO FLUIDO (Descripciones Proyectos) ---
-      projDescRefs.current.forEach((desc) => {
-        if (!desc) return;
-        const split = new SplitText(desc, { type: "chars" });
-        // Revelado base
-        gsap.from(split.chars, {
-          rotateY: 360,
-          opacity: 0,
-          scale: 0.9,
-          duration: 0.6,
-          stagger: 0.005,
-          ease: "power1.out",
-          scrollTrigger: {
-            trigger: desc,
-            start: "top 90%",
-          }
-        });
-
-        // Ola de color simultánea
-        gsap.fromTo(split.chars,
-          { color: "#10b981" },
-          {
-            color: "#a3a3a3",
-            duration: 0.4,
-            stagger: 0.005,
-            delay: 0.02,
-            ease: "power2.inOut",
-            scrollTrigger: {
-              trigger: desc,
-              start: "top 90%",
-            }
-          }
-        );
-      });
-
       // --- Animación Inteligente Adaptativa (Móvil vs PC) ---
       const mm = gsap.matchMedia();
 
