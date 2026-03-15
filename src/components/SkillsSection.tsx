@@ -276,17 +276,17 @@ function SkillCard({ name, percentage }: { name: string; percentage: number }) {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
     
-    const rotateX = ((y - centerY) / centerY) * -15;
-    const rotateY = ((x - centerX) / centerX) * 15;
+    const rotateX = ((y - centerY) / centerY) * -10;
+    const rotateY = ((x - centerX) / centerX) * 10;
 
-    // Efecto Tilt
+    // Efecto Tilt Suave
     gsap.to(card, {
       rotateX,
       rotateY,
-      scale: 1.05,
-      z: 20,
+      scale: 1.01,
+      z: 5,
       transformPerspective: 1000,
-      duration: 0.4,
+      duration: 0.5,
       ease: "power2.out"
     });
 
