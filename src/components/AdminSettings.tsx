@@ -1,16 +1,37 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Loader2, Settings2, Save, UploadCloud, Image as ImageIcon, CheckCircle2 } from "lucide-react";
+import { Loader2, Settings2, Save, UploadCloud, Image as ImageIcon, CheckCircle2, ArrowUp, ArrowDown, Eye, EyeOff } from "lucide-react";
 
 // ============================================================================
 // INSTRUCCIONES: Quita comentarios y MOCKS en local.
 // ============================================================================
 import { databases, storage, APPWRITE_DB_ID } from "../../appwrite";
-import { ID } from "appwrite";
-import { Settings } from "@/types/appwrite";
+import { ID, Query } from "appwrite";
+import { SectionVisibility, Settings } from "@/types/appwrite";
 const APPWRITE_COLLECTION_SETTINGS_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_SETTINGS_ID || "";
 const APPWRITE_BUCKET_ID = process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID || "";
+const APPWRITE_COLLECTION_SECTIONS_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_SECTIONS_ID || "";
+
+type SectionKey = "hero" | "projects" | "skills" | "experience" | "testimonials" | "contact" | "footer";
+
+const DEFAULT_SECTIONS: Array<{ sectionId: SectionKey; name: string; isVisible: boolean; order: number }> = [
+  { sectionId: "hero", name: "Hero", isVisible: true, order: 0 },
+  { sectionId: "projects", name: "Proyectos", isVisible: true, order: 1 },
+  { sectionId: "skills", name: "Sobre Mi y Habilidades", isVisible: true, order: 2 },
+  { sectionId: "experience", name: "Experiencia", isVisible: true, order: 3 },
+  { sectionId: "testimonials", name: "Testimonios", isVisible: true, order: 4 },
+  { sectionId: "contact", name: "Contacto", isVisible: true, order: 5 },
+  { sectionId: "footer", name: "Footer", isVisible: true, order: 6 },
+];
+
+interface AdminSectionItem {
+  $id?: string;
+  sectionId: SectionKey;
+  name: string;
+  isVisible: boolean;
+  order: number;
+}
 
 export default function AdminSettings() {
   const [loading, setLoading] = useState(true);
@@ -19,6 +40,9 @@ export default function AdminSettings() {
   
   // Nuevo estado para el mensaje de éxito
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [sections, setSections] = useState<AdminSectionItem[]>(DEFAULT_SECTIONS);
+  const [isSavingSections, setIsSavingSections] = useState(false);
+  const [sectionsStatus, setSectionsStatus] = useState<"idle" | "success" | "error">("idle");
 
   // Estados
   const [heroTitle, setHeroTitle] = useState("");
@@ -42,11 +66,96 @@ export default function AdminSettings() {
           setContactEmail(data.contactEmail);
           setProfileImageUrl(data.profileImageUrl || "");
         }
+
+        if (APPWRITE_COLLECTION_SECTIONS_ID) {
+          const sectionsRes = await databases.listDocuments(APPWRITE_DB_ID, APPWRITE_COLLECTION_SECTIONS_ID, [
+            Query.orderAsc("order"),
+          ]);
+
+          if (sectionsRes.documents.length > 0) {
+            const mapped = (sectionsRes.documents as unknown as SectionVisibility[])
+              .map((doc) => ({
+                $id: doc.$id,
+                sectionId: doc.sectionId as SectionKey,
+                name: doc.name,
+                isVisible: doc.isVisible,
+                order: doc.order,
+              }))
+              .filter((doc) => DEFAULT_SECTIONS.some((s) => s.sectionId === doc.sectionId))
+              .sort((a, b) => a.order - b.order);
+
+            if (mapped.length > 0) {
+              setSections(mapped);
+            }
+          }
+        }
       } catch (error) { console.error(error); } 
       finally { setLoading(false); }
     };
     fetchSettings();
   }, []);
+
+  const moveSection = (index: number, direction: "up" | "down") => {
+    setSections((prev) => {
+      const newList = [...prev];
+      const targetIndex = direction === "up" ? index - 1 : index + 1;
+      if (targetIndex < 0 || targetIndex >= newList.length) return prev;
+
+      [newList[index], newList[targetIndex]] = [newList[targetIndex], newList[index]];
+      return newList.map((item, idx) => ({ ...item, order: idx }));
+    });
+  };
+
+  const toggleSectionVisibility = (index: number) => {
+    setSections((prev) => {
+      const newList = [...prev];
+      newList[index] = { ...newList[index], isVisible: !newList[index].isVisible };
+      return newList;
+    });
+  };
+
+  const saveSectionsConfig = async () => {
+    if (!APPWRITE_COLLECTION_SECTIONS_ID) return;
+
+    setIsSavingSections(true);
+    setSectionsStatus("idle");
+
+    try {
+      const existingRes = await databases.listDocuments(APPWRITE_DB_ID, APPWRITE_COLLECTION_SECTIONS_ID, [
+        Query.limit(200),
+      ]);
+      const existingMap = new Map<string, string>();
+
+      (existingRes.documents as unknown as SectionVisibility[]).forEach((doc) => {
+        existingMap.set(doc.sectionId, doc.$id);
+      });
+
+      for (const section of sections) {
+        const docId = existingMap.get(section.sectionId);
+        const payload = {
+          sectionId: section.sectionId,
+          name: section.name,
+          isVisible: section.isVisible,
+          order: section.order,
+        };
+
+        if (docId) {
+          await databases.updateDocument(APPWRITE_DB_ID, APPWRITE_COLLECTION_SECTIONS_ID, docId, payload);
+        } else {
+          await databases.createDocument(APPWRITE_DB_ID, APPWRITE_COLLECTION_SECTIONS_ID, ID.unique(), payload);
+        }
+      }
+
+      setSectionsStatus("success");
+      setTimeout(() => setSectionsStatus("idle"), 3500);
+    } catch (error) {
+      console.error("Error guardando orden de secciones:", error);
+      setSectionsStatus("error");
+      setTimeout(() => setSectionsStatus("idle"), 3500);
+    } finally {
+      setIsSavingSections(false);
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -160,6 +269,87 @@ export default function AdminSettings() {
             <label className="admin-neuro-muted mb-1 block text-sm">Biografía / Texto Descriptivo</label>
             <textarea required value={aboutText} onChange={e => setAboutText(e.target.value)} className="admin-neuro-textarea h-32 p-3" />
           </div>
+        </div>
+
+        <div className="admin-neuro-panel-inset space-y-5 p-6 rounded-xl">
+          <div>
+            <h4 className="font-semibold text-teal-700">Orden de Secciones del Portafolio</h4>
+            <p className="admin-neuro-muted mt-1 text-sm">
+              Mueve las secciones hacia arriba o abajo para cambiar el orden del home público.
+            </p>
+          </div>
+
+          {!APPWRITE_COLLECTION_SECTIONS_ID ? (
+            <div className="rounded-xl border border-amber-300/50 bg-amber-100/70 px-4 py-3 text-sm text-amber-700">
+              Configura la variable NEXT_PUBLIC_APPWRITE_COLLECTION_SECTIONS_ID para habilitar el orden dinámico.
+            </div>
+          ) : (
+            <>
+              <div className="space-y-3">
+                {sections.map((section, index) => (
+                  <div key={section.sectionId} className="admin-neuro-panel flex items-center justify-between gap-3 p-3">
+                    <div>
+                      <p className="admin-neuro-title text-sm font-semibold">{section.name}</p>
+                      <p className="admin-neuro-muted text-xs">Clave: {section.sectionId}</p>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => toggleSectionVisibility(index)}
+                        className="admin-neuro-btn flex items-center gap-1 px-3 py-2 text-xs"
+                      >
+                        {section.isVisible ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
+                        {section.isVisible ? "Visible" : "Oculta"}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => moveSection(index, "up")}
+                        disabled={index === 0}
+                        className="admin-neuro-btn p-2 disabled:opacity-40"
+                        aria-label="Mover arriba"
+                      >
+                        <ArrowUp className="h-4 w-4" />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => moveSection(index, "down")}
+                        disabled={index === sections.length - 1}
+                        className="admin-neuro-btn p-2 disabled:opacity-40"
+                        aria-label="Mover abajo"
+                      >
+                        <ArrowDown className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {sectionsStatus === "success" && (
+                <div className="rounded-xl border border-emerald-300/50 bg-emerald-100/70 px-4 py-3 text-sm text-emerald-700">
+                  Orden de secciones actualizado correctamente.
+                </div>
+              )}
+
+              {sectionsStatus === "error" && (
+                <div className="rounded-xl border border-red-300/50 bg-red-100/70 px-4 py-3 text-sm text-red-700">
+                  No se pudo guardar el orden de secciones. Revisa atributos sectionId, name, isVisible y order en Appwrite.
+                </div>
+              )}
+
+              <button
+                type="button"
+                onClick={saveSectionsConfig}
+                disabled={isSavingSections}
+                className="admin-neuro-btn admin-neuro-btn-primary flex w-full items-center justify-center gap-2 px-5 py-3 font-semibold sm:w-auto"
+              >
+                {isSavingSections ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
+                {isSavingSections ? "Guardando orden..." : "Guardar Orden de Secciones"}
+              </button>
+            </>
+          )}
         </div>
 
         <button disabled={isSubmitting} type="submit" className="admin-neuro-btn admin-neuro-btn-primary flex w-full items-center gap-2 px-8 py-3 font-bold sm:w-auto">

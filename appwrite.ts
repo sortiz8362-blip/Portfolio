@@ -16,3 +16,4 @@ export const storage = new Storage(client);
 // Exportamos las constantes de los IDs para usarlas fácilmente en otros archivos
 export const APPWRITE_DB_ID = process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || '';
 export const APPWRITE_COLLECTION_PROJECTS_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_PROJECTS_ID || '';
+export const APPWRITE_COLLECTION_SECTIONS_ID = process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_SECTIONS_ID || '';

@@ -45,3 +45,12 @@ export interface Settings {
   profileImageUrl: string;
   $createdAt?: string;
 }
+
+export interface SectionVisibility {
+  $id: string;
+  sectionId: string;
+  name: string;
+  isVisible: boolean;
+  order: number;
+  $createdAt?: string;
+}
