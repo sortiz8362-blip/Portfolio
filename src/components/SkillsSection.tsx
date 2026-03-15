@@ -276,15 +276,15 @@ function SkillCard({ name, percentage }: { name: string; percentage: number }) {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
     
-    const rotateX = ((y - centerY) / centerY) * -10;
-    const rotateY = ((x - centerX) / centerX) * 10;
+    const rotateX = ((y - centerY) / centerY) * -20;
+    const rotateY = ((x - centerX) / centerX) * 20;
 
     // Efecto Tilt Suave (Sin Pop-out como en Proyectos)
     gsap.to(card, {
       rotateX,
       rotateY,
       scale: 1,
-      z: 0,
+      z: 10,
       transformPerspective: 1000,
       duration: 0.5,
       ease: "power2.out"
@@ -323,6 +323,7 @@ function SkillCard({ name, percentage }: { name: string; percentage: number }) {
 
   return (
     <div 
+      ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className="group relative flex flex-col items-start gap-3 rounded-xl border border-white/5 bg-neutral-900/40 p-3 backdrop-blur-md transition-colors duration-300 hover:border-emerald-500/30 hover:bg-neutral-800/60 overflow-hidden cursor-default"
