@@ -203,7 +203,7 @@ export default function SkillsSection() {
                   <div className="h-px flex-1 bg-linear-to-r from-white/10 to-transparent ml-4"></div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                   {category.skills.map((skill, skillIndex) => {
                     return (
                       <SkillCard key={skillIndex} name={skill.name} percentage={skill.percentage} />
@@ -283,8 +283,8 @@ function SkillCard({ name, percentage }: { name: string; percentage: number }) {
     gsap.to(card, {
       rotateX,
       rotateY,
-      scale: 1.02,
-      z: 5,
+      scale: 1.05,
+      z: 20,
       transformPerspective: 1000,
       duration: 0.4,
       ease: "power2.out"
@@ -328,7 +328,7 @@ function SkillCard({ name, percentage }: { name: string; percentage: number }) {
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="group relative flex flex-col items-start gap-4 rounded-2xl border border-white/10 bg-neutral-900/40 p-5 backdrop-blur-md transition-all duration-300 hover:border-emerald-500/40 hover:bg-neutral-800/60 overflow-hidden cursor-default"
+      className="group relative flex flex-col items-start gap-3 rounded-2xl border border-white/10 bg-neutral-900/40 p-4 backdrop-blur-md transition-all duration-300 hover:border-emerald-500/40 hover:bg-neutral-800/60 overflow-hidden cursor-default"
       style={{ transformStyle: "preserve-3d" }}
       suppressHydrationWarning
     >
