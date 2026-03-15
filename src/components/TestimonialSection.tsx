@@ -35,6 +35,9 @@ export default function TestimonialSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const sectionDescRef = useRef<HTMLParagraphElement>(null);
+  const authorNameRefs = useRef<(HTMLHeadingElement | null)[]>([]);
+  const authorRoleRefs = useRef<(HTMLParagraphElement | null)[]>([]);
+  const emptyStateRef = useRef<HTMLParagraphElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const msgRefs = useRef<(HTMLParagraphElement | null)[]>([]);
 
@@ -51,7 +54,7 @@ export default function TestimonialSection() {
   }, []);
 
   useEffect(() => {
-    if (loading || testimonials.length === 0) return;
+    if (loading) return;
     const ctx = gsap.context(() => {
       // Título principal con stagger por caracteres.
       if (titleRef.current) {
@@ -89,22 +92,26 @@ export default function TestimonialSection() {
       }
 
       // --- REVELADO FLUIDO (Mensajes Testimonios) ---
-      gsap.fromTo(cardsRef.current, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: "power3.out", scrollTrigger: { trigger: sectionRef.current, start: "top 75%" } });
+      if (testimonials.length > 0) {
+        gsap.fromTo(cardsRef.current, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: "power3.out", scrollTrigger: { trigger: sectionRef.current, start: "top 75%" } });
+      }
 
       // --- Animación Inteligente Adaptativa (Móvil vs PC) ---
       const mm = gsap.matchMedia();
 
-      // En MÓVILES las tarjetas de testimonios tienen un tilt estático
-      mm.add("(max-width: 1023px)", () => {
-        cardsRef.current.forEach((card) => {
-          if (!card) return;
-          gsap.set(card, {
-            rotateX: 2,
-            rotateY: 2,
-            transformPerspective: 2000
+      if (testimonials.length > 0) {
+        // En MÓVILES las tarjetas de testimonios tienen un tilt estático
+        mm.add("(max-width: 1023px)", () => {
+          cardsRef.current.forEach((card) => {
+            if (!card) return;
+            gsap.set(card, {
+              rotateX: 2,
+              rotateY: 2,
+              transformPerspective: 2000
+            });
           });
         });
-      });
+      }
 
       msgRefs.current.forEach((msg) => {
         if (!msg) return;
@@ -121,6 +128,54 @@ export default function TestimonialSection() {
           },
         });
       });
+
+      authorNameRefs.current.forEach((name, idx) => {
+        if (!name) return;
+        const split = new SplitText(name, { type: "chars" });
+        gsap.from(split.chars, {
+          y: idx % 2 === 0 ? -32 : 32,
+          x: idx % 2 === 0 ? -24 : 24,
+          opacity: 0,
+          duration: 0.75,
+          stagger: 0.018,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: name,
+            start: "top 94%",
+          },
+        });
+      });
+
+      authorRoleRefs.current.forEach((role, idx) => {
+        if (!role) return;
+        const split = new SplitText(role, { type: "words" });
+        gsap.from(split.words, {
+          y: idx % 2 === 0 ? 24 : -24,
+          opacity: 0,
+          duration: 0.7,
+          stagger: 0.05,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: role,
+            start: "top 94%",
+          },
+        });
+      });
+
+      if (emptyStateRef.current) {
+        const split = new SplitText(emptyStateRef.current, { type: "lines" });
+        gsap.from(split.lines, {
+          x: -40,
+          opacity: 0,
+          duration: 0.8,
+          stagger: 0.07,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: emptyStateRef.current,
+            start: "top 92%",
+          },
+        });
+      }
       // ------------------------------------------------------
     }, sectionRef);
     return () => ctx.revert();
@@ -132,6 +187,14 @@ export default function TestimonialSection() {
 
   const addToMsgRefs = (el: HTMLParagraphElement | null) => {
     if (el && !msgRefs.current.includes(el)) msgRefs.current.push(el);
+  };
+
+  const addToAuthorNameRefs = (el: HTMLHeadingElement | null) => {
+    if (el && !authorNameRefs.current.includes(el)) authorNameRefs.current.push(el);
+  };
+
+  const addToAuthorRoleRefs = (el: HTMLParagraphElement | null) => {
+    if (el && !authorRoleRefs.current.includes(el)) authorRoleRefs.current.push(el);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -177,7 +240,7 @@ export default function TestimonialSection() {
         ) : testimonials.length === 0 ? (
           <div className="border border-white/5 bg-white/5 rounded-3xl p-12 text-center backdrop-blur-sm">
             <MessageSquareQuote className="h-12 w-12 text-neutral-600 mx-auto mb-4 opacity-50" />
-            <p className="text-neutral-500">Aún no hay testimonios públicos. ¡Sé el primero en dejar uno!</p>
+            <p ref={emptyStateRef} className="text-neutral-500">Aún no hay testimonios públicos. ¡Sé el primero en dejar uno!</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -213,8 +276,8 @@ export default function TestimonialSection() {
                   &quot;{t.message}&quot;
                 </p>
                 <div className="border-t border-white/10 pt-6" style={{ transform: "translateZ(30px)" }}>
-                  <h4 className="font-bold text-white">{t.name}</h4>
-                  <p className="text-sm text-emerald-500">{t.role}</p>
+                  <h4 ref={addToAuthorNameRefs} className="font-bold text-white">{t.name}</h4>
+                  <p ref={addToAuthorRoleRefs} className="text-sm text-emerald-500">{t.role}</p>
                 </div>
               </div>
             ))}

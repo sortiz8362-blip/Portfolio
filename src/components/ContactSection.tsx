@@ -22,6 +22,9 @@ export default function ContactSection() {
   const formRef = useRef<HTMLFormElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const descRef = useRef<HTMLParagraphElement>(null);
+  const successTitleRef = useRef<HTMLHeadingElement>(null);
+  const successDescRef = useRef<HTMLParagraphElement>(null);
+  const errorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -58,6 +61,52 @@ export default function ContactSection() {
           scrollTrigger: {
             trigger: descRef.current,
             start: "top 90%",
+          },
+        });
+      }
+
+      if (successTitleRef.current) {
+        const split = new SplitText(successTitleRef.current, { type: "words" });
+        gsap.from(split.words, {
+          y: 30,
+          x: -24,
+          opacity: 0,
+          duration: 0.7,
+          stagger: 0.06,
+          ease: "back.out(1.6)",
+          scrollTrigger: {
+            trigger: successTitleRef.current,
+            start: "top 94%",
+          },
+        });
+      }
+
+      if (successDescRef.current) {
+        const split = new SplitText(successDescRef.current, { type: "lines" });
+        gsap.from(split.lines, {
+          x: 42,
+          opacity: 0,
+          duration: 0.7,
+          stagger: 0.06,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: successDescRef.current,
+            start: "top 94%",
+          },
+        });
+      }
+
+      if (errorRef.current) {
+        const split = new SplitText(errorRef.current, { type: "lines" });
+        gsap.from(split.lines, {
+          y: 26,
+          opacity: 0,
+          duration: 0.6,
+          stagger: 0.05,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: errorRef.current,
+            start: "top 95%",
           },
         });
       }
@@ -150,8 +199,8 @@ export default function ContactSection() {
               <div className="h-20 w-20 bg-emerald-500/20 text-emerald-500 rounded-full flex items-center justify-center mb-6">
                 <Send className="h-10 w-10" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-2">¡Mensaje Enviado!</h3>
-              <p className="text-neutral-400">
+              <h3 ref={successTitleRef} className="text-2xl font-bold text-white mb-2">¡Mensaje Enviado!</h3>
+              <p ref={successDescRef} className="text-neutral-400">
                 Gracias por contactarme, me pondré en contacto contigo lo antes posible.
               </p>
             </div>
@@ -208,7 +257,7 @@ export default function ContactSection() {
               </div>
 
               {submitStatus === "error" && (
-                <div className="rounded-lg bg-red-500/10 p-4 text-sm text-red-500 border border-red-500/20">
+                <div ref={errorRef} className="rounded-lg bg-red-500/10 p-4 text-sm text-red-500 border border-red-500/20">
                   Hubo un problema al enviar el mensaje. Asegúrate de haber configurado tu base de datos y llaves API.
                 </div>
               )}

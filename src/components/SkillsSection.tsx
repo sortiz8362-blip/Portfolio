@@ -41,6 +41,8 @@ export default function SkillsSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const aboutParaRef = useRef<HTMLParagraphElement>(null);
+  const categoryTitleRefs = useRef<(HTMLHeadingElement | null)[]>([]);
+  const emptyStateRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -139,6 +141,39 @@ export default function SkillsSection() {
         });
       }
 
+      categoryTitleRefs.current.forEach((title, idx) => {
+        if (!title) return;
+        const split = new SplitText(title, { type: "words" });
+        gsap.from(split.words, {
+          y: idx % 2 === 0 ? 38 : -38,
+          x: idx % 2 === 0 ? -24 : 24,
+          rotateZ: idx % 2 === 0 ? -6 : 6,
+          opacity: 0,
+          duration: 0.9,
+          stagger: 0.06,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: title,
+            start: "top 92%",
+          },
+        });
+      });
+
+      if (emptyStateRef.current) {
+        const splitEmpty = new SplitText(emptyStateRef.current, { type: "lines" });
+        gsap.from(splitEmpty.lines, {
+          x: 50,
+          opacity: 0,
+          duration: 0.8,
+          stagger: 0.07,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: emptyStateRef.current,
+            start: "top 92%",
+          },
+        });
+      }
+
       // Animación de la foto de perfil (se mantiene igual)
       const tl = gsap.timeline({
         scrollTrigger: { trigger: headerRef.current, start: "top 70%" }
@@ -149,6 +184,12 @@ export default function SkillsSection() {
     }, sectionRef);
     return () => ctx.revert();
   }, [loading, groupedSkills]);
+
+  const addToCategoryTitleRefs = (el: HTMLHeadingElement | null) => {
+    if (el && !categoryTitleRefs.current.includes(el)) {
+      categoryTitleRefs.current.push(el);
+    }
+  };
 
   return (
     <section 
@@ -222,7 +263,7 @@ export default function SkillsSection() {
           {loading ? (
              <div className="flex justify-center py-20"><Loader2 className="h-10 w-10 animate-spin text-emerald-500" /></div>
           ) : groupedSkills.length === 0 ? (
-            <p className="text-neutral-500 text-center border border-white/5 rounded-3xl py-20 bg-white/5 backdrop-blur-sm">Aún no hay habilidades registradas.</p>
+            <p ref={emptyStateRef} className="text-neutral-500 text-center border border-white/5 rounded-3xl py-20 bg-white/5 backdrop-blur-sm">Aún no hay habilidades registradas.</p>
           ) : (
             groupedSkills.map((category, catIndex) => (
               <div key={catIndex} className="skill-category-card">
@@ -230,7 +271,7 @@ export default function SkillsSection() {
                   <div className="rounded-2xl bg-neutral-900/80 p-3 border border-white/10 shadow-lg">
                     {category.icon}
                   </div>
-                  <h3 className="text-2xl font-bold text-white tracking-tight">{category.title}</h3>
+                  <h3 ref={addToCategoryTitleRefs} className="text-2xl font-bold text-white tracking-tight">{category.title}</h3>
                   <div className="h-px flex-1 bg-linear-to-r from-white/10 to-transparent ml-4"></div>
                 </div>
 

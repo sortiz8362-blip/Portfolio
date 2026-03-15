@@ -28,7 +28,9 @@ export default function ExperienceSection() {
   const pathRef = useRef<SVGPathElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const sectionDescRef = useRef<HTMLParagraphElement>(null);
+  const roleTitleRefs = useRef<(HTMLHeadingElement | null)[]>([]);
   const expDescRefs = useRef<(HTMLParagraphElement | null)[]>([]);
+  const emptyStateRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     const fetchExperience = async () => {
@@ -47,7 +49,7 @@ export default function ExperienceSection() {
   }, []);
 
   useEffect(() => {
-    if (loading || experiences.length === 0) return;
+    if (loading) return;
 
     const ctx = gsap.context(() => {
       // Título principal con entrada por caracteres.
@@ -85,66 +87,105 @@ export default function ExperienceSection() {
         });
       }
 
-      // --- REVELADO FLUIDO (Descripciones Experiencias) ---
-      // Animar el dibujo del trazo SVG
-      const path = pathRef.current;
-      if (path) {
-        const length = path.getTotalLength();
-        
-        // Seteamos el estado inicial del trazo
-        gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
+      if (experiences.length > 0) {
+        // --- REVELADO FLUIDO (Descripciones Experiencias) ---
+        // Animar el dibujo del trazo SVG
+        const path = pathRef.current;
+        if (path) {
+          const length = path.getTotalLength();
+          
+          // Seteamos el estado inicial del trazo
+          gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
 
-        gsap.to(path, {
-          strokeDashoffset: 0,
-          ease: "none",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 60%",
-            end: "bottom 80%",
-            scrub: 1,
-          },
-        });
+          gsap.to(path, {
+            strokeDashoffset: 0,
+            ease: "none",
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top 60%",
+              end: "bottom 80%",
+              scrub: 1,
+            },
+          });
+        }
       }
 
       // Animar cada elemento de la línea de tiempo apareciendo desde los lados
-      itemsRef.current.forEach((item) => {
-        if (!item) return;
-        
-        // Alternamos la dirección de entrada si queremos (ej. izq/der en desktop)
-        // Por simplicidad y elegancia en móvil/desktop, usaremos un fade up con ligero desplazamiento
-        gsap.fromTo(
-          item,
-          { y: 50, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.8,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: item,
-              start: "top 80%",
-            },
-          }
-        );
-      });
+      if (experiences.length > 0) {
+        itemsRef.current.forEach((item) => {
+          if (!item) return;
+          
+          // Alternamos la dirección de entrada si queremos (ej. izq/der en desktop)
+          // Por simplicidad y elegancia en móvil/desktop, usaremos un fade up con ligero desplazamiento
+          gsap.fromTo(
+            item,
+            { y: 50, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.8,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: item,
+                start: "top 80%",
+              },
+            }
+          );
+        });
+      }
 
       // --- Animación Inteligente Adaptativa (Móvil vs PC) ---
       const mm = gsap.matchMedia();
 
-      // En MÓVILES las tarjetas se quedan con un tilt estático
-      mm.add("(max-width: 1023px)", () => {
-        itemsRef.current.forEach((item) => {
-          if (!item) return;
-          const card = item.querySelector(".group"); // Buscamos la tarjeta real dentro del contenedor
-          if (card) {
-            gsap.set(card, {
-              rotateX: 2,
-              rotateY: 2,
-              transformPerspective: 2000
-            });
-          }
+      if (experiences.length > 0) {
+        // En MÓVILES las tarjetas se quedan con un tilt estático
+        mm.add("(max-width: 1023px)", () => {
+          itemsRef.current.forEach((item) => {
+            if (!item) return;
+            const card = item.querySelector(".group"); // Buscamos la tarjeta real dentro del contenedor
+            if (card) {
+              gsap.set(card, {
+                rotateX: 2,
+                rotateY: 2,
+                transformPerspective: 2000
+              });
+            }
+          });
+        });
+      }
+
+      roleTitleRefs.current.forEach((title, idx) => {
+        if (!title) return;
+        const split = new SplitText(title, { type: "chars" });
+        gsap.from(split.chars, {
+          x: idx % 2 === 0 ? -50 : 50,
+          y: 24,
+          opacity: 0,
+          rotateZ: idx % 2 === 0 ? -8 : 8,
+          duration: 0.75,
+          stagger: 0.018,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: title,
+            start: "top 93%",
+          },
         });
       });
+
+      if (emptyStateRef.current) {
+        const split = new SplitText(emptyStateRef.current, { type: "lines" });
+        gsap.from(split.lines, {
+          y: 36,
+          opacity: 0,
+          duration: 0.8,
+          stagger: 0.06,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: emptyStateRef.current,
+            start: "top 92%",
+          },
+        });
+      }
 
       expDescRefs.current.forEach((desc) => {
         if (!desc) return;
@@ -179,6 +220,12 @@ export default function ExperienceSection() {
     }
   };
 
+  const addToRoleTitleRefs = (el: HTMLHeadingElement | null) => {
+    if (el && !roleTitleRefs.current.includes(el)) {
+      roleTitleRefs.current.push(el);
+    }
+  };
+
   return (
     <section ref={sectionRef} id="experience" className="relative z-10 w-full px-6 py-24 md:py-32">
       <div className="mx-auto max-w-4xl">
@@ -202,7 +249,7 @@ export default function ExperienceSection() {
             <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
           </div>
         ) : experiences.length === 0 ? (
-          <p className="text-neutral-500 text-center py-12 border border-white/5 rounded-2xl bg-white/5">
+          <p ref={emptyStateRef} className="text-neutral-500 text-center py-12 border border-white/5 rounded-2xl bg-white/5">
             Aún construyendo mi historia profesional...
           </p>
         ) : (
@@ -257,7 +304,7 @@ export default function ExperienceSection() {
                   >
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4" style={{ transform: "translateZ(30px)" }}>
                       <div>
-                        <h3 className="text-xl md:text-2xl font-bold text-white mb-1 group-hover:text-emerald-400 transition-colors">
+                        <h3 ref={addToRoleTitleRefs} className="text-xl md:text-2xl font-bold text-white mb-1 group-hover:text-emerald-400 transition-colors">
                           {exp.role}
                         </h3>
                         <p className="text-lg font-medium text-neutral-300 flex items-center gap-2">

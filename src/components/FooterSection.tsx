@@ -29,6 +29,7 @@ export default function FooterSection() {
   const contentRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const descRef = useRef<HTMLParagraphElement>(null);
+  const copyrightRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -63,6 +64,22 @@ export default function FooterSection() {
           scrollTrigger: {
             trigger: descRef.current,
             start: "top 90%",
+          },
+        });
+      }
+
+      if (copyrightRef.current) {
+        const split = new SplitText(copyrightRef.current, { type: "lines" });
+        gsap.from(split.lines, {
+          y: 32,
+          x: 18,
+          opacity: 0,
+          duration: 0.75,
+          stagger: 0.06,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: copyrightRef.current,
+            start: "top 95%",
           },
         });
       }
@@ -137,7 +154,7 @@ export default function FooterSection() {
             ))}
           </div>
           
-          <p className="text-sm text-neutral-500">
+          <p ref={copyrightRef} className="text-sm text-neutral-500">
             © {new Date().getFullYear()} Creado con Next.js y Appwrite.
           </p>
         </div>

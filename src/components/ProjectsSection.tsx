@@ -27,6 +27,7 @@ export default function ProjectsSection() {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const sectionDescRef = useRef<HTMLParagraphElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const projectTitleRefs = useRef<(HTMLHeadingElement | null)[]>([]);
   const projDescRefs = useRef<(HTMLParagraphElement | null)[]>([]);
 
   useEffect(() => {
@@ -52,7 +53,7 @@ export default function ProjectsSection() {
 
   // 2. Configurar animaciones GSAP una vez que los proyectos cargan
   useEffect(() => {
-    if (loading || projects.length === 0) return;
+    if (loading) return;
 
     const ctx = gsap.context(() => {
       // Título principal con entrada por caracteres.
@@ -90,35 +91,57 @@ export default function ProjectsSection() {
         });
       }
 
-      // Animar las tarjetas de proyectos una por una (stagger)
-      gsap.fromTo(
-        cardsRef.current,
-        { y: 100, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          stagger: 0.2,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 70%",
-          },
-        }
-      );
+      if (projects.length > 0) {
+        // Animar las tarjetas de proyectos una por una (stagger)
+        gsap.fromTo(
+          cardsRef.current,
+          { y: 100, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.2,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top 70%",
+            },
+          }
+        );
+      }
 
       // --- Animación Inteligente Adaptativa (Móvil vs PC) ---
       const mm = gsap.matchMedia();
 
-      // En móvil dejamos un tilt estático para evitar ciclos infinitos de animación.
-      mm.add("(max-width: 1023px)", () => {
-        cardsRef.current.forEach((card) => {
-          if (!card) return;
-          gsap.set(card, {
-            rotateX: 2,
-            rotateY: 2,
-            transformPerspective: 1200,
+      if (projects.length > 0) {
+        // En móvil dejamos un tilt estático para evitar ciclos infinitos de animación.
+        mm.add("(max-width: 1023px)", () => {
+          cardsRef.current.forEach((card) => {
+            if (!card) return;
+            gsap.set(card, {
+              rotateX: 2,
+              rotateY: 2,
+              transformPerspective: 1200,
+            });
           });
+        });
+      }
+
+      projectTitleRefs.current.forEach((heading, idx) => {
+        if (!heading) return;
+        const split = new SplitText(heading, { type: "chars" });
+        gsap.from(split.chars, {
+          x: idx % 2 === 0 ? -70 : 70,
+          y: -20,
+          rotateZ: idx % 2 === 0 ? -12 : 12,
+          opacity: 0,
+          duration: 0.9,
+          stagger: 0.02,
+          ease: "back.out(1.8)",
+          scrollTrigger: {
+            trigger: heading,
+            start: "top 93%",
+          },
         });
       });
 
@@ -153,6 +176,12 @@ export default function ProjectsSection() {
   const addToProjDescRefs = (el: HTMLParagraphElement | null) => {
     if (el && !projDescRefs.current.includes(el)) {
       projDescRefs.current.push(el);
+    }
+  };
+
+  const addToProjectTitleRefs = (el: HTMLHeadingElement | null) => {
+    if (el && !projectTitleRefs.current.includes(el)) {
+      projectTitleRefs.current.push(el);
     }
   };
 
@@ -237,7 +266,7 @@ export default function ProjectsSection() {
 
                   {/* Contenido (Textos y Botones) */}
                   <div className="flex flex-col flex-1 p-8" style={{ transform: "translateZ(40px)" }}>
-                    <h3 className="text-2xl font-bold text-white mb-3">
+                    <h3 ref={addToProjectTitleRefs} className="text-2xl font-bold text-white mb-3">
                       {project.title}
                     </h3>
                     <p 
