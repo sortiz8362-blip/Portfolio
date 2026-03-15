@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { LogOut, LayoutDashboard, FolderKanban, Wrench, Settings, MessageSquare, Briefcase, BarChart, Loader2, Menu, X, Mail } from "lucide-react";
+import { LogOut, LayoutDashboard, FolderKanban, Wrench, Settings, MessageSquare, Briefcase, BarChart, Loader2, Menu, X, Mail, Moon, Sun } from "lucide-react";
 
 import AdminOverview from "@/components/AdminOverview";
 import AdminProjects from "@/components/AdminProjects";
@@ -14,6 +14,8 @@ import { useRouter } from "next/navigation";
 import { account } from "../../../../appwrite";
 import { Models } from "appwrite";
 
+type AdminTheme = "light" | "dark";
+
 export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState<Models.User<Models.Preferences> | null>(null);
@@ -21,6 +23,22 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [theme, setTheme] = useState<AdminTheme>("light");
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("admin-theme") as AdminTheme | null;
+    const nextTheme = storedTheme
+      ? storedTheme
+      : window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    setTheme(nextTheme);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-admin-theme", theme);
+    localStorage.setItem("admin-theme", theme);
+  }, [theme]);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -77,12 +95,23 @@ export default function Dashboard() {
             </h1>
             <p className="admin-neuro-muted mt-1 max-w-45 truncate text-xs">{user?.email}</p>
           </div>
-          <button 
-            className="admin-neuro-btn p-2 md:hidden"
-            onClick={() => setIsSidebarOpen(false)}
-          >
-            <X className="h-6 w-6" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setTheme((prev) => (prev === "light" ? "dark" : "light"))}
+              className="admin-neuro-btn p-2"
+              aria-label={theme === "light" ? "Activar tema oscuro" : "Activar tema claro"}
+              title={theme === "light" ? "Cambiar a oscuro" : "Cambiar a claro"}
+            >
+              {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+            </button>
+            <button 
+              className="admin-neuro-btn p-2 md:hidden"
+              onClick={() => setIsSidebarOpen(false)}
+            >
+              <X className="h-6 w-6" />
+            </button>
+          </div>
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto pr-2 custom-scrollbar">
@@ -114,7 +143,7 @@ export default function Dashboard() {
       {/* Contenido Principal */}
       <main className="flex-1 overflow-x-hidden">
         {/* Mobile Header */}
-        <div className="mx-3 mt-3 flex items-center justify-between rounded-2xl border border-white/70 bg-slate-100/70 px-6 py-4 shadow-[8px_8px_18px_#c0c6d1,-8px_-8px_18px_#f9fdff] backdrop-blur-md md:hidden">
+        <div className="mx-3 mt-3 flex items-center justify-between rounded-2xl border border-white/70 bg-slate-100/70 px-6 py-4 shadow-[4px_4px_10px_#c4cad5,-4px_-4px_10px_#f8fbff] backdrop-blur-md md:hidden">
           <h1 className="admin-neuro-title text-lg font-bold">Admin Panel</h1>
           <button 
             onClick={() => setIsSidebarOpen(true)}

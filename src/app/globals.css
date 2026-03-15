@@ -28,6 +28,8 @@ body {
 .admin-neuro {
   --neu-bg: #d9dde3;
   --neu-surface: #dfe3e9;
+  --neu-surface-inset: #d7dce4;
+  --neu-surface-soft: #d9dee6;
   --neu-text: #222631;
   --neu-muted: #647083;
   --neu-accent: #2f8f7b;
@@ -35,6 +37,7 @@ body {
   --neu-danger: #cf4a56;
   --neu-shadow-dark: #bcc2cc;
   --neu-shadow-light: #f7fbff;
+  --neu-border: rgba(255, 255, 255, 0.75);
   min-height: 100vh;
   background:
     radial-gradient(circle at 10% 10%, #eef3f8 0%, transparent 35%),
@@ -46,16 +49,16 @@ body {
 
 .admin-neuro-panel {
   border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.75);
+  border: 1px solid var(--neu-border);
   background: var(--neu-surface);
-  box-shadow: 10px 10px 24px var(--neu-shadow-dark), -10px -10px 24px var(--neu-shadow-light);
+  box-shadow: 4px 4px 10px var(--neu-shadow-dark), -4px -4px 10px var(--neu-shadow-light);
 }
 
 .admin-neuro-panel-inset {
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  background: #d7dce4;
-  box-shadow: inset 8px 8px 16px #b9bec7, inset -8px -8px 16px #f3f7ff;
+  border: 1px solid var(--neu-border);
+  background: var(--neu-surface-inset);
+  box-shadow: inset 4px 4px 10px color-mix(in srgb, var(--neu-shadow-dark) 92%, #000 8%), inset -4px -4px 10px color-mix(in srgb, var(--neu-shadow-light) 92%, #fff 8%);
 }
 
 .admin-neuro-input,
@@ -63,10 +66,10 @@ body {
 .admin-neuro-textarea {
   width: 100%;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.75);
-  background: #d9dee6;
+  border: 1px solid var(--neu-border);
+  background: var(--neu-surface-soft);
   color: var(--neu-text);
-  box-shadow: inset 4px 4px 10px #c2c8d2, inset -4px -4px 10px #eff4ff;
+  box-shadow: inset 3px 3px 8px color-mix(in srgb, var(--neu-shadow-dark) 90%, #000 10%), inset -3px -3px 8px color-mix(in srgb, var(--neu-shadow-light) 90%, #fff 10%);
 }
 
 .admin-neuro-input::placeholder,
@@ -84,10 +87,10 @@ body {
 
 .admin-neuro-btn {
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  background: linear-gradient(140deg, #e8edf4, #cfd5df);
+  border: 1px solid var(--neu-border);
+  background: linear-gradient(140deg, color-mix(in srgb, var(--neu-surface) 78%, #fff 22%), color-mix(in srgb, var(--neu-surface) 92%, #000 8%));
   color: var(--neu-text);
-  box-shadow: 6px 6px 14px #bac0cb, -6px -6px 14px #f7fbff;
+  box-shadow: 3px 3px 8px color-mix(in srgb, var(--neu-shadow-dark) 88%, #000 12%), -3px -3px 8px color-mix(in srgb, var(--neu-shadow-light) 88%, #fff 12%);
   transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
@@ -97,14 +100,14 @@ body {
 
 .admin-neuro-btn:active {
   transform: translateY(1px);
-  box-shadow: inset 4px 4px 10px #bac0cb, inset -4px -4px 10px #f7fbff;
+  box-shadow: inset 3px 3px 8px color-mix(in srgb, var(--neu-shadow-dark) 90%, #000 10%), inset -3px -3px 8px color-mix(in srgb, var(--neu-shadow-light) 90%, #fff 10%);
 }
 
 .admin-neuro-btn-primary {
   background: linear-gradient(140deg, #3aa790, #2f8f7b);
   border-color: rgba(255, 255, 255, 0.35);
   color: #f2fffb;
-  box-shadow: 8px 8px 18px #b4bac5, -8px -8px 18px #ffffff;
+  box-shadow: 4px 4px 10px color-mix(in srgb, var(--neu-shadow-dark) 92%, #000 8%), -4px -4px 10px color-mix(in srgb, var(--neu-shadow-light) 90%, #fff 10%);
 }
 
 .admin-neuro-btn-danger {
@@ -114,9 +117,9 @@ body {
 
 .admin-neuro-chip {
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  background: #d9dee6;
-  box-shadow: 4px 4px 9px #c0c7d1, -4px -4px 9px #f5f9ff;
+  border: 1px solid var(--neu-border);
+  background: var(--neu-surface-soft);
+  box-shadow: 2px 2px 6px color-mix(in srgb, var(--neu-shadow-dark) 88%, #000 12%), -2px -2px 6px color-mix(in srgb, var(--neu-shadow-light) 88%, #fff 12%);
 }
 
 .admin-neuro-title {
@@ -130,4 +133,55 @@ body {
 
 .admin-neuro-accent {
   color: var(--neu-accent);
+}
+
+:root[data-admin-theme="dark"] .admin-neuro {
+  --neu-bg: #111827;
+  --neu-surface: #1b2433;
+  --neu-surface-inset: #161f2d;
+  --neu-surface-soft: #1a2332;
+  --neu-text: #ebf1fb;
+  --neu-muted: #9ba9c0;
+  --neu-accent: #6fd2bb;
+  --neu-danger: #f08b93;
+  --neu-shadow-dark: #0a0f1a;
+  --neu-shadow-light: #2a3447;
+  --neu-border: rgba(130, 149, 179, 0.28);
+  background:
+    radial-gradient(circle at 10% 10%, #1e293b 0%, transparent 40%),
+    radial-gradient(circle at 90% 90%, #111827 0%, transparent 45%),
+    linear-gradient(160deg, #0e1624 0%, #131e2e 100%);
+}
+
+:root[data-admin-theme="dark"] .admin-neuro .text-slate-800,
+:root[data-admin-theme="dark"] .admin-neuro .text-slate-700,
+:root[data-admin-theme="dark"] .admin-neuro .text-slate-600,
+:root[data-admin-theme="dark"] .admin-neuro .text-slate-500 {
+  color: #d6e1f2 !important;
+}
+
+:root[data-admin-theme="dark"] .admin-neuro .text-teal-700,
+:root[data-admin-theme="dark"] .admin-neuro .text-blue-700,
+:root[data-admin-theme="dark"] .admin-neuro .text-indigo-700 {
+  color: #7ed6c3 !important;
+}
+
+:root[data-admin-theme="dark"] .admin-neuro .text-amber-700 {
+  color: #f4cf87 !important;
+}
+
+:root[data-admin-theme="dark"] .admin-neuro .bg-slate-100\/70,
+:root[data-admin-theme="dark"] .admin-neuro .bg-slate-300\/30,
+:root[data-admin-theme="dark"] .admin-neuro .bg-slate-300\/70 {
+  background-color: rgba(35, 48, 70, 0.72) !important;
+}
+
+:root[data-admin-theme="dark"] .admin-neuro .border-slate-300\/45,
+:root[data-admin-theme="dark"] .admin-neuro .border-slate-300\/55,
+:root[data-admin-theme="dark"] .admin-neuro .border-slate-300\/60,
+:root[data-admin-theme="dark"] .admin-neuro .border-slate-300\/70,
+:root[data-admin-theme="dark"] .admin-neuro .border-slate-300\/80,
+:root[data-admin-theme="dark"] .admin-neuro .border-slate-300\/90,
+:root[data-admin-theme="dark"] .admin-neuro .border-slate-400\/30 {
+  border-color: rgba(108, 127, 157, 0.42) !important;
 }

@@ -1,16 +1,34 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, Moon, Sun } from "lucide-react";
 import { account } from "../../../appwrite";
 import { useRouter } from "next/navigation";
+
+type AdminTheme = "light" | "dark";
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true); // Empezamos en true mientras verificamos
+  const [theme, setTheme] = useState<AdminTheme>("light");
   const router = useRouter();
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("admin-theme") as AdminTheme | null;
+    const nextTheme = storedTheme
+      ? storedTheme
+      : window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    setTheme(nextTheme);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-admin-theme", theme);
+    localStorage.setItem("admin-theme", theme);
+  }, [theme]);
 
   // 1. Verificamos si YA estás logueado apenas entras a /admin
   useEffect(() => {
@@ -52,7 +70,17 @@ export default function AdminLogin() {
 
   return (
     <div className="admin-neuro flex min-h-screen items-center justify-center px-4">
-      <div className="admin-neuro-panel w-full max-w-md space-y-8 p-8">
+      <div className="admin-neuro-panel relative w-full max-w-md space-y-8 p-8">
+        <button
+          type="button"
+          onClick={() => setTheme((prev) => (prev === "light" ? "dark" : "light"))}
+          className="admin-neuro-btn absolute right-5 top-5 p-2"
+          aria-label={theme === "light" ? "Activar tema oscuro" : "Activar tema claro"}
+          title={theme === "light" ? "Cambiar a oscuro" : "Cambiar a claro"}
+        >
+          {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+        </button>
+
         <div className="text-center">
           <h2 className="admin-neuro-title text-3xl font-bold tracking-tight">
             Panel de Control
